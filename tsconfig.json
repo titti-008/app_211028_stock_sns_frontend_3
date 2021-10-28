@@ -18,7 +18,10 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "baseUrl":"src", // 絶対パスを指定できるようになる
+    "downlevelIteration":true, // ES2015以降の便利な記述をES5以下でも実行できるようになる
+    
   },
   "include": [
     "src"

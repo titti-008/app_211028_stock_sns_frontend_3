@@ -1,15 +1,43 @@
-import React from 'react';
+import { FC, useState, useEffect } from 'react';
+import axios from 'axios';
+import { ApiResponse } from 'components/Types';
 import logo from './logo.svg';
 import './App.css';
 
-function App() {
+// tslint:disable-next-line
+const App: FC = () => {
+  const [state, setState] = useState<string>('');
+
+  const env = process.env.REACT_APP_SERVER_URL ?? ''; // 文字列型であることを強制
+
+  const url = `${env}/hello_world`;
+  console.log(url);
+
+  const componetDitMount = async () => {
+    try {
+      const response = await axios.get<ApiResponse>(url);
+
+      if (response.status === 200) {
+        setState(response.data.text);
+      } else {
+        console.log('status200以外のレスポンス発生');
+        console.log(response);
+      }
+    } catch (err) {
+      console.log('データの取得に失敗');
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    void componetDitMount();
+  });
+
   return (
     <div className="App">
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
+        <p>responces: {state}</p>
         <a
           className="App-link"
           href="https://reactjs.org"
@@ -21,6 +49,6 @@ function App() {
       </header>
     </div>
   );
-}
+};
 
 export default App;
