@@ -21,7 +21,8 @@ module.exports = {
       jsx: true,
     },
     ecmaVersion: 12,
-    project: './tsconfig.eslint.json', // 追加 TSのコンプアイルのパスを教えるために必要 あとでこのファイルを作る
+    project: './**/tsconfig.eslint.json', // 追加 TSのコンプアイルのパスを教えるために必要 あとでこのファイルを作る
+    // ↑ルートディレクトリより下に更にフォルダを作る場合は./**/~とようにしないとエラーになってしまう
     sourceType: 'module',
     tsconfigRoorDir: __dirname, // 追加
   },
@@ -130,7 +131,7 @@ module.exports = {
       },
     ],
 
-    // よくわからんしバグるので削除　いついれたの・・・
+    // よくわからんしバグるので削除 いついれたの・・・
     // 'prefer-arrow/prefer-arrow-functions': [
     //   'error',
     //   {
@@ -159,7 +160,7 @@ module.exports = {
   settings: {
     'import/resolver': {
       node: {
-        paths: ['src'],
+        paths: [''],
       },
     },
   },

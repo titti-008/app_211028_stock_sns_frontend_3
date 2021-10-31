@@ -1,6 +1,10 @@
 .App {
   text-align: center;
 }
+.Base {
+  height: 100vh;
+  width: 100vw;
+}
 
 .App-logo {
   height: 40vmin;
@@ -35,4 +39,8 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+a {
+  text-decoration: none;
 }
