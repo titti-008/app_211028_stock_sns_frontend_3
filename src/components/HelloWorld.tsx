@@ -3,7 +3,6 @@ import axios from 'axios';
 import { ApiResponse } from './Types';
 import logo from '../logo.svg';
 
-// tslint:disable-next-line
 const HelloWorld: FC = () => {
   const [state, setState] = useState<string>('');
 
@@ -50,3 +49,5 @@ const HelloWorld: FC = () => {
 };
 
 export default HelloWorld;
+
+// tslint:disable-next-line

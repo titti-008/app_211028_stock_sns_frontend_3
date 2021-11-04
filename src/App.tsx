@@ -1,31 +1,26 @@
 import { FC, useState, useMemo, useRef, useEffect } from 'react';
 import { Switch, Route, Link } from 'react-router-dom';
 import { Drawer, AppBar, Grid, Box, IconButton } from '@mui/material';
+import GroupIcon from '@mui/icons-material/Group';
 import DehazeIcon from '@mui/icons-material/Dehaze';
-import NotificationsIcon from '@mui/icons-material/Notifications';
+// import NotificationsIcon from '@mui/icons-material/Notifications';
 import HomeIcon from '@mui/icons-material/Home';
 import HelpIcon from '@mui/icons-material/Help';
 import PublicIcon from '@mui/icons-material/Public';
 import { ThemeProvider, createTheme, Theme } from '@mui/material/styles';
+import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import DarkButton from './declareModule/darkButton';
 import Home from './components/Home';
 import Help from './components/Help';
 import HelloWorld from './components/HelloWorld';
-import Colors from './util';
+import { Users } from './components/Users';
+import UserShow from './components/UserShow';
+import NewUsers from './components/NewUsers';
+import { Colors } from './util';
 // import './App.css';
 
 const App: FC = () => {
-  const [appHeight, setAppHeight] = useState(0);
-
   const containerRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (containerRef.current) {
-      setAppHeight(containerRef.current.clientHeight);
-    }
-  }, [setAppHeight]);
-
-  console.log(appHeight);
 
   const [darkMode, setDarkMode] = useState(
     !!(localStorage.getItem('darkMode') === 'on'),
@@ -58,8 +53,6 @@ const App: FC = () => {
     setColors(Colors(theme));
   }, [darkMode]);
   /* eslint-disable */
-
-  console.log(colors);
 
   const [open, setOpen] = useState(false);
 
@@ -101,28 +94,26 @@ const App: FC = () => {
                 alignItems="center"
               >
                 <Grid item>
-                  <Link to="/static_pages/home" color="none">
+                  <IconButton color="default">
+                    <DehazeIcon onClick={handleDrawerOpen} />
+                  </IconButton>
+                </Grid>
+                <Grid item>
+                  <Link to="/unk">
                     <IconButton color="default">
-                      <DehazeIcon onClick={handleDrawerOpen} />
+                      <PersonAddIcon />
                     </IconButton>
                   </Link>
                 </Grid>
                 <Grid item>
-                  <Link to="/static_pages/home">
+                  <Link to="/home">
                     <IconButton color="default">
                       <HomeIcon />
                     </IconButton>
                   </Link>
                 </Grid>
                 <Grid item>
-                  <Link to="/static_pages/home">
-                    <IconButton color="default">
-                      <NotificationsIcon />
-                    </IconButton>
-                  </Link>
-                </Grid>
-                <Grid item>
-                  <Link to="/static_pages/help">
+                  <Link to="/help">
                     <IconButton color="default">
                       <HelpIcon />
                     </IconButton>
@@ -132,6 +123,13 @@ const App: FC = () => {
                   <Link to="/hello_world">
                     <IconButton color="default">
                       <PublicIcon />
+                    </IconButton>
+                  </Link>
+                </Grid>
+                <Grid item>
+                  <Link to="/users">
+                    <IconButton color="default">
+                      <GroupIcon />
                     </IconButton>
                   </Link>
                 </Grid>
@@ -151,7 +149,7 @@ const App: FC = () => {
                   alignItems="center"
                 >
                   <Grid item>
-                    <Link to="/static_pages/home">
+                    <Link to="/home">
                       <DehazeIcon onClick={handleDrawerClose} />
                     </Link>
                   </Grid>
@@ -159,9 +157,12 @@ const App: FC = () => {
               </Drawer>
             </AppBar>
             <Switch>
-              <Route exact path="/static_pages/home" component={Home} />
-              <Route exact path="/static_pages/help" component={Help} />
+              <Route exact path="/home" component={Home} />
+              <Route exact path="/help" component={Help} />
               <Route exact path="/hello_world" component={HelloWorld} />
+              <Route exact path="/users" component={Users} />
+              <Route exact path="/users/:id" component={UserShow} />
+              <Route exact path="/unk" component={NewUsers} />
             </Switch>
           </Box>
         </Box>

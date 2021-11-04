@@ -2,7 +2,6 @@ import { FC, useState, useEffect } from 'react';
 import axios from 'axios';
 import { ApiResponse } from './Types';
 
-// tslint:disable-next-line
 const Home: FC = () => {
   const [state, setState] = useState<string>('');
 
@@ -18,7 +17,7 @@ const Home: FC = () => {
       if (response.status === 200) {
         setState(response.data.text);
       } else {
-        console.log('status200以外のレスポンス発生');
+        console.log('status200以外のレスポンス発生 by home');
         console.log(response);
       }
     } catch (err) {
@@ -49,3 +48,5 @@ const Home: FC = () => {
 };
 
 export default Home;
+
+// tslint:disable-next-line
