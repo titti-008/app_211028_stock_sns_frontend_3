@@ -1,4 +1,3 @@
-import { FC, useState, useEffect, useCallback } from 'react';
 import {
   useTheme,
   IconButton,
@@ -10,39 +9,17 @@ import {
 import formatDistanceToNow from 'date-fns/formatDistanceToNow';
 import PersonIcon from '@mui/icons-material/Person';
 import { Link } from 'react-router-dom';
-import { RouteComponentProps } from 'react-router';
-import { UserType } from './Types';
+// import { RouteComponentProps } from 'react-router';
+import { RouteCurrentUserPropsType } from './Types';
 import { Colors } from '../util';
-import { getUser } from './api';
 
-const UserShow: FC<RouteComponentProps<{ id: string }>> = (props) => {
-  const [user, setUser] = useState<UserType>({
-    createdAt: new Date(),
-    email: 'loading...',
-    name: 'loading...',
-    id: 0,
-  });
-  const load = useCallback(() => getUser(props.match.params.id), [props]);
+const UserShow = (props: RouteCurrentUserPropsType): JSX.Element => {
+  /* eslint-disable */
+  const { loginState, currentUser } = { ...props };
+  /* eslint-disable */
 
-  useEffect(() => {
-    const componetDitMount = async () => {
-      try {
-        const response = load();
-        if ((await response).status === 200) {
-          setUser((await response).data);
-        } else {
-          console.log('status200以外のレスポンス発生');
-          console.log(response);
-        }
-      } catch (err) {
-        console.log('データの取得に失敗');
-        console.log(err);
-      }
-    };
-    void componetDitMount();
-  }, [setUser, load]);
-  /* eslint-disable */
-  /* eslint-disable */
+  console.log('CurrentUser');
+  console.log(currentUser);
 
   const theme = useTheme();
 
@@ -70,18 +47,24 @@ const UserShow: FC<RouteComponentProps<{ id: string }>> = (props) => {
           sx={{ color: colors.text }}
           style={{ overflowWrap: 'break-word' }}
         >
-          {user.name}
+          ログイン状態:{loginState ? 'ログイン済み' : '未ログイン'}
+        </Typography>
+        <Typography
+          sx={{ color: colors.text }}
+          style={{ overflowWrap: 'break-word' }}
+        >
+          {currentUser.name}
         </Typography>
 
         <Typography
           sx={{ color: colors.text }}
           style={{ overflowWrap: 'break-word' }}
         >
-          {user.email}
+          {currentUser.email}
         </Typography>
 
         <Typography sx={{ color: colors.text }}>
-          {formatDistanceToNow(new Date(user.createdAt))}
+          {formatDistanceToNow(new Date(currentUser.createdAt))}
         </Typography>
       </Grid>
     </Grid>

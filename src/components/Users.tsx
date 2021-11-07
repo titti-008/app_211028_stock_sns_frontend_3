@@ -46,9 +46,10 @@ export const Users: FC = () => {
   return (
     <Grid
       container
-      direction="column"
+      // direction="column"
       justifyContent="flex-start"
       alignItems="center"
+      height="100%"
     >
       {users.length !== 0 ? (
         users.map((user: UserType, index: number) => (

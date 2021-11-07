@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { useState } from 'react';
 import {
   useTheme,
   // IconButton,
@@ -11,19 +11,18 @@ import {
   Input,
   Button,
 } from '@mui/material';
+// import { RouteComponentProps } from 'react-router-dom';
 
 // import { Link } from 'react-router-dom';
 // import { CreateUserType } from './Types';
 import { Colors } from '../util';
 import { CreateUserType, RouteUserPropsType } from './Types';
-import { createUser } from './api';
+import { loginUser } from './api';
 
-const NewUsers: FC<RouteUserPropsType> = (props: RouteUserPropsType) => {
+const LoginForm = (props: RouteUserPropsType): JSX.Element => {
   /* eslint-disable */
   const { loginState, handleLogin } = { ...props };
   /* eslint-disable */
-
-  const [errors, setErrors] = useState<unknown>();
 
   const theme = useTheme();
 
@@ -35,10 +34,6 @@ const NewUsers: FC<RouteUserPropsType> = (props: RouteUserPropsType) => {
     password: '',
     passwordConfirmation: '',
   });
-
-  // const [errors, setErrors] = userState({
-
-  // })
 
   const handleChange =
     (key: keyof CreateUserType) =>
@@ -52,24 +47,21 @@ const NewUsers: FC<RouteUserPropsType> = (props: RouteUserPropsType) => {
   //   event.preventDefault();
   // };
 
-  const saveUser = async () => {
+  const handleLoginUser = async () => {
     try {
-      const response = await createUser(values);
+      const response = await loginUser(values);
 
-      if (response.status === 201) {
+      if (response.status === 200) {
         console.log(response);
-        /* eslint-disable */
         handleLogin(response.data.user);
-        /* eslint-disable */
         window.location.href = `/users/${response.data.user.id}`;
       } else {
         console.log('status200以外のレスポンス');
         console.log(response);
       }
-    } catch (err) {
-      console.log('user登録失敗');
+    } catch (err: unknown) {
+      console.log('ログイン失敗');
       console.log(err);
-      setErrors(err);
     }
   };
 
@@ -91,14 +83,9 @@ const NewUsers: FC<RouteUserPropsType> = (props: RouteUserPropsType) => {
             sx={{ color: colors.text }}
             style={{ overflowWrap: 'break-word' }}
           >
-            <h1>ログイン状態: {loginState ? 'ログイン済み' : '未ログイン'}</h1>
-            <p>ユーザー登録 名前を入力してください。</p>
-            {errors}
+            <h1>Log in</h1>
+            <p>ログイン状態:{loginState ? 'ログイン済み' : '未ログイン'}</p>
           </Typography>
-          <FormControl variant="standard">
-            <InputLabel>name</InputLabel>
-            <Input value={values.name} onChange={handleChange('name')} />
-          </FormControl>
         </Grid>
         <Grid item xs sx={{ width: '100%' }}>
           <Typography
@@ -128,25 +115,9 @@ const NewUsers: FC<RouteUserPropsType> = (props: RouteUserPropsType) => {
             />
           </FormControl>
         </Grid>
-        <Grid item xs sx={{ width: '100%' }}>
-          <Typography
-            sx={{ color: colors.text }}
-            style={{ overflowWrap: 'break-word' }}
-          >
-            パスワードを入力してください(確認用)。
-          </Typography>
-          <FormControl variant="standard" margin="normal">
-            <InputLabel>Password(確認)</InputLabel>
-            <Input
-              type="password"
-              value={values.passwordConfirmation}
-              onChange={handleChange('passwordConfirmation')}
-            />
-          </FormControl>
-        </Grid>
         <Grid item>
-          <Button onClick={saveUser} variant="outlined">
-            ユーザー登録
+          <Button onClick={handleLoginUser} variant="outlined">
+            ログイン
           </Button>
         </Grid>
       </Typography>
@@ -154,4 +125,4 @@ const NewUsers: FC<RouteUserPropsType> = (props: RouteUserPropsType) => {
   );
 };
 
-export default NewUsers;
+export default LoginForm;
