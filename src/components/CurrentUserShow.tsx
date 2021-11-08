@@ -1,3 +1,4 @@
+import React from 'react';
 import {
   useTheme,
   IconButton,
@@ -13,9 +14,9 @@ import { Link } from 'react-router-dom';
 import { RouteCurrentUserPropsType } from './Types';
 import { Colors } from '../util';
 
-const UserShow = (props: RouteCurrentUserPropsType): JSX.Element => {
+const UserShow: React.FC<RouteCurrentUserPropsType> = ({ ...props }) => {
   /* eslint-disable */
-  const { loginState, currentUser } = { ...props };
+  const { isLogin, currentUser } = { ...props };
   /* eslint-disable */
 
   console.log('CurrentUser');
@@ -47,7 +48,7 @@ const UserShow = (props: RouteCurrentUserPropsType): JSX.Element => {
           sx={{ color: colors.text }}
           style={{ overflowWrap: 'break-word' }}
         >
-          ログイン状態:{loginState ? 'ログイン済み' : '未ログイン'}
+          ログイン状態:{isLogin ? 'ログイン済み' : '未ログイン'}
         </Typography>
         <Typography
           sx={{ color: colors.text }}

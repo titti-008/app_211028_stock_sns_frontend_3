@@ -19,9 +19,9 @@ import { Colors } from '../util';
 import { CreateUserType, RouteUserPropsType } from './Types';
 import { loginUser } from './api';
 
-const LoginForm = (props: RouteUserPropsType): JSX.Element => {
+const LoginForm: React.FC<RouteUserPropsType> = ({ ...props }) => {
   /* eslint-disable */
-  const { loginState, handleLogin } = { ...props };
+  const { isLogin, handleLogin } = { ...props };
   /* eslint-disable */
 
   const theme = useTheme();
@@ -84,7 +84,7 @@ const LoginForm = (props: RouteUserPropsType): JSX.Element => {
             style={{ overflowWrap: 'break-word' }}
           >
             <h1>Log in</h1>
-            <p>ログイン状態:{loginState ? 'ログイン済み' : '未ログイン'}</p>
+            <p>ログイン状態:{isLogin ? 'ログイン済み' : '未ログイン'}</p>
           </Typography>
         </Grid>
         <Grid item xs sx={{ width: '100%' }}>
