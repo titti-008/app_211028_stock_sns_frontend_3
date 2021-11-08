@@ -1,29 +1,21 @@
-import React, { FC, useState } from 'react';
+import React, { useState } from 'react';
 import {
   useTheme,
-  // IconButton,
   Grid,
-  // Divider,
-  // Avatar,
   Typography,
   FormControl,
   InputLabel,
   Input,
   Button,
 } from '@mui/material';
-
-// import { Link } from 'react-router-dom';
-// import { CreateUserType } from './Types';
 import { Colors } from '../util';
 import { CreateUserType, RouteUserPropsType } from './Types';
 import { createUser } from './api';
 
-const NewUsers: FC<RouteUserPropsType> = (props: RouteUserPropsType) => {
+const NewUsers: React.FC<RouteUserPropsType> = (props) => {
   /* eslint-disable */
-  const { loginState, handleLogin } = { ...props };
+  const { isLogin, handleLogin } = { ...props };
   /* eslint-disable */
-
-  const [errors, setErrors] = useState<unknown>();
 
   const theme = useTheme();
 
@@ -58,8 +50,9 @@ const NewUsers: FC<RouteUserPropsType> = (props: RouteUserPropsType) => {
 
       if (response.status === 201) {
         console.log(response);
-        /* eslint-disable */
         handleLogin(response.data.user);
+
+        /* eslint-disable */
         /* eslint-disable */
         window.location.href = `/users/${response.data.user.id}`;
       } else {
@@ -69,7 +62,6 @@ const NewUsers: FC<RouteUserPropsType> = (props: RouteUserPropsType) => {
     } catch (err) {
       console.log('user登録失敗');
       console.log(err);
-      setErrors(err);
     }
   };
 
@@ -91,9 +83,8 @@ const NewUsers: FC<RouteUserPropsType> = (props: RouteUserPropsType) => {
             sx={{ color: colors.text }}
             style={{ overflowWrap: 'break-word' }}
           >
-            <h1>ログイン状態: {loginState ? 'ログイン済み' : '未ログイン'}</h1>
+            <h1>ログイン状態: {isLogin ? 'ログイン済み' : '未ログイン'}</h1>
             <p>ユーザー登録 名前を入力してください。</p>
-            {errors}
           </Typography>
           <FormControl variant="standard">
             <InputLabel>name</InputLabel>

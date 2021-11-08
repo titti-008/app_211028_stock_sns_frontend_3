@@ -1,3 +1,5 @@
+import { RouteProps } from 'react-router-dom';
+
 export type Data = {
   text: string;
 };
@@ -33,12 +35,12 @@ export type UsersType = Array<UserType>;
 export type UsersResponse = UsersType;
 
 export type RouteUserPropsType = {
-  loginState: boolean;
+  isLogin: boolean;
   handleLogin: (user: UserType) => void;
 };
 
 export type RouteCurrentUserPropsType = {
-  loginState: boolean;
+  isLogin: boolean;
   currentUser: UserType;
 };
 
@@ -50,4 +52,8 @@ export type LoginResponse = {
 export type LogoutResponse = {
   loggedIn: boolean;
   message: string;
+};
+
+export type LoginRouteProps = RouteProps & {
+  isLogin: boolean;
 };
