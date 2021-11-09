@@ -108,7 +108,8 @@ const App: FC = () => {
         setCurrentUser(initUserState);
       }
     } catch (err) {
-      console.log('ログインエラー', err);
+      console.log('ログインエラー');
+      console.log(err);
     }
   };
 
