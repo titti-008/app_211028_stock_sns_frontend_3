@@ -53,7 +53,7 @@ const TestLogin: React.FC<RouteTestUserPropsType> = ({ ...props }) => {
       const response = await loginUser(values);
 
       if (response.status === 200) {
-        console.log(response);
+        console.log('handleLoginUser', response);
         handleLogin(response.data.user);
       } else {
         console.log('status200以外のレスポンス');

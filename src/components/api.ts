@@ -50,8 +50,10 @@ export const loginUser = (
 export const logoutUser = (): Promise<AxiosResponse<LogoutResponse, unknown>> =>
   instance.delete<LogoutResponse>(`${apiUrl}/logout`);
 
-export const loggedIn = (): Promise<AxiosResponse<LoginResponse, unknown>> =>
-  axios.get<LoginResponse>(`${apiUrl}/logged_in`, { withCredentials: true });
+export const loggedIn = (): Promise<AxiosResponse<LoginResponse, unknown>> => {
+  console.log(`LogdedIn Url: ${apiUrl}/logged_in`);
+  return instance.get<LoginResponse>(`${apiUrl}/logged_in`);
+};
 
 export const deleteUser = (
   id: number,
