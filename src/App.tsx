@@ -1,5 +1,5 @@
 import { FC, useState, useMemo, useRef, useEffect, ReactElement } from 'react';
-import { Switch, Link } from 'react-router-dom';
+import { Switch, Link, Route } from 'react-router-dom';
 import { Drawer, AppBar, Grid, Box, IconButton } from '@mui/material';
 import GroupIcon from '@mui/icons-material/Group';
 import DehazeIcon from '@mui/icons-material/Dehaze';
@@ -24,6 +24,7 @@ import { Colors } from './util';
 import PrivateRoute from './components/PrivateRoute';
 import UnAuthRoute from './components/UnAuthRoute';
 import NewUsers from './components/NewUsers';
+import TestLogin from './components/TestLogin1';
 
 // ----------App----------------------
 const App: FC = () => {
@@ -214,7 +215,7 @@ const App: FC = () => {
                   </Link>
                 </Grid>
                 <Grid item>
-                  <Link to="/login">
+                  <Link to="/test">
                     <IconButton color="default">
                       <HelpIcon />
                     </IconButton>
@@ -274,6 +275,22 @@ const App: FC = () => {
                   exact
                   path="/users/:id"
                   component={UserShow}
+                />
+                <Route
+                  exact
+                  path="/test"
+                  render={(
+                    props: RouteComponentProps<{}, StaticContext, unknown>,
+                  ): ReactElement => {
+                    return (
+                      <TestLogin
+                        {...props}
+                        isLogin={isLogin}
+                        handleLogin={handleLogin}
+                        currentUser={currentUser}
+                      />
+                    );
+                  }}
                 />
                 <PrivateRoute
                   isLogin={isLogin}
