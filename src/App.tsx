@@ -10,7 +10,6 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { ThemeProvider, createTheme, Theme } from '@mui/material/styles';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
-import { RouteComponentProps, StaticContext } from 'react-router';
 import { loggedIn, logoutUser } from './components/api';
 import DarkButton from './declareModule/darkButton';
 import Home from './components/Home';
@@ -61,8 +60,6 @@ const App: FC = () => {
   useEffect(() => {
     setColors(Colors(theme));
   }, [darkMode, theme]);
-  /* eslint-disable */
-  /* eslint-disable */
 
   // ---------Drawer開閉の状態管理----------------------
   const [open, setOpen] = useState(false);
@@ -114,7 +111,7 @@ const App: FC = () => {
   };
 
   useEffect(() => {
-    checkLoginStatus();
+    void checkLoginStatus();
   });
 
   // ----------ログアウトボタンの処理----------------------
@@ -281,72 +278,45 @@ const App: FC = () => {
                 <Route
                   exact
                   path="/test"
-                  render={(
-                    props: RouteComponentProps<{}, StaticContext, unknown>,
-                  ): ReactElement => {
-                    return (
-                      <TestLogin
-                        {...props}
-                        isLogin={isLogin}
-                        handleLogin={handleLogin}
-                        currentUser={currentUser}
-                      />
-                    );
-                  }}
+                  render={(): ReactElement => (
+                    <TestLogin
+                      isLogin={isLogin}
+                      handleLogin={handleLogin}
+                      currentUser={currentUser}
+                    />
+                  )}
                 />
                 <PrivateRoute
                   isLogin={isLogin}
                   exact
                   path="/current_user"
-                  render={(
-                    props: RouteComponentProps<{}, StaticContext, unknown>,
-                  ): ReactElement => {
-                    return (
-                      <CurrentUserShow
-                        {...props}
-                        isLogin={isLogin}
-                        currentUser={currentUser}
-                      />
-                    );
-                  }}
+                  render={(): ReactElement => (
+                    <CurrentUserShow
+                      isLogin={isLogin}
+                      currentUser={currentUser}
+                    />
+                  )}
                 />
                 <UnAuthRoute
                   isLogin={isLogin}
                   exact
                   path="/login"
-                  render={(
-                    props: RouteComponentProps<{}, StaticContext, unknown>,
-                  ): ReactElement => {
-                    return (
-                      <LoginForm
-                        {...props}
-                        isLogin={isLogin}
-                        handleLogin={handleLogin}
-                      />
-                    );
-                  }}
+                  render={(): ReactElement => (
+                    <LoginForm isLogin={isLogin} handleLogin={handleLogin} />
+                  )}
                 />
                 <UnAuthRoute
                   isLogin={isLogin}
                   exact
                   path="/signup"
-                  render={(
-                    props: RouteComponentProps<{}, StaticContext, unknown>,
-                  ): ReactElement => {
-                    return (
-                      <NewUsers
-                        {...props}
-                        isLogin={isLogin}
-                        handleLogin={handleLogin}
-                      />
-                    );
-                  }}
+                  render={(): ReactElement => (
+                    <NewUsers isLogin={isLogin} handleLogin={handleLogin} />
+                  )}
                 />
               </Switch>
             </Box>
           </Box>
         </>
-        <Switch></Switch>
       </Box>
     </ThemeProvider>
   );
@@ -355,3 +325,5 @@ const App: FC = () => {
 export default App;
 
 // tslint:disable-next-line
+/* eslint-disable */
+/* eslint-disable */
