@@ -91,7 +91,7 @@ const App: FC = () => {
     console.log(user);
     setloginState(true);
     setCurrentUser(user);
-    console.log(currentUser);
+    console.log('handleLogin後のcurrentUser:', currentUser);
   };
 
   // ----------ログイン状態の確認通信----------------------
