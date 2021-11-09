@@ -91,6 +91,7 @@ const App: FC = () => {
     console.log(user);
     setloginState(true);
     setCurrentUser(user);
+    console.log(currentUser);
   };
 
   // ----------ログイン状態の確認通信----------------------
