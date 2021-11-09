@@ -57,3 +57,9 @@ export type LogoutResponse = {
 export type LoginRouteProps = RouteProps & {
   isLogin: boolean;
 };
+
+export type RouteTestUserPropsType = {
+  isLogin: boolean;
+  handleLogin: (user: UserType) => void;
+  currentUser: UserType;
+};

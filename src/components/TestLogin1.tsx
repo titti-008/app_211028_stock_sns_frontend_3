@@ -17,12 +17,12 @@ import { Link } from 'react-router-dom';
 // import { Link } from 'react-router-dom';
 // import { CreateUserType } from './Types';
 import { Colors } from '../util';
-import { CreateUserType, RouteUserPropsType } from './Types';
+import { CreateUserType, RouteTestUserPropsType } from './Types';
 import { loginUser } from './api';
 
-const LoginForm: React.FC<RouteUserPropsType> = ({ ...props }) => {
+const TestLogin: React.FC<RouteTestUserPropsType> = ({ ...props }) => {
   /* eslint-disable */
-  const { isLogin, handleLogin } = { ...props };
+  const { isLogin, handleLogin, currentUser } = { ...props };
   /* eslint-disable */
 
   const theme = useTheme();
@@ -55,7 +55,6 @@ const LoginForm: React.FC<RouteUserPropsType> = ({ ...props }) => {
       if (response.status === 200) {
         console.log(response);
         handleLogin(response.data.user);
-        // window.location.href = `/users/${response.data.user.id}`;
       } else {
         console.log('status200以外のレスポンス');
         console.log(response);
@@ -122,6 +121,14 @@ const LoginForm: React.FC<RouteUserPropsType> = ({ ...props }) => {
           </Button>
         </Grid>
         <Grid item>
+          <Typography
+            sx={{ color: colors.text }}
+            style={{ overflowWrap: 'break-word' }}
+          >
+            currentUser:{currentUser.name},{currentUser.email},{currentUser.id}
+          </Typography>
+        </Grid>
+        <Grid item>
           <Link to="/signup">
             <Button variant="outlined">新規登録はこちら</Button>
           </Link>
@@ -131,4 +138,4 @@ const LoginForm: React.FC<RouteUserPropsType> = ({ ...props }) => {
   );
 };
 
-export default LoginForm;
+export default TestLogin;
