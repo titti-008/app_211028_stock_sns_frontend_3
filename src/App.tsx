@@ -33,7 +33,9 @@ const App: FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
 
   // ----------ページ遷移履歴の管理----------------------
+  /* eslint-disable */
   const history: H.History = useHistory();
+  /* eslint-disable */
 
   // ----------ダークモードの状態管理----------------------
   const [darkMode, setDarkMode] = useState(
