@@ -88,7 +88,7 @@ const App: FC = () => {
       const response = await loggedIn();
       console.log('ログイン状況', response);
       if (response.data.loggedIn && !currentUser) {
-        console.log('ログイン確認:OK');
+        console.log('ログイン確認: OK');
         setCurrentUser(() => response.data.user);
 
         // history.push('/current_user');
