@@ -1,4 +1,5 @@
 import { RouteProps } from 'react-router-dom';
+import * as H from 'history';
 
 export type Data = {
   text: string;
@@ -9,11 +10,13 @@ export type ApiResponse = {
 };
 
 export type UserType = {
-  createdAt: Date;
-  email: string | null;
   id: number;
-  name: string | null;
+  email: string;
+  name: string;
+  createdAt: Date;
 };
+
+export type CurrentUser = UserType | null;
 
 export type CreateUserType = {
   email: string;
@@ -22,26 +25,26 @@ export type CreateUserType = {
   passwordConfirmation: string;
 };
 
+export type EditUserType = {
+  id: number;
+  email: string;
+  name: string;
+  password: string | null;
+  passwordConfirmation: string | null;
+};
+
 export type loginUserType = {
   email: string;
   password: string;
 };
-
-/* eslint-disable */
-/* eslint-disable */
 
 export type UsersType = Array<UserType>;
 
 export type UsersResponse = UsersType;
 
 export type RouteUserPropsType = {
-  isLogin: boolean;
-  handleLogin: (user: UserType) => void;
-};
-
-export type RouteCurrentUserPropsType = {
-  isLogin: boolean;
-  currentUser: UserType;
+  currentUser: CurrentUser;
+  setCurrentUser: (currentUser: CurrentUser) => void;
 };
 
 export type LoginResponse = {
@@ -55,11 +58,14 @@ export type LogoutResponse = {
 };
 
 export type LoginRouteProps = RouteProps & {
-  isLogin: boolean;
+  currentUser: CurrentUser;
 };
 
-export type RouteTestUserPropsType = {
-  isLogin: boolean;
-  handleLogin: (user: UserType) => void;
-  currentUser: UserType;
+export type RouteCurrentUserPropsType = {
+  currentUser: CurrentUser;
+  setCurrentUser: (currentUser: CurrentUser) => void;
+  history: H.History;
 };
+
+/* eslint-disable */
+/* eslint-disable */

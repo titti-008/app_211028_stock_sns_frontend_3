@@ -22,7 +22,7 @@ import { loginUser } from './api';
 
 const LoginForm: React.FC<RouteUserPropsType> = ({ ...props }) => {
   /* eslint-disable */
-  const { isLogin, handleLogin } = { ...props };
+  const { currentUser, setCurrentUser } = { ...props };
   /* eslint-disable */
 
   const theme = useTheme();
@@ -54,7 +54,7 @@ const LoginForm: React.FC<RouteUserPropsType> = ({ ...props }) => {
 
       if (response.status === 200) {
         console.log(response);
-        handleLogin(response.data.user);
+        setCurrentUser(response.data.user);
         // window.location.href = `/users/${response.data.user.id}`;
       } else {
         console.log('status200以外のレスポンス');
@@ -85,7 +85,7 @@ const LoginForm: React.FC<RouteUserPropsType> = ({ ...props }) => {
             style={{ overflowWrap: 'break-word' }}
           >
             <h1>Log in</h1>
-            <p>ログイン状態:{isLogin ? 'ログイン済み' : '未ログイン'}</p>
+            <p>ログイン状態:{currentUser ? 'ログイン済み' : '未ログイン'}</p>
           </Typography>
         </Grid>
         <Grid item xs sx={{ width: '100%' }}>
@@ -116,14 +116,19 @@ const LoginForm: React.FC<RouteUserPropsType> = ({ ...props }) => {
             />
           </FormControl>
         </Grid>
-        <Grid item>
+        <Grid item marginTop="10px">
           <Button onClick={handleLoginUser} variant="outlined">
             ログイン
           </Button>
         </Grid>
-        <Grid item>
+        <Grid item marginTop="10px">
           <Link to="/signup">
-            <Button variant="outlined">新規登録はこちら</Button>
+            <Typography
+              sx={{ color: colors.text }}
+              style={{ overflowWrap: 'break-word' }}
+            >
+              <Button variant="outlined">新規登録はこちら</Button>
+            </Typography>
           </Link>
         </Grid>
       </Typography>

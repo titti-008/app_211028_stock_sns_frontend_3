@@ -14,7 +14,7 @@ import { createUser } from './api';
 
 const NewUsers: React.FC<RouteUserPropsType> = (props) => {
   /* eslint-disable */
-  const { isLogin, handleLogin } = { ...props };
+  const { currentUser, setCurrentUser } = { ...props };
   /* eslint-disable */
 
   const theme = useTheme();
@@ -50,7 +50,7 @@ const NewUsers: React.FC<RouteUserPropsType> = (props) => {
 
       if (response.status === 201) {
         console.log(response);
-        handleLogin(response.data.user);
+        setCurrentUser(response.data.user);
 
         /* eslint-disable */
         /* eslint-disable */
@@ -83,7 +83,7 @@ const NewUsers: React.FC<RouteUserPropsType> = (props) => {
             sx={{ color: colors.text }}
             style={{ overflowWrap: 'break-word' }}
           >
-            <h1>ログイン状態: {isLogin ? 'ログイン済み' : '未ログイン'}</h1>
+            <h1>ログイン状態: {currentUser ? 'ログイン済み' : '未ログイン'}</h1>
             <p>ユーザー登録 名前を入力してください。</p>
           </Typography>
           <FormControl variant="standard">

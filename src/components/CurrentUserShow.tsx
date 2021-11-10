@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   useTheme,
   IconButton,
@@ -6,6 +6,7 @@ import {
   // Divider,
   Avatar,
   Typography,
+  Button,
 } from '@mui/material';
 import formatDistanceToNow from 'date-fns/formatDistanceToNow';
 import PersonIcon from '@mui/icons-material/Person';
@@ -16,7 +17,7 @@ import { Colors } from '../util';
 
 const UserShow: React.FC<RouteCurrentUserPropsType> = ({ ...props }) => {
   /* eslint-disable */
-  const { isLogin, currentUser } = { ...props };
+  const { currentUser, setCurrentUser } = { ...props };
   /* eslint-disable */
 
   console.log('CurrentUser');
@@ -26,10 +27,14 @@ const UserShow: React.FC<RouteCurrentUserPropsType> = ({ ...props }) => {
 
   const colors = Colors(theme);
 
+  useEffect(() => {
+    setCurrentUser(currentUser);
+  }, [setCurrentUser, currentUser]);
+
   return (
     <Grid
       container
-      direction="row"
+      direction="column"
       justifyContent="flex-start"
       alignItems="flex-start"
       wrap="nowrap"
@@ -48,28 +53,45 @@ const UserShow: React.FC<RouteCurrentUserPropsType> = ({ ...props }) => {
           sx={{ color: colors.text }}
           style={{ overflowWrap: 'break-word' }}
         >
-          ログイン状態:{isLogin ? 'ログイン済み' : '未ログイン'}
+          ログイン状態:{currentUser ? 'ログイン済み' : '未ログイン'}
         </Typography>
         <Typography
           sx={{ color: colors.text }}
           style={{ overflowWrap: 'break-word' }}
         >
-          {currentUser.name}
+          {currentUser?.name}
         </Typography>
 
         <Typography
           sx={{ color: colors.text }}
           style={{ overflowWrap: 'break-word' }}
         >
-          {currentUser.email}
+          {currentUser?.email}
         </Typography>
 
         <Typography sx={{ color: colors.text }}>
-          {formatDistanceToNow(new Date(currentUser.createdAt))}
+          {formatDistanceToNow(
+            currentUser ? new Date(currentUser.createdAt) : new Date(),
+          )}
         </Typography>
+      </Grid>
+      <Grid item marginTop="10px">
+        <Button variant="outlined">
+          <Link to="/edit_user">
+            <Typography
+              sx={{ color: colors.text }}
+              style={{ overflowWrap: 'break-word' }}
+            >
+              ユーザー情報編集
+            </Typography>
+          </Link>
+        </Button>
       </Grid>
     </Grid>
   );
 };
 
 export default UserShow;
+
+/* eslint-disable */
+/* eslint-disable */
