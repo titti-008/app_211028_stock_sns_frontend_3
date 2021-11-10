@@ -1,28 +1,22 @@
 import React, { useState } from 'react';
 import {
   useTheme,
-  // IconButton,
   Grid,
-  // Divider,
-  // Avatar,
   Typography,
   FormControl,
   InputLabel,
   Input,
   Button,
 } from '@mui/material';
-import { Link } from 'react-router-dom';
-// import { RouteComponentProps } from 'react-router-dom';
 
-// import { Link } from 'react-router-dom';
-// import { CreateUserType } from './Types';
+// import { Redirect } from 'react-router-dom';
 import { Colors } from '../util';
 import { CreateUserType, RouteCurrentUserPropsType } from './Types';
-import { loginUser } from './api';
+import { updateUser } from './api';
 
-const TestLogin: React.FC<RouteCurrentUserPropsType> = ({ ...props }) => {
+const EditUser: React.FC<RouteCurrentUserPropsType> = (props) => {
   /* eslint-disable */
-  const { currentUser, setCurrentUser } = { ...props };
+  const { currentUser, setCurrentUser, history } = { ...props };
   /* eslint-disable */
 
   const theme = useTheme();
@@ -30,11 +24,16 @@ const TestLogin: React.FC<RouteCurrentUserPropsType> = ({ ...props }) => {
   const colors = Colors(theme);
 
   const [values, setvalues] = useState({
-    email: '',
-    name: '',
+    id: currentUser ? currentUser.id : 0,
+    email: currentUser ? currentUser.email : '',
+    name: currentUser ? currentUser.name : '',
     password: '',
     passwordConfirmation: '',
   });
+
+  // const [errors, setErrors] = userState({
+
+  // })
 
   const handleChange =
     (key: keyof CreateUserType) =>
@@ -48,19 +47,21 @@ const TestLogin: React.FC<RouteCurrentUserPropsType> = ({ ...props }) => {
   //   event.preventDefault();
   // };
 
-  const handleLoginUser = async () => {
+  const submitUpdateUser = async () => {
     try {
-      const response = await loginUser(values);
+      const response = await updateUser(values);
 
       if (response.status === 200) {
-        console.log('handleLoginUser', response);
+        console.log(response);
         setCurrentUser(response.data.user);
+        console.log('ユーザー情報編集完了');
+        history.push('/current_user');
       } else {
         console.log('status200以外のレスポンス');
         console.log(response);
       }
-    } catch (err: unknown) {
-      console.log('ログイン失敗');
+    } catch (err) {
+      console.log('user編集失敗');
       console.log(err);
     }
   };
@@ -83,9 +84,12 @@ const TestLogin: React.FC<RouteCurrentUserPropsType> = ({ ...props }) => {
             sx={{ color: colors.text }}
             style={{ overflowWrap: 'break-word' }}
           >
-            <h1>Log in</h1>
-            <p>ログイン状態:{currentUser ? 'ログイン済み' : '未ログイン'}</p>
+            <h1>ユーザー情報編集</h1>
           </Typography>
+          <FormControl variant="standard">
+            <InputLabel>name</InputLabel>
+            <Input value={values.name} onChange={handleChange('name')} />
+          </FormControl>
         </Grid>
         <Grid item xs sx={{ width: '100%' }}>
           <Typography
@@ -115,32 +119,33 @@ const TestLogin: React.FC<RouteCurrentUserPropsType> = ({ ...props }) => {
             />
           </FormControl>
         </Grid>
-        <Grid item>
-          <Button onClick={handleLoginUser} variant="outlined">
-            ログイン
-          </Button>
+        <Grid item xs sx={{ width: '100%' }}>
+          <Typography
+            sx={{ color: colors.text }}
+            style={{ overflowWrap: 'break-word' }}
+          >
+            パスワードを入力してください(確認用)。
+          </Typography>
+          <FormControl variant="standard" margin="normal">
+            <InputLabel>Password(確認)</InputLabel>
+            <Input
+              type="password"
+              value={values.passwordConfirmation}
+              onChange={handleChange('passwordConfirmation')}
+            />
+          </FormControl>
         </Grid>
-        {currentUser ? (
-          <Grid item>
-            <Typography
-              sx={{ color: colors.text }}
-              style={{ overflowWrap: 'break-word' }}
-            >
-              currentUser:{currentUser.name},{currentUser.email},
-              {currentUser.id}
-            </Typography>
-          </Grid>
-        ) : (
-          <></>
-        )}
         <Grid item>
-          <Link to="/signup">
-            <Button variant="outlined">新規登録はこちら</Button>
-          </Link>
+          <Button onClick={submitUpdateUser} variant="outlined">
+            編集完了
+          </Button>
         </Grid>
       </Typography>
     </Grid>
   );
 };
 
-export default TestLogin;
+export default EditUser;
+
+/* eslint-disable */
+/* eslint-disable */

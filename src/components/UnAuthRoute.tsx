@@ -6,12 +6,12 @@ import { LoginRouteProps } from './Types';
 // ----------PrivateRouteコンポーネントの作成(ログイン状態によるリダイレクト)----------------------
 const UnAuthRoute: React.FC<LoginRouteProps> = ({ ...props }) => {
   /* eslint-disable */
-  const { isLogin, path } = props;
+  const { currentUser, path } = props;
   /* eslint-disable */
 
-  console.log(isLogin ? 'ログイン済み' : 'ログインできていない');
+  console.log(currentUser ? 'ログイン済み' : 'ログインできていない');
 
-  if (isLogin) {
+  if (currentUser) {
     console.log(`ログイン済みのユーザーは`, path, `へはアクセスできません`);
 
     return <Redirect to="/" />;

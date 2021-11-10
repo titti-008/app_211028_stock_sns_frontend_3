@@ -7,6 +7,7 @@ import {
   loginUserType,
   LoginResponse,
   LogoutResponse,
+  EditUserType,
 } from './Types';
 
 const env = process.env.REACT_APP_SERVER_URL ?? ''; // 文字列型であることを強制
@@ -57,11 +58,16 @@ export const loggedIn = (): Promise<AxiosResponse<LoginResponse, unknown>> => {
 
 export const deleteUser = (
   id: number,
-): Promise<AxiosResponse<UsersType, unknown>> =>
-  instance.delete<UsersType>(`${usersUrl}/${id}`);
+): Promise<AxiosResponse<UserType, unknown>> =>
+  instance.delete<UserType>(`${usersUrl}/${id}`);
 
 export const updateUser = (
-  id: number,
-  user: UserType,
-): Promise<AxiosResponse<UserType, unknown>> =>
-  instance.post<UserType>(`${usersUrl}/${id}`, user);
+  values: EditUserType,
+): Promise<AxiosResponse<LoginResponse, unknown>> =>
+  instance.patch<LoginResponse>(`${usersUrl}/${values.id}`, {
+    id: values.id,
+    email: values.email,
+    name: values.name,
+    password: values.password,
+    password_confirmation: values.passwordConfirmation,
+  });
