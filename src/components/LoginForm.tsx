@@ -12,13 +12,14 @@ import {
   Button,
 } from '@mui/material';
 import { Link } from 'react-router-dom';
-// import { RouteComponentProps } from 'react-router-dom';
-
-// import { Link } from 'react-router-dom';
-// import { CreateUserType } from './Types';
+import 'react-toastify/dist/ReactToastify.css';
 import { Colors } from '../util';
 import { CreateUserType, RouteUserPropsType } from './Types';
 import { loginUser } from './api';
+import { SuccessToasts, ErrorToasts } from './toast/PrivateToast';
+import PasswordForm from './form/PrivateForms';
+
+// toast.configure(); // トーストを10秒間保持する設定
 
 const LoginForm: React.FC<RouteUserPropsType> = ({ ...props }) => {
   /* eslint-disable */
@@ -26,6 +27,8 @@ const LoginForm: React.FC<RouteUserPropsType> = ({ ...props }) => {
   /* eslint-disable */
 
   const theme = useTheme();
+
+  const [messages, setMessage] = useState<string[]>([]);
 
   const colors = Colors(theme);
 
@@ -42,12 +45,6 @@ const LoginForm: React.FC<RouteUserPropsType> = ({ ...props }) => {
       setvalues({ ...values, [key]: event.target.value });
     };
 
-  // const handleMouseDownPassword = (
-  //   event: React.MouseEvent<HTMLButtonElement>,
-  // ) => {
-  //   event.preventDefault();
-  // };
-
   const handleLoginUser = async () => {
     try {
       const response = await loginUser(values);
@@ -55,10 +52,11 @@ const LoginForm: React.FC<RouteUserPropsType> = ({ ...props }) => {
       if (response.status === 200) {
         console.log(response);
         setCurrentUser(response.data.user);
-        // window.location.href = `/users/${response.data.user.id}`;
-      } else {
-        console.log('status200以外のレスポンス');
-        console.log(response);
+        SuccessToasts(response.data.messages);
+      } else if (response.status === 202) {
+        console.log(response.data.messages);
+
+        ErrorToasts(response.data.messages);
       }
     } catch (err: unknown) {
       console.log('ログイン失敗');
@@ -107,14 +105,10 @@ const LoginForm: React.FC<RouteUserPropsType> = ({ ...props }) => {
           >
             パスワードを入力してください。
           </Typography>
-          <FormControl variant="standard" margin="normal">
-            <InputLabel>Password</InputLabel>
-            <Input
-              type="password"
-              value={values.password}
-              onChange={handleChange('password')}
-            />
-          </FormControl>
+          <PasswordForm
+            password={values.password}
+            handleChange={handleChange('password')}
+          />
         </Grid>
         <Grid item marginTop="10px">
           <Button onClick={handleLoginUser} variant="outlined">
@@ -131,6 +125,22 @@ const LoginForm: React.FC<RouteUserPropsType> = ({ ...props }) => {
             </Typography>
           </Link>
         </Grid>
+        {messages.length !== 0 ? (
+          messages.map((message) => {
+            return (
+              <Grid item marginTop="10px">
+                <Typography
+                  sx={{ color: colors.text }}
+                  style={{ overflowWrap: 'break-word' }}
+                >
+                  {message}
+                </Typography>
+              </Grid>
+            );
+          })
+        ) : (
+          <div>なし</div>
+        )}
       </Typography>
     </Grid>
   );

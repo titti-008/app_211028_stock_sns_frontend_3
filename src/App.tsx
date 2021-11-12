@@ -7,6 +7,7 @@ import GroupIcon from '@mui/icons-material/Group';
 import DehazeIcon from '@mui/icons-material/Dehaze';
 import HomeIcon from '@mui/icons-material/Home';
 // import HelpIcon from '@mui/icons-material/Help';
+import { AxiosError } from 'axios';
 import PublicIcon from '@mui/icons-material/Public';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import LogoutIcon from '@mui/icons-material/Logout';
@@ -20,13 +21,14 @@ import HelloWorld from './components/HelloWorld';
 import { Users } from './components/Users';
 import UserShow from './components/UserShow';
 import CurrentUserShow from './components/CurrentUserShow';
-import { UserType } from './components/Types';
+import { UserType, ErrorResponse } from './components/Types';
 import { Colors } from './util';
 import PrivateRoute from './components/PrivateRoute';
 import UnAuthRoute from './components/UnAuthRoute';
 import NewUsers from './components/NewUsers';
 import EditUser from './components/EditUser';
-// import TestLogin from './components/TestLogin1';
+
+import { SuccessToasts, ErrorToasts } from './components/toast/PrivateToast';
 
 // ----------App----------------------
 const App: FC = () => {
@@ -84,23 +86,33 @@ const App: FC = () => {
 
   const [currentUser, setCurrentUser] = useState<UserType | null>(null);
 
+  const initUser = {
+    id: 0,
+    email: '...loading',
+    name: '...loading',
+    createdAt: new Date(),
+  };
+
   // ----------ログイン状態の確認通信----------------------
   const checkLoginStatus = async () => {
     try {
       const response = await loggedIn();
       console.log('ログイン状況', response);
-      if (response.data.loggedIn && !currentUser) {
+      if (response.status === 200) {
         console.log('ログイン確認: OK');
         setCurrentUser(() => response.data.user);
-
-        // history.push('/current_user');
-      } else if (!response.data.loggedIn && currentUser) {
-        console.log('ログイン確認:NG ログアウトします');
-        setCurrentUser(null);
+        SuccessToasts(response.data.messages);
+      } else if (response.status === 202) {
+        ErrorToasts(response.data.messages);
       }
     } catch (err) {
-      console.log('ログインエラー');
-      console.log(err);
+      if ((err as AxiosError<ErrorResponse>).response !== undefined)
+        console.log('user登録失敗');
+      console.log((err as AxiosError<ErrorResponse>).response);
+      ErrorToasts([
+        'ログイン状態の確認に失敗しました。',
+        'データサーバーとの接続に問題がある可能性があります。',
+      ]);
     }
   };
 
@@ -114,10 +126,11 @@ const App: FC = () => {
       const response = await logoutUser();
       if (response.status === 200) {
         setCurrentUser(null);
-        console.log(response.data.message);
+        SuccessToasts(response.data.messages);
       }
     } catch (err) {
-      console.log('ログアウト失敗');
+      ErrorToasts(['ログアウトに失敗しました。']);
+
       console.log(err);
     }
   };
