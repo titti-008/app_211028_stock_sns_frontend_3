@@ -33,7 +33,9 @@ const App: FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
 
   // ----------ページ遷移履歴の管理----------------------
+  /* eslint-disable */
   const history: H.History = useHistory();
+  /* eslint-disable */
 
   // ----------ダークモードの状態管理----------------------
   const [darkMode, setDarkMode] = useState(
@@ -88,7 +90,7 @@ const App: FC = () => {
       const response = await loggedIn();
       console.log('ログイン状況', response);
       if (response.data.loggedIn && !currentUser) {
-        console.log('ログイン確認:OK');
+        console.log('ログイン確認: OK');
         setCurrentUser(() => response.data.user);
 
         // history.push('/current_user');
