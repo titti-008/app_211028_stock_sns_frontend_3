@@ -1,6 +1,5 @@
 import axios, { AxiosResponse } from 'axios';
 import {
-  UsersResponse,
   UsersType,
   UserType,
   CreateUserType,
@@ -18,7 +17,7 @@ const usersUrl = `${apiUrl}/users`;
 const instance = axios.create({ withCredentials: true });
 
 export const getUsers = (): Promise<AxiosResponse<UsersType, unknown>> =>
-  instance.get<UsersResponse>(`${usersUrl}`);
+  instance.get<UsersType>(`${usersUrl}`);
 
 export const getUser = (
   id: string,

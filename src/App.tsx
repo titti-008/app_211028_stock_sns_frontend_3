@@ -1,13 +1,11 @@
 import { FC, useState, useMemo, useRef, useEffect, ReactElement } from 'react';
-import { Switch, Link } from 'react-router-dom';
-import { useHistory } from 'react-router';
+import { Switch, Link, useHistory, useLocation } from 'react-router-dom';
 import * as H from 'history';
 import { Drawer, AppBar, Grid, Box, IconButton } from '@mui/material';
 import GroupIcon from '@mui/icons-material/Group';
 import DehazeIcon from '@mui/icons-material/Dehaze';
 import HomeIcon from '@mui/icons-material/Home';
 // import HelpIcon from '@mui/icons-material/Help';
-import { AxiosError } from 'axios';
 import PublicIcon from '@mui/icons-material/Public';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import LogoutIcon from '@mui/icons-material/Logout';
@@ -21,12 +19,13 @@ import HelloWorld from './components/HelloWorld';
 import { Users } from './components/Users';
 import UserShow from './components/UserShow';
 import CurrentUserShow from './components/CurrentUserShow';
-import { UserType, ErrorResponse } from './components/Types';
-import { Colors } from './util';
+import { ErrorResponse, CurrentUser } from './components/Types';
+import { Colors } from './hooks/util';
 import PrivateRoute from './components/PrivateRoute';
 import UnAuthRoute from './components/UnAuthRoute';
-import NewUsers from './components/NewUsers';
+import NewUsers from './components/NewUser';
 import EditUser from './components/EditUser';
+import './App.css';
 
 import { SuccessToasts, ErrorToasts } from './components/toast/PrivateToast';
 
@@ -35,6 +34,7 @@ const App: FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
 
   // ----------ページ遷移履歴の管理----------------------
+
   /* eslint-disable */
   const history: H.History = useHistory();
   /* eslint-disable */
@@ -65,11 +65,7 @@ const App: FC = () => {
   );
 
   // ----------テーマカラーの状態管理----------------------
-  const [colors, setColors] = useState(Colors(theme));
-
-  useEffect(() => {
-    setColors(Colors(theme));
-  }, [darkMode, theme]);
+  const colors = Colors(theme);
 
   // ---------Drawer開閉の状態管理----------------------
   const [open, setOpen] = useState(false);
@@ -84,41 +80,55 @@ const App: FC = () => {
 
   // ----------ログイン状態管理,カレントユーザー状態管理----------------------
 
-  const [currentUser, setCurrentUser] = useState<UserType | null>(null);
-
   const initUser = {
     id: 0,
     email: '...loading',
     name: '...loading',
     createdAt: new Date(),
   };
+  const [currentUser, setCurrentUser] = useState<CurrentUser>(initUser);
 
-  // ----------ログイン状態の確認通信----------------------
-  const checkLoginStatus = async () => {
-    try {
-      const response = await loggedIn();
-      console.log('ログイン状況', response);
-      if (response.status === 200) {
-        console.log('ログイン確認: OK');
-        setCurrentUser(() => response.data.user);
-        SuccessToasts(response.data.messages);
-      } else if (response.status === 202) {
-        ErrorToasts(response.data.messages);
-      }
-    } catch (err) {
-      if ((err as AxiosError<ErrorResponse>).response !== undefined)
-        console.log('user登録失敗');
-      console.log((err as AxiosError<ErrorResponse>).response);
-      ErrorToasts([
-        'ログイン状態の確認に失敗しました。',
-        'データサーバーとの接続に問題がある可能性があります。',
-      ]);
-    }
-  };
+  const [isLogin, setIsLogin] = useState<boolean>(
+    localStorage.getItem('isLogin') === 'true',
+  );
 
   useEffect(() => {
+    localStorage.setItem('isLogin', JSON.stringify(isLogin));
+  }, [isLogin]);
+
+  // ----------ログイン状態の確認通信----------------------
+  const location = useLocation();
+
+  useEffect(() => {
+    console.log(location);
+
+    const checkLoginStatus = async () => {
+      try {
+        const response = await loggedIn();
+        console.log('ログイン状況', response);
+        if (response.status === 200) {
+          if (response.data.loggedIn !== isLogin) {
+            SuccessToasts(response.data.messages);
+            setIsLogin(response.data.loggedIn);
+          }
+
+          setCurrentUser(response.data.user);
+        } else {
+          ErrorToasts(response.data.messages);
+          setCurrentUser(null);
+        }
+      } catch (err) {
+        if ((err as ErrorResponse).response !== undefined)
+          console.log('user登録失敗');
+        console.log((err as ErrorResponse).response);
+        ErrorToasts([
+          'ログイン状態の確認に失敗しました。',
+          'データサーバーとの接続に問題がある可能性があります。',
+        ]);
+      }
+    };
     void checkLoginStatus();
-  });
+  }, [location, isLogin]);
 
   // ----------ログアウトボタンの処理----------------------
   const handleLogout = async () => {
@@ -127,6 +137,7 @@ const App: FC = () => {
       if (response.status === 200) {
         setCurrentUser(null);
         SuccessToasts(response.data.messages);
+        setIsLogin(false);
       }
     } catch (err) {
       ErrorToasts(['ログアウトに失敗しました。']);
@@ -252,41 +263,37 @@ const App: FC = () => {
             >
               <Switch>
                 <PrivateRoute
-                  currentUser={currentUser}
+                  isLogin={isLogin}
                   exact
                   path="/"
                   component={Home}
                 />
                 <PrivateRoute
-                  currentUser={currentUser}
+                  isLogin={isLogin}
                   exact
                   path="/hello_world"
                   component={HelloWorld}
                 />
                 <PrivateRoute
-                  currentUser={currentUser}
+                  isLogin={isLogin}
                   exact
                   path="/users"
                   component={Users}
                 />
                 <PrivateRoute
-                  currentUser={currentUser}
+                  isLogin={isLogin}
                   exact
                   path="/users/:id"
                   component={UserShow}
                 />
-                <PrivateRoute
-                  currentUser={currentUser}
-                  exact
-                  path="/current_user"
-                >
+                <PrivateRoute isLogin={isLogin} exact path="/current_user">
                   <CurrentUserShow
                     history={history}
                     currentUser={currentUser}
                     setCurrentUser={setCurrentUser}
                   />
                 </PrivateRoute>
-                <PrivateRoute currentUser={currentUser} exact path="/edit_user">
+                <PrivateRoute isLogin={isLogin} exact path="/edit_user">
                   <EditUser
                     history={history}
                     currentUser={currentUser}
@@ -295,22 +302,24 @@ const App: FC = () => {
                 </PrivateRoute>
 
                 <UnAuthRoute
-                  currentUser={currentUser}
+                  isLogin={isLogin}
                   exact
                   path="/login"
                   render={(): ReactElement => (
                     <LoginForm
+                      setIsLogin={setIsLogin}
                       currentUser={currentUser}
                       setCurrentUser={setCurrentUser}
                     />
                   )}
                 />
                 <UnAuthRoute
-                  currentUser={currentUser}
+                  isLogin={isLogin}
                   exact
                   path="/signup"
                   render={(): ReactElement => (
                     <NewUsers
+                      setIsLogin={setIsLogin}
                       currentUser={currentUser}
                       setCurrentUser={setCurrentUser}
                     />

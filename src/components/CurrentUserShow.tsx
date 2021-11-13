@@ -1,31 +1,17 @@
 import React, { useEffect } from 'react';
-import {
-  useTheme,
-  IconButton,
-  Grid,
-  // Divider,
-  Avatar,
-  Typography,
-  Button,
-} from '@mui/material';
+import { IconButton, Grid, Avatar, Typography, Button } from '@mui/material';
 import formatDistanceToNow from 'date-fns/formatDistanceToNow';
 import PersonIcon from '@mui/icons-material/Person';
 import { Link } from 'react-router-dom';
-// import { RouteComponentProps } from 'react-router';
 import { RouteCurrentUserPropsType } from './Types';
-import { Colors } from '../util';
+import { useColors } from '../hooks/util';
 
 const UserShow: React.FC<RouteCurrentUserPropsType> = ({ ...props }) => {
   /* eslint-disable */
   const { currentUser, setCurrentUser } = { ...props };
   /* eslint-disable */
 
-  console.log('CurrentUser');
-  console.log(currentUser);
-
-  const theme = useTheme();
-
-  const colors = Colors(theme);
+  const colors = useColors();
 
   useEffect(() => {
     setCurrentUser(currentUser);

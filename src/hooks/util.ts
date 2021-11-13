@@ -1,4 +1,4 @@
-import { Theme } from '@mui/material';
+import { Theme, useTheme } from '@mui/material';
 import formatDistanceToNow from 'date-fns/formatDistanceToNow';
 
 type ColorsType = {
@@ -32,6 +32,12 @@ export const Colors = (theme: Theme): ColorsType => {
   }
 
   return colors;
+};
+
+export const useColors = () => {
+  const theme = useTheme();
+
+  return Colors(theme);
 };
 
 export const range = (start: number, end: number): Array<number> =>
