@@ -1,6 +1,5 @@
 import { FC, useState, useEffect, useCallback } from 'react';
 import {
-  useTheme,
   IconButton,
   Grid,
   // Divider,
@@ -12,7 +11,7 @@ import PersonIcon from '@mui/icons-material/Person';
 import { Link } from 'react-router-dom';
 import { RouteComponentProps } from 'react-router';
 import { UserType } from './Types';
-import { Colors } from '../util';
+import { useColors } from '../hooks/util';
 import { getUser } from './api';
 
 const UserShow: FC<RouteComponentProps<{ id: string }>> = (props) => {
@@ -44,9 +43,7 @@ const UserShow: FC<RouteComponentProps<{ id: string }>> = (props) => {
   /* eslint-disable */
   /* eslint-disable */
 
-  const theme = useTheme();
-
-  const colors = Colors(theme);
+  const colors = useColors();
 
   return (
     <Grid

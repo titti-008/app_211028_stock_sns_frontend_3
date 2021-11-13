@@ -1,21 +1,15 @@
 import { FC, useState, useEffect, useCallback } from 'react';
-import {
-  useTheme,
-  IconButton,
-  Grid,
-  Divider,
-  Avatar,
-  Typography,
-} from '@mui/material';
+import { IconButton, Grid, Divider, Avatar, Typography } from '@mui/material';
 import formatDistanceToNow from 'date-fns/formatDistanceToNow';
 import PersonIcon from '@mui/icons-material/Person';
 import { Link } from 'react-router-dom';
 import { UsersType, UserType } from './Types';
-import { Colors } from '../util';
+import { useColors } from '../hooks/util';
 import { getUsers } from './api';
 
 export const Users: FC = () => {
   const [users, setUsers] = useState<UsersType>([]);
+  const colors = useColors();
 
   const load = useCallback(() => getUsers(), []);
 
@@ -36,12 +30,6 @@ export const Users: FC = () => {
     };
     void componetDitMount();
   }, [setUsers, load]);
-  /* eslint-disable */
-  /* eslint-disable */
-
-  const theme = useTheme();
-
-  const colors = Colors(theme);
 
   return (
     <Grid
@@ -52,8 +40,8 @@ export const Users: FC = () => {
       height="100%"
     >
       {users.length !== 0 ? (
-        users.map((user: UserType, index: number) => (
-          <Grid item sx={{ width: '100%' }} key={index}>
+        users.map((user: UserType) => (
+          <Grid item sx={{ width: '100%' }} key={user.id}>
             <Grid
               container
               direction="row"
