@@ -8,9 +8,18 @@ import {
   Input,
   Button,
 } from '@mui/material';
+import { AxiosError } from 'axios';
+import { Link } from 'react-router-dom';
 import { Colors } from '../util';
-import { CreateUserType, RouteUserPropsType } from './Types';
+import {
+  CreateUserType,
+  RouteUserPropsType,
+  LoginResponse,
+  ErrorResponse,
+} from './Types';
 import { createUser } from './api';
+import { SuccessToasts, ErrorToasts } from './toast/PrivateToast';
+import PasswordForm from './form/PrivateForms';
 
 const NewUsers: React.FC<RouteUserPropsType> = (props) => {
   /* eslint-disable */
@@ -28,10 +37,6 @@ const NewUsers: React.FC<RouteUserPropsType> = (props) => {
     passwordConfirmation: '',
   });
 
-  // const [errors, setErrors] = userState({
-
-  // })
-
   const handleChange =
     (key: keyof CreateUserType) =>
     (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -47,23 +52,28 @@ const NewUsers: React.FC<RouteUserPropsType> = (props) => {
   const saveUser = async () => {
     try {
       const response = await createUser(values);
-
-      if (response.status === 201) {
+      console.log(response);
+      if (response.status === 200) {
         console.log(response);
         setCurrentUser(response.data.user);
-
-        /* eslint-disable */
-        /* eslint-disable */
-        window.location.href = `/users/${response.data.user.id}`;
-      } else {
+        SuccessToasts(response.data.messages);
+      } else if (response.status === 500) {
         console.log('status200以外のレスポンス');
-        console.log(response);
+
+        ErrorToasts(response.data.messages);
       }
     } catch (err) {
-      console.log('user登録失敗');
-      console.log(err);
+      if ((err as AxiosError<ErrorResponse>).response !== undefined)
+        console.log('user登録失敗');
+      console.log((err as AxiosError<ErrorResponse>).response);
+      ErrorToasts([
+        'ユーザー登録に失敗しました。',
+        'データサーバーとの接続に問題がある可能性があります。',
+      ]);
     }
   };
+
+  const a = {} as LoginResponse;
 
   return (
     <Grid
@@ -110,14 +120,10 @@ const NewUsers: React.FC<RouteUserPropsType> = (props) => {
           >
             パスワードを入力してください。
           </Typography>
-          <FormControl variant="standard" margin="normal">
-            <InputLabel>Password</InputLabel>
-            <Input
-              type="password"
-              value={values.password}
-              onChange={handleChange('password')}
-            />
-          </FormControl>
+          <PasswordForm
+            password={values.password}
+            handleChange={handleChange('password')}
+          />
         </Grid>
         <Grid item xs sx={{ width: '100%' }}>
           <Typography
@@ -126,19 +132,28 @@ const NewUsers: React.FC<RouteUserPropsType> = (props) => {
           >
             パスワードを入力してください(確認用)。
           </Typography>
-          <FormControl variant="standard" margin="normal">
-            <InputLabel>Password(確認)</InputLabel>
-            <Input
-              type="password"
-              value={values.passwordConfirmation}
-              onChange={handleChange('passwordConfirmation')}
-            />
-          </FormControl>
+          <PasswordForm
+            password={values.password}
+            handleChange={handleChange('passwordConfirmation')}
+          />
         </Grid>
         <Grid item>
           <Button onClick={saveUser} variant="outlined">
             ユーザー登録
           </Button>
+        </Grid>
+
+        <Grid item marginTop="10px">
+          <Link to="/login">
+            <Typography
+              sx={{ color: colors.text }}
+              style={{ overflowWrap: 'break-word' }}
+            >
+              <Button variant="outlined">
+                登録済みの方はこちらからログイン
+              </Button>
+            </Typography>
+          </Link>
         </Grid>
       </Typography>
     </Grid>

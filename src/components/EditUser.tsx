@@ -13,6 +13,7 @@ import {
 import { Colors } from '../util';
 import { CreateUserType, RouteCurrentUserPropsType } from './Types';
 import { updateUser } from './api';
+import PasswordForm from './form/PrivateForms';
 
 const EditUser: React.FC<RouteCurrentUserPropsType> = (props) => {
   /* eslint-disable */
@@ -49,6 +50,8 @@ const EditUser: React.FC<RouteCurrentUserPropsType> = (props) => {
 
   const submitUpdateUser = async () => {
     try {
+      console.log('values');
+      console.log(values);
       const response = await updateUser(values);
 
       if (response.status === 200) {
@@ -110,14 +113,10 @@ const EditUser: React.FC<RouteCurrentUserPropsType> = (props) => {
           >
             パスワードを入力してください。
           </Typography>
-          <FormControl variant="standard" margin="normal">
-            <InputLabel>Password</InputLabel>
-            <Input
-              type="password"
-              value={values.password}
-              onChange={handleChange('password')}
-            />
-          </FormControl>
+          <PasswordForm
+            password={values.password}
+            handleChange={handleChange('password')}
+          />
         </Grid>
         <Grid item xs sx={{ width: '100%' }}>
           <Typography
@@ -126,14 +125,10 @@ const EditUser: React.FC<RouteCurrentUserPropsType> = (props) => {
           >
             パスワードを入力してください(確認用)。
           </Typography>
-          <FormControl variant="standard" margin="normal">
-            <InputLabel>Password(確認)</InputLabel>
-            <Input
-              type="password"
-              value={values.passwordConfirmation}
-              onChange={handleChange('passwordConfirmation')}
-            />
-          </FormControl>
+          <PasswordForm
+            password={values.passwordConfirmation}
+            handleChange={handleChange('passwordConfirmation')}
+          />
         </Grid>
         <Grid item>
           <Button onClick={submitUpdateUser} variant="outlined">

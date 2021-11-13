@@ -50,11 +50,12 @@ export type RouteUserPropsType = {
 export type LoginResponse = {
   loggedIn: boolean;
   user: UserType;
+  messages: string[];
 };
 
 export type LogoutResponse = {
   loggedIn: boolean;
-  message: string;
+  messages: string[];
 };
 
 export type LoginRouteProps = RouteProps & {
@@ -65,6 +66,10 @@ export type RouteCurrentUserPropsType = {
   currentUser: CurrentUser;
   setCurrentUser: (currentUser: CurrentUser) => void;
   history: H.History;
+};
+
+export type ErrorResponse = {
+  messages: string[];
 };
 
 /* eslint-disable */
