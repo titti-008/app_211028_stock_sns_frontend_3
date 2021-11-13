@@ -53,7 +53,7 @@ const NewUsers: React.FC<RouteUserPropsType> = (props) => {
     try {
       const response = await createUser(values);
       console.log(response);
-      if (response.status === 200) {
+      if (response.status === 201) {
         console.log(response);
         setCurrentUser(response.data.user);
         SuccessToasts(response.data.messages);
@@ -133,7 +133,7 @@ const NewUsers: React.FC<RouteUserPropsType> = (props) => {
             パスワードを入力してください(確認用)。
           </Typography>
           <PasswordForm
-            password={values.password}
+            password={values.passwordConfirmation}
             handleChange={handleChange('passwordConfirmation')}
           />
         </Grid>
