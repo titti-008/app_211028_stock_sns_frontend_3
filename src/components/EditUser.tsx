@@ -1,8 +1,13 @@
 import React, { useState } from 'react';
 import { Grid, Button } from '@mui/material';
-import { CreateUserType, RouteCurrentUserPropsType } from './Types';
+import {
+  CreateUserType,
+  RouteCurrentUserPropsType,
+  ErrorResponse,
+} from './Types';
 import { updateUser } from './api';
 import { PasswordForm, NormalForm } from './privateMUI/PrivateForms';
+import { SuccessToasts, ErrorToasts } from './toast/PrivateToast';
 
 const EditUser: React.FC<RouteCurrentUserPropsType> = (props) => {
   /* eslint-disable */
@@ -25,22 +30,27 @@ const EditUser: React.FC<RouteCurrentUserPropsType> = (props) => {
 
   const submitUpdateUser = async () => {
     try {
-      console.log('values');
-      console.log(values);
       const response = await updateUser(values);
 
-      if (response.status === 200) {
-        console.log(response);
+      if (response.status === 201) {
+        SuccessToasts(response.data.messages);
         setCurrentUser(response.data.user);
-        console.log('ユーザー情報編集完了');
         history.push('/current_user');
+        console.log('編集完了', response);
       } else {
         console.log('status200以外のレスポンス');
-        console.log(response);
+        console.log('編集失敗', response);
+        ErrorToasts(response.data.messages);
       }
     } catch (err) {
-      console.log('user編集失敗');
-      console.log(err);
+      if ((err as ErrorResponse).response !== undefined)
+        console.log('user編集失敗');
+      console.log((err as ErrorResponse).response);
+      ErrorToasts([
+        'ログイン状態の確認に失敗しました。',
+        'データサーバーとの接続に問題がある可能性があります。',
+      ]);
+      ErrorToasts((err as ErrorResponse).response?.data.messages);
     }
   };
 

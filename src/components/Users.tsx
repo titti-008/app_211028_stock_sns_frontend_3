@@ -36,7 +36,7 @@ export const Users: FC = () => {
       container
       // direction="column"
       justifyContent="flex-start"
-      alignItems="center"
+      alignItems="start"
       height="100%"
     >
       {users.length !== 0 ? (

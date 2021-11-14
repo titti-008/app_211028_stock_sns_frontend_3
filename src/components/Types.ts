@@ -30,8 +30,8 @@ export type EditUserType = {
   id: number;
   email: string;
   name: string;
-  password: string | null;
-  passwordConfirmation: string | null;
+  password: string;
+  passwordConfirmation: string;
 };
 
 export type loginUserType = {
