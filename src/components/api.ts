@@ -64,9 +64,11 @@ export const updateUser = (
   values: EditUserType,
 ): Promise<AxiosResponse<LoginResponse, unknown>> =>
   instance.patch<LoginResponse>(`${usersUrl}/${values.id}`, {
-    id: values.id,
-    email: values.email,
-    name: values.name,
-    password: values.password,
-    password_confirmation: values.passwordConfirmation,
+    user: {
+      id: values.id,
+      email: values.email,
+      name: values.name,
+      password: values.password,
+      password_confirmation: values.passwordConfirmation,
+    },
   });

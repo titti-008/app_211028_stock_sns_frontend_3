@@ -1,14 +1,14 @@
 import { FC, useState, useMemo, useRef, useEffect, ReactElement } from 'react';
 import { Switch, Link, useHistory, useLocation } from 'react-router-dom';
 import * as H from 'history';
-import { Drawer, AppBar, Grid, Box, IconButton } from '@mui/material';
-import GroupIcon from '@mui/icons-material/Group';
-import DehazeIcon from '@mui/icons-material/Dehaze';
+import { Drawer, AppBar, Grid, Box, IconButton, Hidden } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home';
 // import HelpIcon from '@mui/icons-material/Help';
 import PublicIcon from '@mui/icons-material/Public';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import LogoutIcon from '@mui/icons-material/Logout';
+import GroupIcon from '@mui/icons-material/Group';
+import DehazeIcon from '@mui/icons-material/Dehaze';
+// import LogoutIcon from '@mui/icons-material/Logout';
 import { ThemeProvider, createTheme, Theme } from '@mui/material/styles';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import { loggedIn, logoutUser } from './components/api';
@@ -25,9 +25,10 @@ import PrivateRoute from './components/PrivateRoute';
 import UnAuthRoute from './components/UnAuthRoute';
 import NewUsers from './components/NewUser';
 import EditUser from './components/EditUser';
-import './App.css';
-
 import { SuccessToasts, ErrorToasts } from './components/toast/PrivateToast';
+import './App.css';
+// import { NormalText } from './components/privateMUI/PrivateTexts';
+import ConfigBar from './components/ConfigBar';
 
 // ----------App----------------------
 const App: FC = () => {
@@ -105,7 +106,6 @@ const App: FC = () => {
     const checkLoginStatus = async () => {
       try {
         const response = await loggedIn();
-        console.log('ログイン状況', response);
         if (response.status === 200) {
           if (response.data.loggedIn !== isLogin) {
             SuccessToasts(response.data.messages);
@@ -119,8 +119,7 @@ const App: FC = () => {
         }
       } catch (err) {
         if ((err as ErrorResponse).response !== undefined)
-          console.log('user登録失敗');
-        console.log((err as ErrorResponse).response);
+          console.log((err as ErrorResponse).response);
         ErrorToasts([
           'ログイン状態の確認に失敗しました。',
           'データサーバーとの接続に問題がある可能性があります。',
@@ -158,177 +157,194 @@ const App: FC = () => {
           width: '100%',
           height: '100vh',
           backgroundColor: colors.baseGround,
-          padding: '10px',
           margin: 0,
         }}
       >
-        <>
-          <Drawer anchor="left" variant="persistent" open={open}>
-            <Grid
-              container
-              direction="column"
-              justifyContent="space-evenly"
-              alignItems="center"
-            >
-              <Grid item>
-                <Link to="/">
-                  <DehazeIcon onClick={handleDrawerClose} />
-                </Link>
-              </Grid>
-              <Grid item>
-                <IconButton color="default" onClick={handleLogout}>
-                  <LogoutIcon />
-                </IconButton>
-              </Grid>
-            </Grid>
-          </Drawer>
-          <Box
-            sx={{
-              width: '350px',
-              height: '100%',
-              backgroundColor: colors.baseSheet,
-              padding: 0,
-              margin: 0,
-            }}
-          >
-            <AppBar
-              position="static"
-              sx={{
-                height: `${appBerHeight}px`,
-                backgroundColor: colors.header,
-              }}
-            >
-              <Grid
-                container
-                direction="row"
-                justifyContent="space-evenly"
-                alignItems="center"
+        <Grid
+          container
+          direction="row"
+          justifyContent="start"
+          columnSpacing={{ xs: 0, sm: 0, md: 1 }}
+          paddingY={{ xs: 0, sm: 0, md: 1 }}
+          alignItems="start"
+          height="100%"
+        >
+          <Grid item height="100%" width="350">
+            <Hidden mdUp implementation="js">
+              <Drawer
+                anchor="left"
+                variant="temporary"
+                open={open}
+                sx={{
+                  flexShrink: 0,
+                  width: '100%',
+                  backgroundColor: colors.baseSheet,
+                }}
               >
-                <Grid item>
-                  <IconButton color="default">
-                    <DehazeIcon onClick={handleDrawerOpen} />
-                  </IconButton>
-                </Grid>
-                <Grid item>
-                  <Link to="/signup">
-                    <IconButton color="default">
-                      <PersonAddIcon />
-                    </IconButton>
-                  </Link>
-                </Grid>
-                <Grid item>
-                  <Link to="/current_user">
-                    <IconButton color="default">
-                      <AccountCircleIcon />
-                    </IconButton>
-                  </Link>
-                </Grid>
-                <Grid item>
-                  <Link to="/">
-                    <IconButton color="default">
-                      <HomeIcon />
-                    </IconButton>
-                  </Link>
-                </Grid>
-
-                <Grid item>
-                  <Link to="/hello_world">
-                    <IconButton color="default">
-                      <PublicIcon />
-                    </IconButton>
-                  </Link>
-                </Grid>
-                <Grid item>
-                  <Link to="/users">
-                    <IconButton color="default">
-                      <GroupIcon />
-                    </IconButton>
-                  </Link>
-                </Grid>
-                <Grid item>
-                  <DarkButton
-                    darkMode={darkMode}
-                    handleDarkModeOff={handleDarkModeOff}
-                    handleDarkModeOn={handleDarkModeOn}
-                  />
-                </Grid>
-              </Grid>
-            </AppBar>
-
+                <ConfigBar
+                  appBerHeight={appBerHeight}
+                  handleLogout={handleLogout}
+                  handleDrawerClose={handleDrawerClose}
+                />
+              </Drawer>
+            </Hidden>
+          </Grid>
+          <Grid item height="100%" width={{ xs: '100%', sm: '100%', md: 350 }}>
             <Box
               sx={{
-                height: `calc(100% - ${appBerHeight}px)`,
-                overflow: 'scroll',
+                width: '100%',
+                height: '100%',
+                backgroundColor: colors.baseSheet,
+                padding: 0,
+                margin: 0,
               }}
             >
-              <Switch>
-                <PrivateRoute
-                  isLogin={isLogin}
-                  exact
-                  path="/"
-                  component={Home}
-                />
-                <PrivateRoute
-                  isLogin={isLogin}
-                  exact
-                  path="/hello_world"
-                  component={HelloWorld}
-                />
-                <PrivateRoute
-                  isLogin={isLogin}
-                  exact
-                  path="/users"
-                  component={Users}
-                />
-                <PrivateRoute
-                  isLogin={isLogin}
-                  exact
-                  path="/users/:id"
-                  component={UserShow}
-                />
-                <PrivateRoute isLogin={isLogin} exact path="/current_user">
-                  <CurrentUserShow
-                    history={history}
-                    currentUser={currentUser}
-                    setCurrentUser={setCurrentUser}
-                  />
-                </PrivateRoute>
-                <PrivateRoute isLogin={isLogin} exact path="/edit_user">
-                  <EditUser
-                    history={history}
-                    currentUser={currentUser}
-                    setCurrentUser={setCurrentUser}
-                  />
-                </PrivateRoute>
+              <AppBar
+                position="static"
+                sx={{
+                  height: `${appBerHeight}px`,
+                  backgroundColor: colors.header,
+                }}
+              >
+                <Grid
+                  container
+                  direction="row"
+                  justifyContent="space-evenly"
+                  alignItems="center"
+                >
+                  <Grid item>
+                    <IconButton color="default">
+                      <DehazeIcon onClick={handleDrawerOpen} />
+                    </IconButton>
+                  </Grid>
+                  <Grid item>
+                    <Link to="/signup">
+                      <IconButton color="default">
+                        <PersonAddIcon />
+                      </IconButton>
+                    </Link>
+                  </Grid>
+                  <Grid item>
+                    <Link to="/current_user">
+                      <IconButton color="default">
+                        <AccountCircleIcon />
+                      </IconButton>
+                    </Link>
+                  </Grid>
+                  <Grid item>
+                    <Link to="/">
+                      <IconButton color="default">
+                        <HomeIcon />
+                      </IconButton>
+                    </Link>
+                  </Grid>
 
-                <UnAuthRoute
-                  isLogin={isLogin}
-                  exact
-                  path="/login"
-                  render={(): ReactElement => (
-                    <LoginForm
-                      setIsLogin={setIsLogin}
+                  <Grid item>
+                    <Link to="/hello_world">
+                      <IconButton color="default">
+                        <PublicIcon />
+                      </IconButton>
+                    </Link>
+                  </Grid>
+                  <Grid item>
+                    <Link to="/users">
+                      <IconButton color="default">
+                        <GroupIcon />
+                      </IconButton>
+                    </Link>
+                  </Grid>
+                  <Grid item>
+                    <DarkButton
+                      darkMode={darkMode}
+                      handleDarkModeOff={handleDarkModeOff}
+                      handleDarkModeOn={handleDarkModeOn}
+                    />
+                  </Grid>
+                </Grid>
+              </AppBar>
+
+              <Box
+                sx={{
+                  height: `calc(100% - ${appBerHeight}px)`,
+                  overflow: 'scroll',
+                }}
+              >
+                <Switch>
+                  <PrivateRoute
+                    isLogin={isLogin}
+                    exact
+                    path="/"
+                    component={Home}
+                  />
+                  <PrivateRoute
+                    isLogin={isLogin}
+                    exact
+                    path="/hello_world"
+                    component={HelloWorld}
+                  />
+                  <PrivateRoute
+                    isLogin={isLogin}
+                    exact
+                    path="/users"
+                    component={Users}
+                  />
+                  <PrivateRoute
+                    isLogin={isLogin}
+                    exact
+                    path="/users/:id"
+                    component={UserShow}
+                  />
+                  <PrivateRoute isLogin={isLogin} exact path="/current_user">
+                    <CurrentUserShow
+                      history={history}
                       currentUser={currentUser}
                       setCurrentUser={setCurrentUser}
                     />
-                  )}
-                />
-                <UnAuthRoute
-                  isLogin={isLogin}
-                  exact
-                  path="/signup"
-                  render={(): ReactElement => (
-                    <NewUsers
-                      setIsLogin={setIsLogin}
+                  </PrivateRoute>
+                  <PrivateRoute isLogin={isLogin} exact path="/edit_user">
+                    <EditUser
+                      history={history}
                       currentUser={currentUser}
                       setCurrentUser={setCurrentUser}
                     />
-                  )}
-                />
-              </Switch>
+                  </PrivateRoute>
+
+                  <UnAuthRoute
+                    isLogin={isLogin}
+                    exact
+                    path="/login"
+                    render={(): ReactElement => (
+                      <LoginForm
+                        setIsLogin={setIsLogin}
+                        currentUser={currentUser}
+                        setCurrentUser={setCurrentUser}
+                      />
+                    )}
+                  />
+                  <UnAuthRoute
+                    isLogin={isLogin}
+                    exact
+                    path="/signup"
+                    render={(): ReactElement => (
+                      <NewUsers
+                        setIsLogin={setIsLogin}
+                        currentUser={currentUser}
+                        setCurrentUser={setCurrentUser}
+                      />
+                    )}
+                  />
+                </Switch>
+              </Box>
             </Box>
-          </Box>
-        </>
+          </Grid>
+          <Hidden mdDown implementation="js">
+            <ConfigBar
+              appBerHeight={appBerHeight}
+              handleLogout={handleLogout}
+              handleDrawerClose={() => {}}
+            />
+          </Hidden>
+        </Grid>
       </Box>
     </ThemeProvider>
   );
