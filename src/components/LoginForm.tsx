@@ -18,9 +18,7 @@ const LoginForm: React.FC<RouteUserPropsType> = ({ ...props }) => {
 
   const [values, setvalues] = useState({
     email: '',
-    name: '',
     password: '',
-    passwordConfirmation: '',
   });
 
   const handleChange =

@@ -20,6 +20,7 @@ const UserShow: FC<RouteComponentProps<{ id: string }>> = (props) => {
     email: 'loading...',
     name: 'loading...',
     id: 0,
+    admin: false,
   });
   const load = useCallback(() => getUser(props.match.params.id), [props]);
 

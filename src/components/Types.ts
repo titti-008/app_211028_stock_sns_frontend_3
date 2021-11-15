@@ -2,10 +2,6 @@ import { RouteProps } from 'react-router-dom';
 import * as H from 'history';
 import { AxiosError } from 'axios';
 
-export type Data = {
-  text: string;
-};
-
 export type ApiResponse = {
   text: string;
 };
@@ -15,6 +11,7 @@ export type UserType = {
   email: string;
   name: string;
   createdAt: Date;
+  admin: boolean;
 };
 
 export type CurrentUser = UserType | null;
@@ -41,6 +38,11 @@ export type loginUserType = {
 
 export type UsersType = Array<UserType>;
 
+export type UsersResponse = {
+  users: UsersType;
+  messages: string[];
+};
+
 export type RouteUserPropsType = {
   setIsLogin: React.Dispatch<React.SetStateAction<boolean>>;
   currentUser: CurrentUser;
@@ -51,6 +53,11 @@ export type LoginResponse = {
   loggedIn: boolean;
   user: UserType;
   messages: string[];
+};
+
+export type DeleteResponse = {
+  messages: string[];
+  users: UsersType;
 };
 
 export type LogoutResponse = {

@@ -5,23 +5,25 @@ import { Link } from 'react-router-dom';
 import { NormalText } from './PrivateTexts';
 import { useColors } from '../../hooks/util';
 
-type SubmitType = {
-  onClick: React.MouseEventHandler<HTMLButtonElement> | undefined;
+type SubmitType<T> = {
+  onClick: (props?: T) => void;
   label: string;
 };
 
-export const SubmitButton: FC<SubmitType> = (_props) => {
-  const props = _props;
+export const SubmitButton = ({
+  onClick,
+  label,
+}: SubmitType<React.MouseEvent<HTMLButtonElement, MouseEvent>>) => {
   const colors = useColors();
 
   return (
     <Grid item>
       <Button
-        onClick={props.onClick}
+        onClick={onClick}
         variant="outlined"
         sx={{ color: colors.text, borderColor: colors.text }}
       >
-        <NormalText>{props.label}</NormalText>
+        <NormalText>{label}</NormalText>
       </Button>
     </Grid>
   );
