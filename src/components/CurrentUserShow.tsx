@@ -1,10 +1,11 @@
-import React, { useEffect } from 'react';
-import { IconButton, Grid, Avatar, Typography, Button } from '@mui/material';
+import React from 'react';
+import { IconButton, Grid, Avatar, Button } from '@mui/material';
 import formatDistanceToNow from 'date-fns/formatDistanceToNow';
 import PersonIcon from '@mui/icons-material/Person';
 import { Link } from 'react-router-dom';
 import { RouteCurrentUserPropsType } from './Types';
 import { useColors } from '../hooks/util';
+import { NormalText } from './privateMUI/PrivateTexts';
 
 const UserShow: React.FC<RouteCurrentUserPropsType> = ({ ...props }) => {
   /* eslint-disable */
@@ -13,9 +14,9 @@ const UserShow: React.FC<RouteCurrentUserPropsType> = ({ ...props }) => {
 
   const colors = useColors();
 
-  useEffect(() => {
-    setCurrentUser(currentUser);
-  }, [setCurrentUser, currentUser]);
+  // useEffect(() => {
+  //   setCurrentUser(currentUser);
+  // }, [setCurrentUser, currentUser]);
 
   return (
     <Grid
@@ -35,41 +36,24 @@ const UserShow: React.FC<RouteCurrentUserPropsType> = ({ ...props }) => {
         </IconButton>
       </Grid>
       <Grid item xs sx={{ width: '50%' }}>
-        <Typography
-          sx={{ color: colors.text }}
-          style={{ overflowWrap: 'break-word' }}
-        >
+        <NormalText>
           ログイン状態:{currentUser ? 'ログイン済み' : '未ログイン'}
-        </Typography>
-        <Typography
-          sx={{ color: colors.text }}
-          style={{ overflowWrap: 'break-word' }}
-        >
-          {currentUser?.name}
-        </Typography>
-
-        <Typography
-          sx={{ color: colors.text }}
-          style={{ overflowWrap: 'break-word' }}
-        >
-          {currentUser?.email}
-        </Typography>
-
-        <Typography sx={{ color: colors.text }}>
+        </NormalText>
+        <NormalText>{currentUser?.name}</NormalText>
+        <NormalText>{currentUser?.email}</NormalText>
+        <NormalText>
+          管理者権限: {currentUser?.admin ? 'あり' : 'なし'}
+        </NormalText>
+        <NormalText>
           {formatDistanceToNow(
             currentUser ? new Date(currentUser.createdAt) : new Date(),
           )}
-        </Typography>
+        </NormalText>
       </Grid>
       <Grid item marginTop="10px">
         <Button variant="outlined">
           <Link to="/edit_user">
-            <Typography
-              sx={{ color: colors.text }}
-              style={{ overflowWrap: 'break-word' }}
-            >
-              ユーザー情報編集
-            </Typography>
+            <NormalText>ユーザー情報編集</NormalText>
           </Link>
         </Button>
       </Grid>

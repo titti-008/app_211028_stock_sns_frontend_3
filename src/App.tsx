@@ -16,7 +16,7 @@ import DarkButton from './declareModule/darkButton';
 import Home from './components/Home';
 import LoginForm from './components/LoginForm';
 import HelloWorld from './components/HelloWorld';
-import { Users } from './components/Users';
+import Users from './components/Users';
 import UserShow from './components/UserShow';
 import CurrentUserShow from './components/CurrentUserShow';
 import { ErrorResponse, CurrentUser } from './components/Types';
@@ -79,15 +79,29 @@ const App: FC = () => {
     setOpen(false);
   };
 
-  // ----------ログイン状態管理,カレントユーザー状態管理----------------------
+  // ----------カレントユーザー状態管理----------------------
 
-  const initUser = {
-    id: 0,
-    email: '...loading',
-    name: '...loading',
-    createdAt: new Date(),
-  };
-  const [currentUser, setCurrentUser] = useState<CurrentUser>(initUser);
+  // const initUser = {
+  //   id: 0,
+  //   email: '...loading',
+  //   name: '...loading',
+  //   createdAt: new Date(),
+  //   admin: false,
+  // };
+  const [currentUser, setCurrentUser] = useState<CurrentUser>(() => {
+    const usersJSON = localStorage.getItem('currentUser');
+    if (usersJSON) {
+      return JSON.parse(usersJSON);
+    } else {
+      return null;
+    }
+  });
+
+  useEffect(() => {
+    localStorage.setItem('currentUser', JSON.stringify(currentUser));
+  }, [currentUser]);
+
+  // ----------ログイン状態管理----------------------
 
   const [isLogin, setIsLogin] = useState<boolean>(
     localStorage.getItem('isLogin') === 'true',
@@ -101,21 +115,15 @@ const App: FC = () => {
   const location = useLocation();
 
   useEffect(() => {
-    console.log(location);
-
     const checkLoginStatus = async () => {
       try {
         const response = await loggedIn();
+        setIsLogin(response.data.loggedIn);
+        setCurrentUser(response.data.user);
         if (response.status === 200) {
-          if (response.data.loggedIn !== isLogin) {
-            SuccessToasts(response.data.messages);
-            setIsLogin(response.data.loggedIn);
-          }
-
-          setCurrentUser(response.data.user);
+          SuccessToasts(response.data.messages);
         } else {
           ErrorToasts(response.data.messages);
-          setCurrentUser(null);
         }
       } catch (err) {
         if ((err as ErrorResponse).response !== undefined)
@@ -132,11 +140,11 @@ const App: FC = () => {
   // ----------ログアウトボタンの処理----------------------
   const handleLogout = async () => {
     try {
+      setIsLogin(false);
+      setCurrentUser(null);
       const response = await logoutUser();
       if (response.status === 200) {
-        setCurrentUser(null);
         SuccessToasts(response.data.messages);
-        setIsLogin(false);
       }
     } catch (err) {
       ErrorToasts(['ログアウトに失敗しました。']);
@@ -286,7 +294,9 @@ const App: FC = () => {
                     isLogin={isLogin}
                     exact
                     path="/users"
-                    component={Users}
+                    render={(): ReactElement => (
+                      <Users currentUser={currentUser} />
+                    )}
                   />
                   <PrivateRoute
                     isLogin={isLogin}
