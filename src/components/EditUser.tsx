@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Grid, Button } from '@mui/material';
 import {
-  CreateUserType,
+  EditUserType,
   RouteCurrentUserPropsType,
   ErrorResponse,
 } from './Types';
@@ -10,9 +10,7 @@ import { PasswordForm, NormalForm } from './privateMUI/PrivateForms';
 import { SuccessToasts, ErrorToasts } from './toast/PrivateToast';
 
 const EditUser: React.FC<RouteCurrentUserPropsType> = (props) => {
-  /* eslint-disable */
   const { currentUser, setCurrentUser, history } = { ...props };
-  /* eslint-disable */
 
   const [values, setvalues] = useState({
     id: currentUser ? currentUser.id : 0,
@@ -23,7 +21,7 @@ const EditUser: React.FC<RouteCurrentUserPropsType> = (props) => {
   });
 
   const handleChange =
-    (key: keyof CreateUserType) =>
+    (key: keyof EditUserType) =>
     (event: React.ChangeEvent<HTMLInputElement>) => {
       setvalues({ ...values, [key]: event.target.value });
     };

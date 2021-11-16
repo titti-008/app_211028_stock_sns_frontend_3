@@ -1,28 +1,32 @@
 import React, { useState } from 'react';
-import { Grid, Button } from '@mui/material';
-import { Link } from 'react-router-dom';
+import { Grid } from '@mui/material';
 import 'react-toastify/dist/ReactToastify.css';
-import { CreateUserType, RouteUserPropsType } from './Types';
+import { loginUserType, RouteUserPropsType } from './Types';
 import { loginUser } from './api';
 import { SuccessToasts, ErrorToasts } from './toast/PrivateToast';
-import { PasswordForm, NormalForm } from './privateMUI/PrivateForms';
+import {
+  PasswordForm,
+  NormalForm,
+  RememberCheckBox,
+} from './privateMUI/PrivateForms';
 import { NormalText } from './privateMUI/PrivateTexts';
+import { SubmitButton, LinkButton } from './privateMUI/PrivateBottuns';
+
 // toast.configure(); // トーストを10秒間保持する設定
 
 const LoginForm: React.FC<RouteUserPropsType> = ({ ...props }) => {
-  /* eslint-disable */
   const { currentUser, setCurrentUser, setIsLogin } = { ...props };
-  /* eslint-disable */
-
-  const [messages, setMessage] = useState<string[]>([]);
 
   const [values, setvalues] = useState({
     email: '',
     password: '',
+    rememberMe: false,
   });
 
+  console.log('RememberMe', values.rememberMe);
+
   const handleChange =
-    (key: keyof CreateUserType) =>
+    (key: keyof loginUserType) =>
     (event: React.ChangeEvent<HTMLInputElement>) => {
       setvalues({ ...values, [key]: event.target.value });
     };
@@ -71,18 +75,14 @@ const LoginForm: React.FC<RouteUserPropsType> = ({ ...props }) => {
         label="password"
       />
 
-      <Grid item marginTop="10px">
-        <Button onClick={handleLoginUser} variant="outlined">
-          ログイン
-        </Button>
-      </Grid>
-      <Grid item marginTop="10px">
-        <Link to="/signup">
-          <Button variant="outlined">新規登録はこちら</Button>
-        </Link>
-      </Grid>
+      <RememberCheckBox handleChange={handleChange('rememberMe')} />
+
+      <SubmitButton onClick={handleLoginUser} label="ログイン" />
+      <LinkButton linkTo="/signup" label="新規登録はこちら" />
     </Grid>
   );
 };
 
 export default LoginForm;
+/* eslint-disable */
+/* eslint-disable */

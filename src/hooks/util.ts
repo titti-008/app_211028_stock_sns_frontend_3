@@ -23,10 +23,10 @@ export const Colors = (theme: Theme): ColorsType => {
 
   if (theme.palette?.mode === 'light') {
     // lightモードのとき
-    colors.baseGround = '#CBCFDB';
-    colors.baseSheet = '#C1C9DE';
+    colors.baseGround = '#FCFCFC';
+    colors.baseSheet = '#D1D9F0';
     colors.paper = '#D2DAEB';
-    colors.header = '#A3ACBF';
+    colors.header = '#BDC6DE';
     colors.text = '#3C4A63';
     colors.icon = '#85A4DE';
   }

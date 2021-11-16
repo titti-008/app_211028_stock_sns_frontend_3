@@ -5,6 +5,7 @@ import { createUser } from './api';
 import { SuccessToasts, ErrorToasts } from './toast/PrivateToast';
 import { PasswordForm, NormalForm } from './privateMUI/PrivateForms';
 import { SubmitButton, LinkButton } from './privateMUI/PrivateBottuns';
+import { NormalText } from './privateMUI/PrivateTexts';
 
 const NewUsers: React.FC<RouteUserPropsType> = (_props) => {
   /* eslint-disable */
@@ -30,7 +31,7 @@ const NewUsers: React.FC<RouteUserPropsType> = (_props) => {
       props.setCurrentUser(response.data.user);
       void props.setIsLogin(response.data.loggedIn);
 
-      if (response.status === 201) {
+      if (response.status === 200) {
         props.setCurrentUser(response.data.user);
         SuccessToasts(response.data.messages);
       } else if (response.status === 202) {
@@ -56,7 +57,11 @@ const NewUsers: React.FC<RouteUserPropsType> = (_props) => {
       wrap="nowrap"
       sx={{ padding: '10px' }}
     >
-      <h1>ログイン状態: {props.currentUser ? 'ログイン済み' : '未ログイン'}</h1>
+      <NormalText>
+        <h1>
+          ログイン状態: {props.currentUser ? 'ログイン済み' : '未ログイン'}
+        </h1>
+      </NormalText>
       <NormalForm
         value={values.name}
         handleChange={handleChange('name')}
@@ -77,10 +82,11 @@ const NewUsers: React.FC<RouteUserPropsType> = (_props) => {
       />
       <PasswordForm
         value={values.passwordConfirmation}
-        handleChange={handleChange('password')}
+        handleChange={handleChange('passwordConfirmation')}
         // infoText="パスワードを入力してください(確認用)。"
         label="password(確認用)"
       />
+
       <SubmitButton onClick={saveUser} label="ユーザー登録" />
       <LinkButton linkTo="/login" label="登録済みならこちらからログイン" />
     </Grid>
