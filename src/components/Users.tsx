@@ -15,7 +15,9 @@ type PropsType = {
 };
 
 const Users: FC<PropsType> = ({ currentUser }: PropsType) => {
+  /* eslint-disable */
   const [users, setUsers] = useState<UsersType>([]);
+  /* eslint-disable */
   const colors = useColors();
 
   const load = useCallback(() => getUsers(), []);
@@ -127,7 +129,7 @@ const Users: FC<PropsType> = ({ currentUser }: PropsType) => {
           </Grid>
         ))
       ) : (
-        <div>なし</div>
+        <NormalText>...loading</NormalText>
       )}
     </Grid>
   );

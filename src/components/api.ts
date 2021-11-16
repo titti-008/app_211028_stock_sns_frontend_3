@@ -44,6 +44,9 @@ export const loginUser = (
     user: {
       email: values.email,
       password: values.password,
+      /* eslint-disable */
+      remember_me: values.rememberMe,
+      /* eslint-disable */
     },
   });
 

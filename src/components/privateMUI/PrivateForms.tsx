@@ -7,7 +7,10 @@ import {
   Input,
   IconButton,
   Grid,
+  Checkbox,
+  FormControlLabel,
 } from '@mui/material';
+import { useColors } from '../../hooks/util';
 
 type PropsType = {
   handleChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
@@ -68,5 +71,32 @@ export const NormalForm: FC<PropsType> = (_props: PropsType) => {
         />
       </FormControl>
     </Grid>
+  );
+};
+
+type CheckBoxProps = {
+  handleChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+};
+
+export const RememberCheckBox: FC<CheckBoxProps> = (_props) => {
+  const props = _props;
+  const colors = useColors();
+
+  return (
+    <FormControlLabel
+      label="ログインしたままにする"
+      control={
+        <Checkbox
+          onChange={props.handleChange}
+          sx={{
+            color: colors.text,
+            '&.Mui-checked': {
+              color: colors.text,
+            },
+          }}
+        />
+      }
+      sx={{ color: colors.text }}
+    />
   );
 };

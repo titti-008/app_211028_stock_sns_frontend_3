@@ -34,6 +34,7 @@ export type EditUserType = {
 export type loginUserType = {
   email: string;
   password: string;
+  rememberMe: boolean;
 };
 
 export type UsersType = Array<UserType>;

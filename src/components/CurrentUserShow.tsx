@@ -35,7 +35,7 @@ const UserShow: React.FC<RouteCurrentUserPropsType> = ({ ...props }) => {
           </Link>
         </IconButton>
       </Grid>
-      <Grid item xs sx={{ width: '50%' }}>
+      <Grid item xs sx={{ width: '100%' }}>
         <NormalText>
           ログイン状態:{currentUser ? 'ログイン済み' : '未ログイン'}
         </NormalText>
