@@ -12,7 +12,9 @@ import { SubmitButton, LinkButton } from './privateMUI/PrivateBottuns';
 import { NormalText } from './privateMUI/PrivateTexts';
 
 const NewUsers: React.FC<RouteCurrentUserPropsType> = (_props) => {
+  /* eslint-disable */
   const props = _props;
+  /* eslint-disable */
 
   const [values, setvalues] = useState({
     email: '',
@@ -101,5 +103,3 @@ export default NewUsers;
 // /* eslint-disable */
 // // const { currentUser, setCurrentUser, setIsLogin } = { ...props };
 // /* eslint-disable */
-/* eslint-disable */
-/* eslint-disable */

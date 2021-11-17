@@ -140,9 +140,9 @@ const App: FC = () => {
   // ----------ログアウトボタンの処理----------------------
   const handleLogout = async () => {
     try {
+      const response = await logoutUser();
       setIsLogin(false);
       setCurrentUser(null);
-      const response = await logoutUser();
       if (response.status === 200) {
         SuccessToasts(response.data.messages);
       }
