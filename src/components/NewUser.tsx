@@ -1,16 +1,18 @@
 import React, { useState } from 'react';
 import { Grid } from '@mui/material';
-import { CreateUserType, RouteUserPropsType, ErrorResponse } from './Types';
+import {
+  CreateUserType,
+  RouteCurrentUserPropsType,
+  ErrorResponse,
+} from './Types';
 import { createUser } from './api';
 import { SuccessToasts, ErrorToasts } from './toast/PrivateToast';
 import { PasswordForm, NormalForm } from './privateMUI/PrivateForms';
 import { SubmitButton, LinkButton } from './privateMUI/PrivateBottuns';
 import { NormalText } from './privateMUI/PrivateTexts';
 
-const NewUsers: React.FC<RouteUserPropsType> = (_props) => {
-  /* eslint-disable */
+const NewUsers: React.FC<RouteCurrentUserPropsType> = (_props) => {
   const props = _props;
-  /* eslint-disable */
 
   const [values, setvalues] = useState({
     email: '',
@@ -28,12 +30,13 @@ const NewUsers: React.FC<RouteUserPropsType> = (_props) => {
   const saveUser = async () => {
     try {
       const response = await createUser(values);
-      props.setCurrentUser(response.data.user);
-      void props.setIsLogin(response.data.loggedIn);
+      // props.setCurrentUser(response.data.user);
+      // void props.setIsLogin(response.data.loggedIn);
 
       if (response.status === 200) {
-        props.setCurrentUser(response.data.user);
+        // props.setCurrentUser(response.data.user);
         SuccessToasts(response.data.messages);
+        props.history.push('/current_user');
       } else if (response.status === 202) {
         ErrorToasts(response.data.messages);
       }
@@ -98,3 +101,5 @@ export default NewUsers;
 // /* eslint-disable */
 // // const { currentUser, setCurrentUser, setIsLogin } = { ...props };
 // /* eslint-disable */
+/* eslint-disable */
+/* eslint-disable */

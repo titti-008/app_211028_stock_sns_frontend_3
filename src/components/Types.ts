@@ -56,6 +56,15 @@ export type LoginResponse = {
   messages: string[];
 };
 
+export type ShowUserResponse = {
+  user: UserType;
+  messages: string[];
+};
+
+export type ActivationResponse = {
+  messages: string[];
+};
+
 export type DeleteResponse = {
   messages: string[];
   users: UsersType;
