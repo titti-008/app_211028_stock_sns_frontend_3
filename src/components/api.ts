@@ -1,6 +1,5 @@
 import axios, { AxiosResponse } from 'axios';
 import {
-  UserType,
   CreateUserType,
   loginUserType,
   LoginResponse,
@@ -8,6 +7,8 @@ import {
   EditUserType,
   DeleteResponse,
   UsersResponse,
+  ActivationResponse,
+  ShowUserResponse,
 } from './Types';
 
 const env = process.env.REACT_APP_SERVER_URL ?? ''; // 文字列型であることを強制
@@ -22,13 +23,13 @@ export const getUsers = (): Promise<AxiosResponse<UsersResponse, unknown>> =>
 
 export const getUser = (
   id: string,
-): Promise<AxiosResponse<UserType, unknown>> =>
-  instance.get<UserType>(`${usersUrl}/${id}`);
+): Promise<AxiosResponse<ShowUserResponse, unknown>> =>
+  instance.get<ShowUserResponse>(`${usersUrl}/${id}`);
 
 export const createUser = (
   values: CreateUserType,
-): Promise<AxiosResponse<LoginResponse, unknown>> =>
-  instance.post<LoginResponse>(`${usersUrl}`, {
+): Promise<AxiosResponse<ActivationResponse, unknown>> =>
+  instance.post<ActivationResponse>(`${usersUrl}`, {
     user: {
       name: values.name,
       email: values.email,

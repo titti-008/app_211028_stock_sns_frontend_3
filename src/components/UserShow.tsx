@@ -14,7 +14,10 @@ import { UserType } from './Types';
 import { useColors } from '../hooks/util';
 import { getUser } from './api';
 
+import { SuccessToasts, ErrorToasts } from './toast/PrivateToast';
+
 const UserShow: FC<RouteComponentProps<{ id: string }>> = (props) => {
+  /* eslint-disable */
   const [user, setUser] = useState<UserType>({
     createdAt: new Date(),
     email: 'loading...',
@@ -22,17 +25,19 @@ const UserShow: FC<RouteComponentProps<{ id: string }>> = (props) => {
     id: 0,
     admin: false,
   });
+  /* eslint-disable */
+
   const load = useCallback(() => getUser(props.match.params.id), [props]);
 
   useEffect(() => {
     const componetDitMount = async () => {
       try {
-        const response = load();
-        if ((await response).status === 200) {
-          setUser((await response).data);
+        const response = await load();
+        if (response.status === 200) {
+          setUser(response.data.user);
+          SuccessToasts(response.data.messages);
         } else {
-          console.log('status200以外のレスポンス発生');
-          console.log(response);
+          ErrorToasts(response.data.messages);
         }
       } catch (err) {
         console.log('データの取得に失敗');
@@ -41,8 +46,6 @@ const UserShow: FC<RouteComponentProps<{ id: string }>> = (props) => {
     };
     void componetDitMount();
   }, [setUser, load]);
-  /* eslint-disable */
-  /* eslint-disable */
 
   const colors = useColors();
 

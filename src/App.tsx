@@ -337,7 +337,7 @@ const App: FC = () => {
                     path="/signup"
                     render={(): ReactElement => (
                       <NewUsers
-                        setIsLogin={setIsLogin}
+                        history={history}
                         currentUser={currentUser}
                         setCurrentUser={setCurrentUser}
                       />
