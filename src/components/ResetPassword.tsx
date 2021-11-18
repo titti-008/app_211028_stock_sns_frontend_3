@@ -21,8 +21,8 @@ const ResetPasswordForm: React.FC<
   console.log('props', props);
 
   const [values, setvalues] = useState({
-    id: params.id,
-    email: decodeURIComponent(params.email),
+    id: props.match.params.id,
+    email: decodeURIComponent(props.match.params.email),
     password: '',
     passwordConfirmation: '',
   });
@@ -38,7 +38,6 @@ const ResetPasswordForm: React.FC<
       const response = await ResetPassword(values);
 
       if (response.status === 200) {
-        // props.setCurrentUser(response.data.user);
         SuccessToasts(response.data.messages);
         /* eslint-disable */
         props.history.push('/current_user');
@@ -48,7 +47,7 @@ const ResetPasswordForm: React.FC<
       }
     } catch (err) {
       if ((err as ErrorResponse).response !== undefined)
-        console.log('user登録失敗');
+        console.log('パスワード変更失敗');
       console.log((err as ErrorResponse).response);
       ErrorToasts([
         'ユーザー登録に失敗しました。',
@@ -88,7 +87,3 @@ const ResetPasswordForm: React.FC<
 };
 
 export default ResetPasswordForm;
-
-// /* eslint-disable */
-// // const { currentUser, setCurrentUser, setIsLogin } = { ...props };
-// /* eslint-disable */
