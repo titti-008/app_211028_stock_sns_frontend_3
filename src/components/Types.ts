@@ -61,7 +61,7 @@ export type ShowUserResponse = {
   messages: string[];
 };
 
-export type ActivationResponse = {
+export type MessageResponse = {
   messages: string[];
 };
 
@@ -83,6 +83,21 @@ export type RouteCurrentUserPropsType = {
   currentUser: CurrentUser;
   setCurrentUser: (currentUser: CurrentUser) => void;
   history: H.History;
+};
+
+export type ResetPasswordPropsType = {
+  history: H.History;
+};
+
+export type ResetEmail = {
+  email: string;
+};
+
+export type ResetPasswordData = {
+  id: string;
+  email: string;
+  password: string;
+  passwordConfirmation: string;
 };
 
 export type ErrorResponse = AxiosError<{

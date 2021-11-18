@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Grid } from '@mui/material';
-import 'react-toastify/dist/ReactToastify.css';
 import { loginUserType, RouteUserPropsType } from './Types';
 import { loginUser } from './api';
 import { SuccessToasts, ErrorToasts } from './toast/PrivateToast';
@@ -67,6 +66,10 @@ const LoginForm: React.FC<RouteUserPropsType> = ({ ...props }) => {
         handleChange={handleChange('email')}
         // infoText="メールアドレスを入力してください。"
         label="Email"
+      />
+      <LinkButton
+        linkTo="/password_resets/new"
+        label="パスワードを忘れた場合"
       />
       <PasswordForm
         value={values.password}
