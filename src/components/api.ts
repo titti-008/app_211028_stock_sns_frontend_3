@@ -7,8 +7,10 @@ import {
   EditUserType,
   DeleteResponse,
   UsersResponse,
-  ActivationResponse,
+  MessageResponse,
   ShowUserResponse,
+  ResetEmail,
+  ResetPasswordData,
 } from './Types';
 
 const env = process.env.REACT_APP_SERVER_URL ?? ''; // 文字列型であることを強制
@@ -28,8 +30,8 @@ export const getUser = (
 
 export const createUser = (
   values: CreateUserType,
-): Promise<AxiosResponse<ActivationResponse, unknown>> =>
-  instance.post<ActivationResponse>(`${usersUrl}`, {
+): Promise<AxiosResponse<MessageResponse, unknown>> =>
+  instance.post<MessageResponse>(`${usersUrl}`, {
     user: {
       name: values.name,
       email: values.email,
@@ -77,5 +79,25 @@ export const updateUser = (
       password_confirmation: values.passwordConfirmation,
     },
   });
+
+export const ResetRequest = (
+  values: ResetEmail,
+): Promise<AxiosResponse<MessageResponse, unknown>> =>
+  instance.post<MessageResponse>(`${apiUrl}/password_resets`, {
+    password_reset: { email: values.email },
+  });
+
+export const ResetPassword = (
+  values: ResetPasswordData,
+): Promise<AxiosResponse<LoginResponse, unknown>> =>
+  instance.patch<LoginResponse>(`${apiUrl}/password_resets/${values.id}`, {
+    id: values.id,
+    email: values.email,
+    user: {
+      password: values.password,
+      password_confirmation: values.passwordConfirmation,
+    },
+  });
+
 /* eslint-disable */
 /* eslint-disable */

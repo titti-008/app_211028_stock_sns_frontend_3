@@ -27,8 +27,9 @@ import NewUsers from './components/NewUser';
 import EditUser from './components/EditUser';
 import { SuccessToasts, ErrorToasts } from './components/toast/PrivateToast';
 import './App.css';
-// import { NormalText } from './components/privateMUI/PrivateTexts';
 import ConfigBar from './components/ConfigBar';
+import ResetRequestForm from './components/ResetRequest';
+import ResetPasswordForm from './components/ResetPassword';
 
 // ----------App----------------------
 const App: FC = () => {
@@ -342,6 +343,19 @@ const App: FC = () => {
                         setCurrentUser={setCurrentUser}
                       />
                     )}
+                  />
+                  <UnAuthRoute
+                    isLogin={isLogin}
+                    exact
+                    path="/password_resets/new"
+                    render={(): ReactElement => (
+                      <ResetRequestForm history={history} />
+                    )}
+                  />
+                  <UnAuthRoute
+                    isLogin={isLogin}
+                    path="/password_resets/:id/edit/email=:email"
+                    component={ResetPasswordForm}
                   />
                 </Switch>
               </Box>
