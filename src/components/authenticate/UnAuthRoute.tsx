@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { Route, Redirect } from 'react-router-dom';
-import { LoginRouteProps } from './Types';
+import { LoginRouteProps } from '../Types';
 
 // ----------PrivateRouteコンポーネントの作成(ログイン状態によるリダイレクト)----------------------
 const UnAuthRoute: React.FC<LoginRouteProps> = ({ ...props }) => {

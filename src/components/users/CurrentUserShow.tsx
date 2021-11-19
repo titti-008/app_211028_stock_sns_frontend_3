@@ -3,9 +3,9 @@ import { IconButton, Grid, Avatar, Button } from '@mui/material';
 import formatDistanceToNow from 'date-fns/formatDistanceToNow';
 import PersonIcon from '@mui/icons-material/Person';
 import { Link } from 'react-router-dom';
-import { RouteCurrentUserPropsType } from './Types';
-import { useColors } from '../hooks/util';
-import { NormalText } from './privateMUI/PrivateTexts';
+import { RouteCurrentUserPropsType } from '../Types';
+import { useColors } from '../../hooks/util';
+import { NormalText } from '../privateMUI/PrivateTexts';
 
 const UserShow: React.FC<RouteCurrentUserPropsType> = ({ ...props }) => {
   /* eslint-disable */

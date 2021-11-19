@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { Grid } from '@mui/material';
 import { RouteComponentProps, useParams } from 'react-router-dom';
-import { CreateUserType, ErrorResponse } from './Types';
-import { ResetPassword } from './api';
-import { SuccessToasts, ErrorToasts } from './toast/PrivateToast';
-import { PasswordForm } from './privateMUI/PrivateForms';
-import { SubmitButton } from './privateMUI/PrivateBottuns';
-import { NormalText } from './privateMUI/PrivateTexts';
+import { CreateUserType, ErrorResponse } from '../Types';
+import { ResetPassword } from '../api';
+import { SuccessToasts, ErrorToasts } from '../toast/PrivateToast';
+import { PasswordForm } from '../privateMUI/PrivateForms';
+import { SubmitButton } from '../privateMUI/PrivateBottuns';
+import { NormalText } from '../privateMUI/PrivateTexts';
 
 const ResetPasswordForm: React.FC<
   RouteComponentProps<{ id: string; email: string }>

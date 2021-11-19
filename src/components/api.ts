@@ -11,6 +11,7 @@ import {
   ShowUserResponse,
   ResetEmail,
   ResetPasswordData,
+  MicropostsResponse,
 } from './Types';
 
 const env = process.env.REACT_APP_SERVER_URL ?? ''; // 文字列型であることを強制
@@ -98,6 +99,10 @@ export const ResetPassword = (
       password_confirmation: values.passwordConfirmation,
     },
   });
+
+export const getMicroposts = (): Promise<
+  AxiosResponse<MicropostsResponse, unknown>
+> => instance.get<MicropostsResponse>(`${apiUrl}/microposts`);
 
 /* eslint-disable */
 /* eslint-disable */
