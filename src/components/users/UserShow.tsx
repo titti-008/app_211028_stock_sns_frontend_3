@@ -10,11 +10,11 @@ import formatDistanceToNow from 'date-fns/formatDistanceToNow';
 import PersonIcon from '@mui/icons-material/Person';
 import { Link } from 'react-router-dom';
 import { RouteComponentProps } from 'react-router';
-import { UserType } from './Types';
-import { useColors } from '../hooks/util';
-import { getUser } from './api';
+import { UserType } from '../Types';
+import { useColors } from '../../hooks/util';
+import { getUser } from '../api';
 
-import { SuccessToasts, ErrorToasts } from './toast/PrivateToast';
+import { SuccessToasts, ErrorToasts } from '../toast/PrivateToast';
 
 const UserShow: FC<RouteComponentProps<{ id: string }>> = (props) => {
   /* eslint-disable */

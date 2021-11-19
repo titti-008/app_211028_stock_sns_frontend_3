@@ -103,3 +103,15 @@ export type ResetPasswordData = {
 export type ErrorResponse = AxiosError<{
   messages: string[];
 }>;
+
+export type Micropost = {
+  user: UserType;
+  content: string;
+  createdAt: Date;
+  id: number;
+};
+
+export type MicropostsResponse = {
+  microposts: Micropost[];
+  messages: string[];
+};

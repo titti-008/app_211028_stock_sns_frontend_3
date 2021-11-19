@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { Grid } from '@mui/material';
-import { ResetPasswordPropsType } from './Types';
-import { ResetRequest } from './api';
-import { SuccessToasts, ErrorToasts } from './toast/PrivateToast';
-import { NormalForm } from './privateMUI/PrivateForms';
-import { NormalText } from './privateMUI/PrivateTexts';
-import { SubmitButton, LinkButton } from './privateMUI/PrivateBottuns';
+import { ResetPasswordPropsType } from '../Types';
+import { ResetRequest } from '../api';
+import { SuccessToasts, ErrorToasts } from '../toast/PrivateToast';
+import { NormalForm } from '../privateMUI/PrivateForms';
+import { NormalText } from '../privateMUI/PrivateTexts';
+import { SubmitButton, LinkButton } from '../privateMUI/PrivateBottuns';
 
 const ResetRequestForm: React.FC<ResetPasswordPropsType> = ({ ...props }) => {
   /* eslint-disable */

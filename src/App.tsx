@@ -8,28 +8,27 @@ import PublicIcon from '@mui/icons-material/Public';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import GroupIcon from '@mui/icons-material/Group';
 import DehazeIcon from '@mui/icons-material/Dehaze';
-// import LogoutIcon from '@mui/icons-material/Logout';
 import { ThemeProvider, createTheme, Theme } from '@mui/material/styles';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import { loggedIn, logoutUser } from './components/api';
 import DarkButton from './declareModule/darkButton';
-import Home from './components/Home';
-import LoginForm from './components/LoginForm';
+import LoginForm from './components/users/LoginForm';
 import HelloWorld from './components/HelloWorld';
-import Users from './components/Users';
-import UserShow from './components/UserShow';
-import CurrentUserShow from './components/CurrentUserShow';
+import Users from './components/users/Users';
+import UserShow from './components/users/UserShow';
+import CurrentUserShow from './components/users/CurrentUserShow';
 import { ErrorResponse, CurrentUser } from './components/Types';
 import { Colors } from './hooks/util';
 import PrivateRoute from './components/PrivateRoute';
-import UnAuthRoute from './components/UnAuthRoute';
-import NewUsers from './components/NewUser';
-import EditUser from './components/EditUser';
+import UnAuthRoute from './components/authenticate/UnAuthRoute';
+import NewUsers from './components/users/NewUser';
+import EditUser from './components/users/EditUser';
 import { SuccessToasts, ErrorToasts } from './components/toast/PrivateToast';
 import './App.css';
 import ConfigBar from './components/ConfigBar';
-import ResetRequestForm from './components/ResetRequest';
-import ResetPasswordForm from './components/ResetPassword';
+import ResetRequestForm from './components/authenticate/ResetRequest';
+import ResetPasswordForm from './components/authenticate/ResetPassword';
+import Microposts from './components/microposts/Microposts';
 
 // ----------App----------------------
 const App: FC = () => {
@@ -282,12 +281,6 @@ const App: FC = () => {
                   <PrivateRoute
                     isLogin={isLogin}
                     exact
-                    path="/"
-                    component={Home}
-                  />
-                  <PrivateRoute
-                    isLogin={isLogin}
-                    exact
                     path="/hello_world"
                     component={HelloWorld}
                   />
@@ -318,6 +311,9 @@ const App: FC = () => {
                       currentUser={currentUser}
                       setCurrentUser={setCurrentUser}
                     />
+                  </PrivateRoute>
+                  <PrivateRoute isLogin={isLogin} exact path="/">
+                    <Microposts />
                   </PrivateRoute>
 
                   <UnAuthRoute

@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
 import { Grid } from '@mui/material';
-import { loginUserType, RouteUserPropsType } from './Types';
-import { loginUser } from './api';
-import { SuccessToasts, ErrorToasts } from './toast/PrivateToast';
+import { loginUserType, RouteUserPropsType } from '../Types';
+import { loginUser } from '../api';
+import { SuccessToasts, ErrorToasts } from '../toast/PrivateToast';
 import {
   PasswordForm,
   NormalForm,
   RememberCheckBox,
-} from './privateMUI/PrivateForms';
-import { NormalText } from './privateMUI/PrivateTexts';
-import { SubmitButton, LinkButton } from './privateMUI/PrivateBottuns';
+} from '../privateMUI/PrivateForms';
+import { NormalText } from '../privateMUI/PrivateTexts';
+import { SubmitButton, LinkButton } from '../privateMUI/PrivateBottuns';
 
 // toast.configure(); // トーストを10秒間保持する設定
 

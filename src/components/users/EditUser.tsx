@@ -1,55 +1,54 @@
 import React, { useState } from 'react';
-import { Grid } from '@mui/material';
+import { Grid, Button } from '@mui/material';
 import {
-  CreateUserType,
+  EditUserType,
   RouteCurrentUserPropsType,
   ErrorResponse,
-} from './Types';
-import { createUser } from './api';
-import { SuccessToasts, ErrorToasts } from './toast/PrivateToast';
-import { PasswordForm, NormalForm } from './privateMUI/PrivateForms';
-import { SubmitButton, LinkButton } from './privateMUI/PrivateBottuns';
-import { NormalText } from './privateMUI/PrivateTexts';
+} from '../Types';
+import { updateUser } from '../api';
+import { PasswordForm, NormalForm } from '../privateMUI/PrivateForms';
+import { SuccessToasts, ErrorToasts } from '../toast/PrivateToast';
 
-const NewUsers: React.FC<RouteCurrentUserPropsType> = (_props) => {
-  /* eslint-disable */
-  const props = _props;
-  /* eslint-disable */
+const EditUser: React.FC<RouteCurrentUserPropsType> = (props) => {
+  const { currentUser, setCurrentUser, history } = { ...props };
 
   const [values, setvalues] = useState({
-    email: '',
-    name: '',
+    id: currentUser ? currentUser.id : 0,
+    email: currentUser ? currentUser.email : '',
+    name: currentUser ? currentUser.name : '',
     password: '',
     passwordConfirmation: '',
   });
 
   const handleChange =
-    (key: keyof CreateUserType) =>
+    (key: keyof EditUserType) =>
     (event: React.ChangeEvent<HTMLInputElement>) => {
       setvalues({ ...values, [key]: event.target.value });
     };
 
-  const saveUser = async () => {
+  const submitUpdateUser = async () => {
     try {
-      const response = await createUser(values);
-      // props.setCurrentUser(response.data.user);
-      // void props.setIsLogin(response.data.loggedIn);
+      const response = await updateUser(values);
 
-      if (response.status === 200) {
-        // props.setCurrentUser(response.data.user);
+      if (response.status === 201) {
         SuccessToasts(response.data.messages);
-        props.history.push('/current_user');
-      } else if (response.status === 202) {
+        setCurrentUser(response.data.user);
+        history.push('/current_user');
+        console.log('編集完了', response);
+      } else {
+        console.log('status200以外のレスポンス');
+        console.log('編集失敗', response);
         ErrorToasts(response.data.messages);
       }
     } catch (err) {
       if ((err as ErrorResponse).response !== undefined)
-        console.log('user登録失敗');
+        console.log('user編集失敗');
       console.log((err as ErrorResponse).response);
       ErrorToasts([
-        'ユーザー登録に失敗しました。',
+        'ログイン状態の確認に失敗しました。',
         'データサーバーとの接続に問題がある可能性があります。',
       ]);
+      ErrorToasts((err as ErrorResponse).response?.data.messages);
     }
   };
 
@@ -62,15 +61,11 @@ const NewUsers: React.FC<RouteCurrentUserPropsType> = (_props) => {
       wrap="nowrap"
       sx={{ padding: '10px' }}
     >
-      <NormalText>
-        <h1>
-          ログイン状態: {props.currentUser ? 'ログイン済み' : '未ログイン'}
-        </h1>
-      </NormalText>
+      <h1>ユーザー情報編集</h1>
       <NormalForm
         value={values.name}
         handleChange={handleChange('name')}
-        // infoText="ユーザー登録 名前を入力してください。"
+        // infoText="名前を入力してください。"
         label="name"
       />
       <NormalForm
@@ -91,15 +86,16 @@ const NewUsers: React.FC<RouteCurrentUserPropsType> = (_props) => {
         // infoText="パスワードを入力してください(確認用)。"
         label="password(確認用)"
       />
-
-      <SubmitButton onClick={saveUser} label="ユーザー登録" />
-      <LinkButton linkTo="/login" label="登録済みならこちらからログイン" />
+      <Grid item>
+        <Button onClick={submitUpdateUser} variant="outlined">
+          編集完了
+        </Button>
+      </Grid>
     </Grid>
   );
 };
 
-export default NewUsers;
+export default EditUser;
 
-// /* eslint-disable */
-// // const { currentUser, setCurrentUser, setIsLogin } = { ...props };
-// /* eslint-disable */
+/* eslint-disable */
+/* eslint-disable */
