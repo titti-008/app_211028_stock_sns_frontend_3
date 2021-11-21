@@ -1,43 +1,33 @@
-import React, { useState } from 'react';
-import { Grid, Button } from '@mui/material';
-import {
-  EditUserType,
-  RouteCurrentUserPropsType,
-  ErrorResponse,
-} from '../Types';
+import React from 'react';
+import { RouteCurrentUserPropsType, ErrorResponse } from '../Types';
 import { updateUser } from '../api';
-import { PasswordForm, NormalForm } from '../privateMUI/PrivateForms';
 import { SuccessToasts, ErrorToasts } from '../toast/PrivateToast';
+import { useUserDataInput } from '../../hooks/util';
+import UserDataForm from './UserDataForm';
 
-const EditUser: React.FC<RouteCurrentUserPropsType> = (props) => {
-  const { currentUser, setCurrentUser, history } = { ...props };
+const EditUser: React.FC<RouteCurrentUserPropsType> = (_props) => {
+  /* eslint-disable */
+  const { history, currentUser, setCurrentUser } = { ..._props };
+  /* eslint-disable */
+  const { values, handleChange } = useUserDataInput();
 
-  const [values, setvalues] = useState({
+  const userData = {
     id: currentUser ? currentUser.id : 0,
-    email: currentUser ? currentUser.email : '',
-    name: currentUser ? currentUser.name : '',
-    password: '',
-    passwordConfirmation: '',
-  });
-
-  const handleChange =
-    (key: keyof EditUserType) =>
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      setvalues({ ...values, [key]: event.target.value });
-    };
+    ...values,
+  };
 
   const submitUpdateUser = async () => {
     try {
-      const response = await updateUser(values);
+      const response = await updateUser(userData);
 
       if (response.status === 201) {
         SuccessToasts(response.data.messages);
+
         setCurrentUser(response.data.user);
         history.push('/current_user');
         console.log('編集完了', response);
       } else {
         console.log('status200以外のレスポンス');
-        console.log('編集失敗', response);
         ErrorToasts(response.data.messages);
       }
     } catch (err) {
@@ -53,45 +43,15 @@ const EditUser: React.FC<RouteCurrentUserPropsType> = (props) => {
   };
 
   return (
-    <Grid
-      container
-      direction="column"
-      justifyContent="flex-start"
-      alignItems="flex-start"
-      wrap="nowrap"
-      sx={{ padding: '10px' }}
-    >
+    <>
       <h1>ユーザー情報編集</h1>
-      <NormalForm
-        value={values.name}
-        handleChange={handleChange('name')}
-        // infoText="名前を入力してください。"
-        label="name"
+      <UserDataForm
+        values={values}
+        handleChange={handleChange}
+        onClick={submitUpdateUser}
+        submitLabel="編集完了"
       />
-      <NormalForm
-        value={values.email}
-        handleChange={handleChange('email')}
-        // infoText="メールアドレスを入力してください。"
-        label="Email"
-      />
-      <PasswordForm
-        value={values.password}
-        handleChange={handleChange('password')}
-        // infoText="パスワードを入力してください。"
-        label="password"
-      />
-      <PasswordForm
-        value={values.passwordConfirmation}
-        handleChange={handleChange('passwordConfirmation')}
-        // infoText="パスワードを入力してください(確認用)。"
-        label="password(確認用)"
-      />
-      <Grid item>
-        <Button onClick={submitUpdateUser} variant="outlined">
-          編集完了
-        </Button>
-      </Grid>
-    </Grid>
+    </>
   );
 };
 

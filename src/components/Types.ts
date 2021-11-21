@@ -2,6 +2,13 @@ import { RouteProps } from 'react-router-dom';
 import * as H from 'history';
 import { AxiosError } from 'axios';
 
+// export type userProps = {
+//   email: string;
+//   name: string;
+//   password: string;
+//   passwordConfirmation: string;
+// };
+
 export type ApiResponse = {
   text: string;
 };
@@ -12,6 +19,7 @@ export type UserType = {
   name: string;
   createdAt: Date;
   admin: boolean;
+  countMicroposts: number;
 };
 
 export type CurrentUser = UserType | null;
@@ -23,10 +31,21 @@ export type CreateUserType = {
   passwordConfirmation: string;
 };
 
+export type PasswordConfirmationType = {
+  password: string;
+  passwordConfirmation: string;
+};
+
 export type EditUserType = {
   id: number;
   email: string;
   name: string;
+  password: string;
+  passwordConfirmation: string;
+};
+export type ResetPasswordData = {
+  id: string;
+  email: string;
   password: string;
   passwordConfirmation: string;
 };
@@ -37,10 +56,8 @@ export type loginUserType = {
   rememberMe: boolean;
 };
 
-export type UsersType = Array<UserType>;
-
 export type UsersResponse = {
-  users: UsersType;
+  users: UserType[];
   messages: string[];
 };
 
@@ -59,6 +76,7 @@ export type LoginResponse = {
 export type ShowUserResponse = {
   user: UserType;
   messages: string[];
+  microposts: Micropost[];
 };
 
 export type MessageResponse = {
@@ -67,7 +85,7 @@ export type MessageResponse = {
 
 export type DeleteResponse = {
   messages: string[];
-  users: UsersType;
+  users: UserType[];
 };
 
 export type LogoutResponse = {
@@ -85,19 +103,12 @@ export type RouteCurrentUserPropsType = {
   history: H.History;
 };
 
-export type ResetPasswordPropsType = {
+export type HistoryPropsType = {
   history: H.History;
 };
 
 export type ResetEmail = {
   email: string;
-};
-
-export type ResetPasswordData = {
-  id: string;
-  email: string;
-  password: string;
-  passwordConfirmation: string;
 };
 
 export type ErrorResponse = AxiosError<{
@@ -114,4 +125,8 @@ export type Micropost = {
 export type MicropostsResponse = {
   microposts: Micropost[];
   messages: string[];
+};
+
+export type historyPropsType = {
+  history: H.History;
 };

@@ -1,11 +1,9 @@
 import { FC, useState, useEffect, useCallback } from 'react';
-import { Grid } from '@mui/material';
-import formatDistanceToNow from 'date-fns/formatDistanceToNow';
 import { Micropost } from '../Types';
 import { getMicroposts } from '../api';
 import { SuccessToasts, ErrorToasts } from '../toast/PrivateToast';
-import { NormalText } from '../privateMUI/PrivateTexts';
-import IconText from '../privateMUI/IconText';
+import Feed from './Feed';
+
 /* eslint-disable */
 const Microposts: FC = () => {
   const [microposts, setMicroposts] = useState<Micropost[]>([]);
@@ -35,29 +33,9 @@ const Microposts: FC = () => {
   }, [load, setMicroposts]);
 
   return (
-    <Grid
-      container
-      justifyContent="flex-start"
-      alignItems="start"
-      height="100%"
-    >
-      {microposts.length !== 0 ? (
-        microposts.map((micropost: Micropost) => (
-          <IconText
-            linkTo={`/users/${micropost.user.id}`}
-            key={micropost.user.id}
-            name={micropost.user.name}
-          >
-            <NormalText>{micropost.content}</NormalText>
-            <NormalText>
-              {formatDistanceToNow(new Date(micropost.createdAt))}
-            </NormalText>
-          </IconText>
-        ))
-      ) : (
-        <NormalText>...loading</NormalText>
-      )}
-    </Grid>
+    <>
+      <Feed microposts={microposts} />
+    </>
   );
 };
 

@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
-import { Grid } from '@mui/material';
 import { RouteComponentProps, useParams } from 'react-router-dom';
 import { CreateUserType, ErrorResponse } from '../Types';
 import { ResetPassword } from '../api';
 import { SuccessToasts, ErrorToasts } from '../toast/PrivateToast';
-import { PasswordForm } from '../privateMUI/PrivateForms';
+import { NormalForm } from '../privateMUI/PrivateForms';
 import { SubmitButton } from '../privateMUI/PrivateBottuns';
 import { NormalText } from '../privateMUI/PrivateTexts';
 
@@ -57,32 +56,35 @@ const ResetPasswordForm: React.FC<
   };
 
   return (
-    <Grid
-      container
-      direction="column"
-      justifyContent="flex-start"
-      alignItems="flex-start"
-      wrap="nowrap"
-      sx={{ padding: '10px' }}
-    >
+    <>
       <NormalText>パスワード再設定</NormalText>
-      <PasswordForm
+      <NormalForm
         value={values.password}
         handleChange={handleChange('password')}
         label="password"
+        error={false}
+        isPassword
+        errorText="エラー"
       />
-      <PasswordForm
+      <NormalForm
         value={values.passwordConfirmation}
         handleChange={handleChange('passwordConfirmation')}
         label="password(確認用)"
+        error={false}
+        isPassword
+        errorText="エラー"
       />
       <NormalText>email:{values.email}</NormalText>
       <NormalText>token:{values.id}</NormalText>
       <NormalText>password:{values.password}</NormalText>
       <NormalText>passConf{values.passwordConfirmation}</NormalText>
 
-      <SubmitButton onClick={handleResetPassword} label="パスワード変更" />
-    </Grid>
+      <SubmitButton
+        onClick={handleResetPassword}
+        label="パスワード変更"
+        disabled={false}
+      />
+    </>
   );
 };
 

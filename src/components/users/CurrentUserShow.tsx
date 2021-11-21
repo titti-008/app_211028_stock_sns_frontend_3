@@ -1,31 +1,44 @@
-import React from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { IconButton, Grid, Avatar, Button } from '@mui/material';
 import formatDistanceToNow from 'date-fns/formatDistanceToNow';
 import PersonIcon from '@mui/icons-material/Person';
 import { Link } from 'react-router-dom';
-import { RouteCurrentUserPropsType } from '../Types';
-import { useColors } from '../../hooks/util';
+import { RouteCurrentUserPropsType, Micropost } from '../Types';
 import { NormalText } from '../privateMUI/PrivateTexts';
+import Feed from '../microposts/Feed';
+import { getUser } from '../api';
+import { SuccessToasts, ErrorToasts } from '../toast/PrivateToast';
 
 const UserShow: React.FC<RouteCurrentUserPropsType> = ({ ...props }) => {
-  /* eslint-disable */
-  const { currentUser, setCurrentUser } = { ...props };
-  /* eslint-disable */
+  const { currentUser } = { ...props };
 
-  const colors = useColors();
+  const [microposts, setMicroposts] = useState<Micropost[]>([]);
 
-  // useEffect(() => {
-  //   setCurrentUser(currentUser);
-  // }, [setCurrentUser, currentUser]);
+  const load = useCallback(
+    () => getUser(currentUser ? currentUser?.id : 0),
+    [currentUser],
+  );
+
+  useEffect(() => {
+    const componetDitMount = async () => {
+      try {
+        const response = await load();
+        if (response.status === 200) {
+          setMicroposts(response.data.microposts);
+          SuccessToasts(response.data.messages);
+        } else {
+          ErrorToasts(response.data.messages);
+        }
+      } catch (err) {
+        console.log('データの取得に失敗');
+        console.log(err);
+      }
+    };
+    void componetDitMount();
+  }, [load]);
 
   return (
-    <Grid
-      container
-      direction="column"
-      justifyContent="flex-start"
-      alignItems="flex-start"
-      wrap="nowrap"
-    >
+    <>
       <Grid item>
         <IconButton color="default">
           <Link to="/users/:id">
@@ -36,9 +49,6 @@ const UserShow: React.FC<RouteCurrentUserPropsType> = ({ ...props }) => {
         </IconButton>
       </Grid>
       <Grid item xs sx={{ width: '100%' }}>
-        <NormalText>
-          ログイン状態:{currentUser ? 'ログイン済み' : '未ログイン'}
-        </NormalText>
         <NormalText>{currentUser?.name}</NormalText>
         <NormalText>{currentUser?.email}</NormalText>
         <NormalText>
@@ -57,11 +67,14 @@ const UserShow: React.FC<RouteCurrentUserPropsType> = ({ ...props }) => {
           </Link>
         </Button>
       </Grid>
-    </Grid>
+      <Feed microposts={microposts} />
+    </>
   );
 };
 
 export default UserShow;
 
+/* eslint-disable */
+/* eslint-disable */
 /* eslint-disable */
 /* eslint-disable */

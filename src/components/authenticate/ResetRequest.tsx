@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
-import { Grid } from '@mui/material';
-import { ResetPasswordPropsType } from '../Types';
+import { HistoryPropsType } from '../Types';
 import { ResetRequest } from '../api';
 import { SuccessToasts, ErrorToasts } from '../toast/PrivateToast';
 import { NormalForm } from '../privateMUI/PrivateForms';
 import { NormalText } from '../privateMUI/PrivateTexts';
 import { SubmitButton, LinkButton } from '../privateMUI/PrivateBottuns';
 
-const ResetRequestForm: React.FC<ResetPasswordPropsType> = ({ ...props }) => {
+const ResetRequestForm: React.FC<HistoryPropsType> = ({ ...props }) => {
   /* eslint-disable */
   const [values, setvalues] = useState({
     email: '',
@@ -37,14 +36,7 @@ const ResetRequestForm: React.FC<ResetPasswordPropsType> = ({ ...props }) => {
   };
 
   return (
-    <Grid
-      container
-      direction="column"
-      justifyContent="flex-start"
-      alignItems="flex-start"
-      wrap="nowrap"
-      sx={{ padding: '10px' }}
-    >
+    <>
       <NormalText>
         <h1>パスワード再設定</h1>
         <p>再設定用のメールアドレスを入力してください</p>
@@ -54,11 +46,18 @@ const ResetRequestForm: React.FC<ResetPasswordPropsType> = ({ ...props }) => {
         value={values.email}
         handleChange={handleChange('email')}
         label="Email"
+        error={false}
+        isPassword={false}
+        errorText="エラー"
       />
 
-      <SubmitButton onClick={handleResetRequest} label="再設定メール送信" />
+      <SubmitButton
+        onClick={handleResetRequest}
+        label="再設定メール送信"
+        disabled={false}
+      />
       <LinkButton linkTo="/signup" label="新規登録はこちら" />
-    </Grid>
+    </>
   );
 };
 

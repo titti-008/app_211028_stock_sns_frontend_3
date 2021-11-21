@@ -8,11 +8,13 @@ import { useColors } from '../../hooks/util';
 type SubmitType<T> = {
   onClick: (props?: T) => void;
   label: string;
+  disabled: boolean;
 };
 
 export const SubmitButton = ({
   onClick,
   label,
+  disabled,
 }: SubmitType<React.MouseEvent<HTMLButtonElement, MouseEvent>>) => {
   const colors = useColors();
 
@@ -22,6 +24,7 @@ export const SubmitButton = ({
         onClick={onClick}
         variant="outlined"
         sx={{ color: colors.text, borderColor: colors.text }}
+        disabled={disabled}
       >
         <NormalText>{label}</NormalText>
       </Button>

@@ -1,8 +1,5 @@
 import { FC, useState, useEffect, useCallback } from 'react';
-import { Grid } from '@mui/material';
-import formatDistanceToNow from 'date-fns/formatDistanceToNow';
-import { UsersType, UserType, CurrentUser, ErrorResponse } from '../Types';
-import { useColors } from '../../hooks/util';
+import { UserType, CurrentUser, ErrorResponse } from '../Types';
 import { getUsers, deleteUser } from '../api';
 import { SubmitButton } from '../privateMUI/PrivateBottuns';
 import { SuccessToasts, ErrorToasts } from '../toast/PrivateToast';
@@ -15,9 +12,8 @@ type PropsType = {
 
 const Users: FC<PropsType> = ({ currentUser }: PropsType) => {
   /* eslint-disable */
-  const [users, setUsers] = useState<UsersType>([]);
+  const [users, setUsers] = useState<UserType[]>([]);
   /* eslint-disable */
-  const colors = useColors();
 
   const load = useCallback(() => getUsers(), []);
 
@@ -64,26 +60,25 @@ const Users: FC<PropsType> = ({ currentUser }: PropsType) => {
   };
 
   return (
-    <Grid
-      container
-      justifyContent="flex-start"
-      alignItems="start"
-      height="100%"
-    >
+    <>
       {users.length !== 0 ? (
         users.map((user: UserType) => (
-          <IconText linkTo={`/users/${user.id}`} key={user.id} name={user.name}>
+          <IconText
+            linkTo={`/users/${user.id}`}
+            key={user.id}
+            name={user.name}
+            date={new Date(user.createdAt)}
+          >
             <NormalText>{user.email}</NormalText>
-            <NormalText>
-              {formatDistanceToNow(new Date(user.createdAt))}
-            </NormalText>
             <NormalText>管理者権限: {user.admin ? 'あり' : 'なし'}</NormalText>
+            <NormalText>投稿数:{user.countMicroposts}件</NormalText>
             {currentUser?.admin ? (
               <SubmitButton
                 label="削除"
                 onClick={() => {
                   void handleDeleteUser(user.id);
                 }}
+                disabled={false}
               />
             ) : (
               <></>
@@ -93,7 +88,7 @@ const Users: FC<PropsType> = ({ currentUser }: PropsType) => {
       ) : (
         <NormalText>...loading</NormalText>
       )}
-    </Grid>
+    </>
   );
 };
 

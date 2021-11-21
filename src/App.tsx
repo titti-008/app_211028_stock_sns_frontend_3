@@ -1,11 +1,12 @@
 import { FC, useState, useMemo, useRef, useEffect, ReactElement } from 'react';
 import { Switch, Link, useHistory, useLocation } from 'react-router-dom';
 import * as H from 'history';
-import { Drawer, AppBar, Grid, Box, IconButton, Hidden } from '@mui/material';
+import { Drawer, Grid, Box, IconButton, Hidden } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home';
 // import HelpIcon from '@mui/icons-material/Help';
 import PublicIcon from '@mui/icons-material/Public';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import SendIcon from '@mui/icons-material/Send';
 import GroupIcon from '@mui/icons-material/Group';
 import DehazeIcon from '@mui/icons-material/Dehaze';
 import { ThemeProvider, createTheme, Theme } from '@mui/material/styles';
@@ -29,6 +30,13 @@ import ConfigBar from './components/ConfigBar';
 import ResetRequestForm from './components/authenticate/ResetRequest';
 import ResetPasswordForm from './components/authenticate/ResetPassword';
 import Microposts from './components/microposts/Microposts';
+import PostBar from './components/microposts/PostBar';
+import PostNew from './components/microposts/PostNew';
+import {
+  BaseCard,
+  PrivateAppbar,
+  PrivateBox,
+} from './components/privateMUI/BaseCard';
 
 // ----------App----------------------
 const App: FC = () => {
@@ -153,9 +161,6 @@ const App: FC = () => {
     }
   };
 
-  // ------ナビゲーションバーのサイズ・・・子コンポーネントのサイズを調整するためにバーのサイズ固定が必要
-  const appBerHeight = 42;
-
   // ----------コンポーネント----------------------
   return (
     <ThemeProvider theme={theme}>
@@ -171,198 +176,184 @@ const App: FC = () => {
         <Grid
           container
           direction="row"
-          justifyContent="start"
+          justifyContent="flex-start"
           columnSpacing={{ xs: 0, sm: 0, md: 1 }}
           paddingY={{ xs: 0, sm: 0, md: 1 }}
-          alignItems="start"
+          alignItems="flex-start"
           height="100%"
+          wrap="nowrap"
+          overflow="scroll"
         >
-          <Grid item height="100%" width="350">
+          <Hidden mdDown implementation="js">
+            <PostBar history={history} currentUser={currentUser} />
+          </Hidden>
+          <Grid item height="100%" width="100%">
             <Hidden mdUp implementation="js">
               <Drawer
                 anchor="left"
                 variant="temporary"
                 open={open}
+                onClose={handleDrawerClose}
                 sx={{
-                  flexShrink: 0,
-                  width: '100%',
+                  // flexShrink: 0,
+
                   backgroundColor: colors.baseSheet,
                 }}
               >
                 <ConfigBar
-                  appBerHeight={appBerHeight}
                   handleLogout={handleLogout}
                   handleDrawerClose={handleDrawerClose}
                 />
               </Drawer>
             </Hidden>
           </Grid>
-          <Grid item height="100%" width={{ xs: '100%', sm: '100%', md: 350 }}>
-            <Box
-              sx={{
-                width: '100%',
-                height: '100%',
-                backgroundColor: colors.baseSheet,
-                padding: 0,
-                margin: 0,
-              }}
-            >
-              <AppBar
-                position="static"
-                sx={{
-                  height: `${appBerHeight}px`,
-                  backgroundColor: colors.header,
-                }}
-              >
-                <Grid
-                  container
-                  direction="row"
-                  justifyContent="space-evenly"
-                  alignItems="center"
-                >
-                  <Grid item>
-                    <IconButton color="default">
-                      <DehazeIcon onClick={handleDrawerOpen} />
-                    </IconButton>
-                  </Grid>
-                  <Grid item>
-                    <Link to="/signup">
-                      <IconButton color="default">
-                        <PersonAddIcon />
-                      </IconButton>
-                    </Link>
-                  </Grid>
-                  <Grid item>
-                    <Link to="/current_user">
-                      <IconButton color="default">
-                        <AccountCircleIcon />
-                      </IconButton>
-                    </Link>
-                  </Grid>
-                  <Grid item>
-                    <Link to="/">
-                      <IconButton color="default">
-                        <HomeIcon />
-                      </IconButton>
-                    </Link>
-                  </Grid>
+          <BaseCard>
+            <PrivateAppbar>
+              <Grid item>
+                <IconButton color="default">
+                  <DehazeIcon onClick={handleDrawerOpen} />
+                </IconButton>
+              </Grid>
+              <Grid item>
+                <Link to="/signup">
+                  <IconButton color="default">
+                    <PersonAddIcon />
+                  </IconButton>
+                </Link>
+              </Grid>
+              <Grid item>
+                <Link to="/current_user">
+                  <IconButton color="default">
+                    <AccountCircleIcon />
+                  </IconButton>
+                </Link>
+              </Grid>
+              <Grid item>
+                <Link to="/">
+                  <IconButton color="default">
+                    <HomeIcon />
+                  </IconButton>
+                </Link>
+              </Grid>
+              <Grid item>
+                <Link to="/microposts/new">
+                  <IconButton color="default">
+                    <SendIcon />
+                  </IconButton>
+                </Link>
+              </Grid>
 
-                  <Grid item>
-                    <Link to="/hello_world">
-                      <IconButton color="default">
-                        <PublicIcon />
-                      </IconButton>
-                    </Link>
-                  </Grid>
-                  <Grid item>
-                    <Link to="/users">
-                      <IconButton color="default">
-                        <GroupIcon />
-                      </IconButton>
-                    </Link>
-                  </Grid>
-                  <Grid item>
-                    <DarkButton
-                      darkMode={darkMode}
-                      handleDarkModeOff={handleDarkModeOff}
-                      handleDarkModeOn={handleDarkModeOn}
-                    />
-                  </Grid>
-                </Grid>
-              </AppBar>
+              <Grid item>
+                <Link to="/hello_world">
+                  <IconButton color="default">
+                    <PublicIcon />
+                  </IconButton>
+                </Link>
+              </Grid>
+              <Grid item>
+                <Link to="/users">
+                  <IconButton color="default">
+                    <GroupIcon />
+                  </IconButton>
+                </Link>
+              </Grid>
+              <Grid item>
+                <DarkButton
+                  darkMode={darkMode}
+                  handleDarkModeOff={handleDarkModeOff}
+                  handleDarkModeOn={handleDarkModeOn}
+                />
+              </Grid>
+            </PrivateAppbar>
 
-              <Box
-                sx={{
-                  height: `calc(100% - ${appBerHeight}px)`,
-                  overflow: 'scroll',
-                }}
-              >
-                <Switch>
-                  <PrivateRoute
-                    isLogin={isLogin}
-                    exact
-                    path="/hello_world"
-                    component={HelloWorld}
+            <PrivateBox>
+              <Switch>
+                <PrivateRoute
+                  isLogin={isLogin}
+                  exact
+                  path="/hello_world"
+                  component={HelloWorld}
+                />
+                <PrivateRoute
+                  isLogin={isLogin}
+                  exact
+                  path="/users"
+                  render={(): ReactElement => (
+                    <Users currentUser={currentUser} />
+                  )}
+                />
+                <PrivateRoute
+                  isLogin={isLogin}
+                  exact
+                  path="/users/:id"
+                  component={UserShow}
+                />
+                <PrivateRoute isLogin={isLogin} exact path="/current_user">
+                  <CurrentUserShow
+                    history={history}
+                    currentUser={currentUser}
+                    setCurrentUser={setCurrentUser}
                   />
-                  <PrivateRoute
-                    isLogin={isLogin}
-                    exact
-                    path="/users"
-                    render={(): ReactElement => (
-                      <Users currentUser={currentUser} />
-                    )}
+                </PrivateRoute>
+                <PrivateRoute isLogin={isLogin} exact path="/edit_user">
+                  <EditUser
+                    history={history}
+                    currentUser={currentUser}
+                    setCurrentUser={setCurrentUser}
                   />
-                  <PrivateRoute
-                    isLogin={isLogin}
-                    exact
-                    path="/users/:id"
-                    component={UserShow}
-                  />
-                  <PrivateRoute isLogin={isLogin} exact path="/current_user">
-                    <CurrentUserShow
-                      history={history}
+                </PrivateRoute>
+                <PrivateRoute isLogin={isLogin} exact path="/">
+                  <Microposts />
+                </PrivateRoute>
+                <PrivateRoute isLogin={isLogin} exact path="/microposts/new">
+                  <PostNew history={history} />
+                </PrivateRoute>
+
+                <UnAuthRoute
+                  isLogin={isLogin}
+                  exact
+                  path="/login"
+                  render={(): ReactElement => (
+                    <LoginForm
+                      setIsLogin={setIsLogin}
                       currentUser={currentUser}
                       setCurrentUser={setCurrentUser}
                     />
-                  </PrivateRoute>
-                  <PrivateRoute isLogin={isLogin} exact path="/edit_user">
-                    <EditUser
-                      history={history}
-                      currentUser={currentUser}
-                      setCurrentUser={setCurrentUser}
-                    />
-                  </PrivateRoute>
-                  <PrivateRoute isLogin={isLogin} exact path="/">
-                    <Microposts />
-                  </PrivateRoute>
-
-                  <UnAuthRoute
-                    isLogin={isLogin}
-                    exact
-                    path="/login"
-                    render={(): ReactElement => (
-                      <LoginForm
-                        setIsLogin={setIsLogin}
-                        currentUser={currentUser}
-                        setCurrentUser={setCurrentUser}
-                      />
-                    )}
-                  />
-                  <UnAuthRoute
-                    isLogin={isLogin}
-                    exact
-                    path="/signup"
-                    render={(): ReactElement => (
-                      <NewUsers
-                        history={history}
-                        currentUser={currentUser}
-                        setCurrentUser={setCurrentUser}
-                      />
-                    )}
-                  />
-                  <UnAuthRoute
-                    isLogin={isLogin}
-                    exact
-                    path="/password_resets/new"
-                    render={(): ReactElement => (
-                      <ResetRequestForm history={history} />
-                    )}
-                  />
-                  <UnAuthRoute
-                    isLogin={isLogin}
-                    path="/password_resets/:id/edit/email=:email"
-                    component={ResetPasswordForm}
-                  />
-                </Switch>
-              </Box>
-            </Box>
-          </Grid>
+                  )}
+                />
+                <UnAuthRoute
+                  isLogin={isLogin}
+                  exact
+                  path="/signup"
+                  render={(): ReactElement => <NewUsers history={history} />}
+                />
+                <UnAuthRoute
+                  isLogin={isLogin}
+                  exact
+                  path="/password_resets/new"
+                  render={(): ReactElement => (
+                    <ResetRequestForm history={history} />
+                  )}
+                />
+                <UnAuthRoute
+                  isLogin={isLogin}
+                  path="/password_resets/:id/edit/email=:email"
+                  component={ResetPasswordForm}
+                />
+              </Switch>
+            </PrivateBox>
+          </BaseCard>
           <Hidden mdDown implementation="js">
             <ConfigBar
-              appBerHeight={appBerHeight}
               handleLogout={handleLogout}
               handleDrawerClose={() => {}}
             />
+          </Hidden>
+          <Hidden mdDown implementation="js">
+            <PostBar history={history} currentUser={currentUser} />
+          </Hidden>
+          <Hidden mdDown implementation="js">
+            <PostBar history={history} currentUser={currentUser} />
           </Hidden>
         </Grid>
       </Box>
