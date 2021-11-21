@@ -18,6 +18,7 @@ const env = process.env.REACT_APP_SERVER_URL ?? ''; // 文字列型であるこ�
 
 const apiUrl = `${env}/api/v1`;
 const usersUrl = `${apiUrl}/users`;
+const micropostsUrl = `${apiUrl}/microposts`;
 
 const instance = axios.create({ withCredentials: true });
 
@@ -25,7 +26,7 @@ export const getUsers = (): Promise<AxiosResponse<UsersResponse, unknown>> =>
   instance.get<UsersResponse>(`${usersUrl}`);
 
 export const getUser = (
-  id: string,
+  id: number,
 ): Promise<AxiosResponse<ShowUserResponse, unknown>> =>
   instance.get<ShowUserResponse>(`${usersUrl}/${id}`);
 
@@ -102,7 +103,14 @@ export const ResetPassword = (
 
 export const getMicroposts = (): Promise<
   AxiosResponse<MicropostsResponse, unknown>
-> => instance.get<MicropostsResponse>(`${apiUrl}/microposts`);
+> => instance.get<MicropostsResponse>(micropostsUrl);
+
+export const createMicropost = (
+  content: string,
+): Promise<AxiosResponse<MessageResponse, unknown>> =>
+  instance.post<MessageResponse>(micropostsUrl, {
+    micropost: { content: content },
+  });
 
 /* eslint-disable */
 /* eslint-disable */

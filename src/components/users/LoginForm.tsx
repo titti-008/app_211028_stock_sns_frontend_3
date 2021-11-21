@@ -1,19 +1,14 @@
-import React, { useState } from 'react';
-import { Grid } from '@mui/material';
+import { FC, useState } from 'react';
 import { loginUserType, RouteUserPropsType } from '../Types';
 import { loginUser } from '../api';
 import { SuccessToasts, ErrorToasts } from '../toast/PrivateToast';
-import {
-  PasswordForm,
-  NormalForm,
-  RememberCheckBox,
-} from '../privateMUI/PrivateForms';
+import { NormalForm, RememberCheckBox } from '../privateMUI/PrivateForms';
 import { NormalText } from '../privateMUI/PrivateTexts';
 import { SubmitButton, LinkButton } from '../privateMUI/PrivateBottuns';
 
 // toast.configure(); // トーストを10秒間保持する設定
 
-const LoginForm: React.FC<RouteUserPropsType> = ({ ...props }) => {
+const LoginForm: FC<RouteUserPropsType> = ({ ...props }) => {
   const { currentUser, setCurrentUser, setIsLogin } = { ...props };
 
   const [values, setvalues] = useState({
@@ -48,14 +43,7 @@ const LoginForm: React.FC<RouteUserPropsType> = ({ ...props }) => {
   };
 
   return (
-    <Grid
-      container
-      direction="column"
-      justifyContent="flex-start"
-      alignItems="flex-start"
-      wrap="nowrap"
-      sx={{ padding: '10px' }}
-    >
+    <>
       <NormalText>
         <h1>Log in</h1>
         <p>ログイン状態:{currentUser ? 'ログイン済み' : '未ログイン'}</p>
@@ -64,25 +52,33 @@ const LoginForm: React.FC<RouteUserPropsType> = ({ ...props }) => {
       <NormalForm
         value={values.email}
         handleChange={handleChange('email')}
-        // infoText="メールアドレスを入力してください。"
         label="Email"
+        error={false}
+        isPassword={false}
+        errorText="エラー"
       />
       <LinkButton
         linkTo="/password_resets/new"
         label="パスワードを忘れた場合"
       />
-      <PasswordForm
+      <NormalForm
         value={values.password}
         handleChange={handleChange('password')}
-        // infoText="パスワードを入力してください。"
         label="password"
+        error={false}
+        isPassword
+        errorText="エラー"
       />
 
       <RememberCheckBox handleChange={handleChange('rememberMe')} />
 
-      <SubmitButton onClick={handleLoginUser} label="ログイン" />
+      <SubmitButton
+        onClick={handleLoginUser}
+        label="ログイン"
+        disabled={false}
+      />
       <LinkButton linkTo="/signup" label="新規登録はこちら" />
-    </Grid>
+    </>
   );
 };
 

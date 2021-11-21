@@ -1,33 +1,28 @@
 import { FC, useState, useEffect, useCallback } from 'react';
-import {
-  IconButton,
-  Grid,
-  // Divider,
-  Avatar,
-  Typography,
-} from '@mui/material';
-import formatDistanceToNow from 'date-fns/formatDistanceToNow';
-import PersonIcon from '@mui/icons-material/Person';
-import { Link } from 'react-router-dom';
 import { RouteComponentProps } from 'react-router';
-import { UserType } from '../Types';
-import { useColors } from '../../hooks/util';
+import { UserType, Micropost } from '../Types';
 import { getUser } from '../api';
+import IconText from '../privateMUI/IconText';
+import { NormalText } from '../privateMUI/PrivateTexts';
 
 import { SuccessToasts, ErrorToasts } from '../toast/PrivateToast';
+import Feed from '../microposts/Feed';
 
 const UserShow: FC<RouteComponentProps<{ id: string }>> = (props) => {
-  /* eslint-disable */
   const [user, setUser] = useState<UserType>({
     createdAt: new Date(),
     email: 'loading...',
     name: 'loading...',
     id: 0,
     admin: false,
+    countMicroposts: 0,
   });
-  /* eslint-disable */
+  const [microposts, setMicroposts] = useState<Micropost[]>([]);
 
-  const load = useCallback(() => getUser(props.match.params.id), [props]);
+  const load = useCallback(
+    () => getUser(Number(props.match.params.id)),
+    [props],
+  );
 
   useEffect(() => {
     const componetDitMount = async () => {
@@ -35,6 +30,7 @@ const UserShow: FC<RouteComponentProps<{ id: string }>> = (props) => {
         const response = await load();
         if (response.status === 200) {
           setUser(response.data.user);
+          setMicroposts(response.data.microposts);
           SuccessToasts(response.data.messages);
         } else {
           ErrorToasts(response.data.messages);
@@ -47,46 +43,24 @@ const UserShow: FC<RouteComponentProps<{ id: string }>> = (props) => {
     void componetDitMount();
   }, [setUser, load]);
 
-  const colors = useColors();
-
   return (
-    <Grid
-      container
-      direction="row"
-      justifyContent="flex-start"
-      alignItems="flex-start"
-      wrap="nowrap"
-    >
-      <Grid item>
-        <IconButton color="default">
-          <Link to="/users/:id">
-            <Avatar>
-              <PersonIcon fontSize="large" />
-            </Avatar>
-          </Link>
-        </IconButton>
-      </Grid>
-      <Grid item xs sx={{ width: '50%' }}>
-        <Typography
-          sx={{ color: colors.text }}
-          style={{ overflowWrap: 'break-word' }}
-        >
-          {user.name}
-        </Typography>
-
-        <Typography
-          sx={{ color: colors.text }}
-          style={{ overflowWrap: 'break-word' }}
-        >
-          {user.email}
-        </Typography>
-
-        <Typography sx={{ color: colors.text }}>
-          {formatDistanceToNow(new Date(user.createdAt))}
-        </Typography>
-      </Grid>
-    </Grid>
+    <>
+      <IconText
+        linkTo={`/users/${user.id}`}
+        key={user.id}
+        name={user.name}
+        date={new Date(user.createdAt)}
+      >
+        <NormalText>{user.email}</NormalText>
+        <NormalText>管理者権限: {user.admin ? 'あり' : 'なし'}</NormalText>
+        <NormalText>投稿数:{user.countMicroposts}件</NormalText>
+      </IconText>
+      <Feed microposts={microposts} />
+    </>
   );
 };
 
 export default UserShow;
+
+/* eslint-disable */
+/* eslint-disable */

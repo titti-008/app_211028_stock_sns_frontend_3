@@ -1,42 +1,23 @@
-import React, { useState } from 'react';
-import { Grid } from '@mui/material';
-import {
-  CreateUserType,
-  RouteCurrentUserPropsType,
-  ErrorResponse,
-} from '../Types';
+import React from 'react';
+import { ErrorResponse, HistoryPropsType } from '../Types';
 import { createUser } from '../api';
 import { SuccessToasts, ErrorToasts } from '../toast/PrivateToast';
-import { PasswordForm, NormalForm } from '../privateMUI/PrivateForms';
-import { SubmitButton, LinkButton } from '../privateMUI/PrivateBottuns';
-import { NormalText } from '../privateMUI/PrivateTexts';
+import { LinkButton } from '../privateMUI/PrivateBottuns';
+import { useUserDataInput } from '../../hooks/util';
+import UserDataForm from './UserDataForm';
 
-const NewUsers: React.FC<RouteCurrentUserPropsType> = (_props) => {
+const NewUsers: React.FC<HistoryPropsType> = (_props) => {
   /* eslint-disable */
   const props = _props;
   /* eslint-disable */
 
-  const [values, setvalues] = useState({
-    email: '',
-    name: '',
-    password: '',
-    passwordConfirmation: '',
-  });
-
-  const handleChange =
-    (key: keyof CreateUserType) =>
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      setvalues({ ...values, [key]: event.target.value });
-    };
+  const { values, handleChange } = useUserDataInput();
 
   const saveUser = async () => {
     try {
       const response = await createUser(values);
-      // props.setCurrentUser(response.data.user);
-      // void props.setIsLogin(response.data.loggedIn);
 
       if (response.status === 200) {
-        // props.setCurrentUser(response.data.user);
         SuccessToasts(response.data.messages);
         props.history.push('/current_user');
       } else if (response.status === 202) {
@@ -54,52 +35,19 @@ const NewUsers: React.FC<RouteCurrentUserPropsType> = (_props) => {
   };
 
   return (
-    <Grid
-      container
-      direction="column"
-      justifyContent="flex-start"
-      alignItems="flex-start"
-      wrap="nowrap"
-      sx={{ padding: '10px' }}
-    >
-      <NormalText>
-        <h1>
-          ログイン状態: {props.currentUser ? 'ログイン済み' : '未ログイン'}
-        </h1>
-      </NormalText>
-      <NormalForm
-        value={values.name}
-        handleChange={handleChange('name')}
-        // infoText="ユーザー登録 名前を入力してください。"
-        label="name"
+    <>
+      <UserDataForm
+        values={values}
+        handleChange={handleChange}
+        onClick={saveUser}
+        submitLabel="ユーザー登録"
       />
-      <NormalForm
-        value={values.email}
-        handleChange={handleChange('email')}
-        // infoText="メールアドレスを入力してください。"
-        label="Email"
-      />
-      <PasswordForm
-        value={values.password}
-        handleChange={handleChange('password')}
-        // infoText="パスワードを入力してください。"
-        label="password"
-      />
-      <PasswordForm
-        value={values.passwordConfirmation}
-        handleChange={handleChange('passwordConfirmation')}
-        // infoText="パスワードを入力してください(確認用)。"
-        label="password(確認用)"
-      />
-
-      <SubmitButton onClick={saveUser} label="ユーザー登録" />
       <LinkButton linkTo="/login" label="登録済みならこちらからログイン" />
-    </Grid>
+    </>
   );
 };
 
 export default NewUsers;
 
-// /* eslint-disable */
-// // const { currentUser, setCurrentUser, setIsLogin } = { ...props };
-// /* eslint-disable */
+/* eslint-disable */
+/* eslint-disable */
