@@ -1,21 +1,25 @@
-import { FC, useState } from 'react';
+import React, { FC, useState, useRef } from 'react';
 import {
   Grid,
-  TextField,
   FormControl,
   InputLabel,
   Input,
   FormHelperText,
+  IconButton,
 } from '@mui/material';
+import AttachFileIcon from '@mui/icons-material/AttachFile';
+import imageCompression from 'browser-image-compression';
 import { createMicropost } from '../api';
 import { SubmitButton } from '../privateMUI/PrivateBottuns';
 import { historyPropsType, ErrorResponse } from '../Types';
+// import { range } from '../../hooks/util';
 import { SuccessToasts, ErrorToasts } from '../toast/PrivateToast';
+// import FileUploader from './FileUploader';
+import PrivateImageList from './PrivateImageList';
 
 const PostNew: FC<historyPropsType> = (_props) => {
-  /* eslint-disable */
   const props = _props;
-  /* eslint-disable */
+
   const [content, setContent] = useState<string>('');
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -27,11 +31,65 @@ const PostNew: FC<historyPropsType> = (_props) => {
   const isOver = content.length > MaxLength;
   const isError = isOver || content.length === 0;
 
+  const [images, setImages] = useState<File[]>([]);
+
+  // const data = new FormData();
+
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const fileUpload = () => {
+    if (inputRef.current) {
+      inputRef.current.click();
+    }
+  };
+
+  const onFileInputChange = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    if (event.target.files === null) {
+      return;
+    }
+    const file = event.target.files[0];
+    if (file === null) {
+      return;
+    }
+
+    const complessOption = {
+      maxSizeMB: 1,
+      maxWidthOrHeight: 1024,
+    };
+
+    const compressFile = await imageCompression(file, complessOption);
+
+    setImages([...images, compressFile]);
+
+    // setImages((previmages: string[]) => [...previmages, imageUrl]);
+
+    // const reader = new FileReader();
+    // reader.readAsDataURL(file);
+    // reader.onload = () => {
+    //   const result = reader.result as string;
+    //   setImages((previmages: string[]) => [...previmages, result]);
+    // };
+  };
+
+  const params = new FormData();
+  params.append('content', content);
+
+  const imagesUrl = images.map((image) => {
+    const imageUrl = image ? URL.createObjectURL(image) : '';
+    params.append(`images[]`, image);
+
+    return imageUrl;
+  });
+
   const submitCreateContent = async () => {
     try {
-      const response = await createMicropost(content);
+      const response = await createMicropost(params);
       if (response.status === 200) {
         SuccessToasts(response.data.messages);
+        setContent('');
+        setImages([]);
         props.history.push('/');
       } else if (response.status === 202) {
         ErrorToasts(response.data.messages);
@@ -50,16 +108,6 @@ const PostNew: FC<historyPropsType> = (_props) => {
   return (
     <>
       <Grid item width="100%">
-        <TextField
-          error={isOver}
-          margin="normal"
-          label="つぶやきを投稿"
-          multiline
-          rows={8}
-          fullWidth
-          value={content}
-          onChange={handleChange}
-        />
         <FormControl variant="outlined" margin="normal" fullWidth>
           <InputLabel htmlFor="content">つぶやきを投稿</InputLabel>
           <Input
@@ -70,11 +118,23 @@ const PostNew: FC<historyPropsType> = (_props) => {
             onChange={handleChange}
             aria-describedby="component-text"
           />
-
+          {images.length !== 0 && <PrivateImageList src={imagesUrl} />}
           <FormHelperText id="component-text">
             残り{MaxLength - content.length}字
           </FormHelperText>
         </FormControl>
+
+        <IconButton onClick={fileUpload}>
+          <input
+            hidden
+            type="file"
+            name="image"
+            ref={inputRef}
+            onChange={onFileInputChange}
+            accept="image/png, image/jpeg, image/gif, image/bmp, image/svg+xml"
+          />
+          <AttachFileIcon />
+        </IconButton>
       </Grid>
 
       <Grid item>
@@ -89,3 +149,6 @@ const PostNew: FC<historyPropsType> = (_props) => {
 };
 
 export default PostNew;
+
+/* eslint-disable */
+/* eslint-disable */

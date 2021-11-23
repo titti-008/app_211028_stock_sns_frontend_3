@@ -1,40 +1,35 @@
-import React, { useState } from 'react';
-import { RouteComponentProps, useParams } from 'react-router-dom';
-import { CreateUserType, ErrorResponse } from '../Types';
+import { RouteComponentProps } from 'react-router-dom';
+import { ErrorResponse } from '../Types';
 import { ResetPassword } from '../api';
 import { SuccessToasts, ErrorToasts } from '../toast/PrivateToast';
 import { NormalForm } from '../privateMUI/PrivateForms';
 import { SubmitButton } from '../privateMUI/PrivateBottuns';
 import { NormalText } from '../privateMUI/PrivateTexts';
+import { useUserDataInput, useCheckPassword } from '../../hooks/util';
 
 const ResetPasswordForm: React.FC<
   RouteComponentProps<{ id: string; email: string }>
 > = ({ ...props }) => {
-  type Params = {
-    id: string;
-    email: string;
-  };
-  const params = useParams<Params>();
-
-  console.log('params', params);
-  console.log('props', props);
-
-  const [values, setvalues] = useState({
-    id: props.match.params.id,
-    email: decodeURIComponent(props.match.params.email),
+  const initInput = {
     password: '',
     passwordConfirmation: '',
-  });
+  };
 
-  const handleChange =
-    (key: keyof CreateUserType) =>
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      setvalues({ ...values, [key]: event.target.value });
-    };
+  const { values, handleChange } = useUserDataInput(initInput);
+  const { isPassError, passErrorMessage, isDisablePassword } = useCheckPassword(
+    values.password,
+    values.passwordConfirmation,
+  );
+
+  const userData = {
+    id: props.match.params.id,
+    email: decodeURIComponent(props.match.params.email),
+    ...values,
+  };
 
   const handleResetPassword = async () => {
     try {
-      const response = await ResetPassword(values);
+      const response = await ResetPassword(userData);
 
       if (response.status === 200) {
         SuccessToasts(response.data.messages);
@@ -62,27 +57,23 @@ const ResetPasswordForm: React.FC<
         value={values.password}
         handleChange={handleChange('password')}
         label="password"
-        error={false}
+        error={isPassError}
         isPassword
-        errorText="エラー"
+        errorText={passErrorMessage}
       />
       <NormalForm
         value={values.passwordConfirmation}
         handleChange={handleChange('passwordConfirmation')}
         label="password(確認用)"
-        error={false}
+        error={isPassError}
         isPassword
-        errorText="エラー"
+        errorText=""
       />
-      <NormalText>email:{values.email}</NormalText>
-      <NormalText>token:{values.id}</NormalText>
-      <NormalText>password:{values.password}</NormalText>
-      <NormalText>passConf{values.passwordConfirmation}</NormalText>
 
       <SubmitButton
         onClick={handleResetPassword}
         label="パスワード変更"
-        disabled={false}
+        disabled={isDisablePassword}
       />
     </>
   );

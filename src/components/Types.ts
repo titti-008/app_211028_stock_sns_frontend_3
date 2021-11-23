@@ -63,8 +63,6 @@ export type UsersResponse = {
 
 export type RouteUserPropsType = {
   setIsLogin: React.Dispatch<React.SetStateAction<boolean>>;
-  currentUser: CurrentUser;
-  setCurrentUser: React.Dispatch<React.SetStateAction<CurrentUser>>;
 };
 
 export type LoginResponse = {
@@ -83,7 +81,7 @@ export type MessageResponse = {
   messages: string[];
 };
 
-export type DeleteResponse = {
+export type DeleteUserResponse = {
   messages: string[];
   users: UserType[];
 };
@@ -98,8 +96,6 @@ export type LoginRouteProps = RouteProps & {
 };
 
 export type RouteCurrentUserPropsType = {
-  currentUser: CurrentUser;
-  setCurrentUser: (currentUser: CurrentUser) => void;
   history: H.History;
 };
 
@@ -120,6 +116,7 @@ export type Micropost = {
   content: string;
   createdAt: Date;
   id: number;
+  images: string[];
 };
 
 export type MicropostsResponse = {
@@ -129,4 +126,9 @@ export type MicropostsResponse = {
 
 export type historyPropsType = {
   history: H.History;
+};
+
+export type DeletePostResponse = {
+  messages: string[];
+  microposts: Micropost[];
 };
