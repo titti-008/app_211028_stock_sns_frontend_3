@@ -5,17 +5,22 @@ import { SuccessToasts, ErrorToasts } from '../toast/PrivateToast';
 import { NormalForm, RememberCheckBox } from '../privateMUI/PrivateForms';
 import { NormalText } from '../privateMUI/PrivateTexts';
 import { SubmitButton, LinkButton } from '../privateMUI/PrivateBottuns';
+import { useCurentUserContext } from '../../hooks/CurentUserContext';
 
 // toast.configure(); // トーストを10秒間保持する設定
 
 const LoginForm: FC<RouteUserPropsType> = ({ ...props }) => {
-  const { currentUser, setCurrentUser, setIsLogin } = { ...props };
+  const { setIsLogin } = { ...props };
+
+  const { currentUser, setCurrentUser } = useCurentUserContext();
 
   const [values, setvalues] = useState({
     email: '',
     password: '',
     rememberMe: false,
   });
+
+  const disable = values.email.length === 0 || values.password.length === 0;
 
   console.log('RememberMe', values.rememberMe);
 
@@ -75,7 +80,7 @@ const LoginForm: FC<RouteUserPropsType> = ({ ...props }) => {
       <SubmitButton
         onClick={handleLoginUser}
         label="ログイン"
-        disabled={false}
+        disabled={disable}
       />
       <LinkButton linkTo="/signup" label="新規登録はこちら" />
     </>

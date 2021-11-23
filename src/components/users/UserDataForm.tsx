@@ -15,6 +15,7 @@ type PropsType = {
   ) => (event: React.ChangeEvent<HTMLInputElement>) => void;
   onClick: () => void;
   submitLabel: string;
+  PassWordAllowNull: boolean;
 };
 
 const UserDataForm: React.FC<PropsType> = ({
@@ -22,6 +23,7 @@ const UserDataForm: React.FC<PropsType> = ({
   handleChange,
   onClick,
   submitLabel,
+  PassWordAllowNull,
 }) => {
   const { isNameError, nameErrorMessage, isDisableName } = useCheckName(
     values.name,
@@ -34,7 +36,8 @@ const UserDataForm: React.FC<PropsType> = ({
     values.passwordConfirmation,
   );
 
-  const isDisable = isDisableName || isDisablePassword || isDisableEmail;
+  const isDisablePasswordNull = isDisableName || isDisableEmail;
+  const isDisable = isDisableName || isDisableEmail || isDisablePassword;
 
   return (
     <>
@@ -73,7 +76,7 @@ const UserDataForm: React.FC<PropsType> = ({
       <SubmitButton
         onClick={onClick}
         label={submitLabel}
-        disabled={isDisable}
+        disabled={PassWordAllowNull ? isDisablePasswordNull : isDisable}
       />
     </>
   );

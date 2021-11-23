@@ -10,8 +10,14 @@ const NewUsers: React.FC<HistoryPropsType> = (_props) => {
   /* eslint-disable */
   const props = _props;
   /* eslint-disable */
+  const initInput = {
+    name: '',
+    email: '',
+    password: '',
+    passwordConfirmation: '',
+  };
 
-  const { values, handleChange } = useUserDataInput();
+  const { values, handleChange } = useUserDataInput(initInput);
 
   const saveUser = async () => {
     try {
@@ -41,6 +47,7 @@ const NewUsers: React.FC<HistoryPropsType> = (_props) => {
         handleChange={handleChange}
         onClick={saveUser}
         submitLabel="ユーザー登録"
+        PassWordAllowNull={false}
       />
       <LinkButton linkTo="/login" label="登録済みならこちらからログイン" />
     </>

@@ -1,4 +1,5 @@
 import { FC, useState, useEffect, useCallback } from 'react';
+import { CircularProgress } from '@mui/material';
 import { UserType, CurrentUser, ErrorResponse } from '../Types';
 import { getUsers, deleteUser } from '../api';
 import { SubmitButton } from '../privateMUI/PrivateBottuns';
@@ -86,7 +87,7 @@ const Users: FC<PropsType> = ({ currentUser }: PropsType) => {
           </IconText>
         ))
       ) : (
-        <NormalText>...loading</NormalText>
+        <CircularProgress />
       )}
     </>
   );

@@ -1,15 +1,27 @@
 import React from 'react';
+import { NormalText } from '../privateMUI/PrivateTexts';
 import { RouteCurrentUserPropsType, ErrorResponse } from '../Types';
 import { updateUser } from '../api';
 import { SuccessToasts, ErrorToasts } from '../toast/PrivateToast';
 import { useUserDataInput } from '../../hooks/util';
 import UserDataForm from './UserDataForm';
+import { useCurentUserContext } from '../../hooks/CurentUserContext';
 
 const EditUser: React.FC<RouteCurrentUserPropsType> = (_props) => {
   /* eslint-disable */
-  const { history, currentUser, setCurrentUser } = { ..._props };
+  const { history } = { ..._props };
   /* eslint-disable */
-  const { values, handleChange } = useUserDataInput();
+
+  const { currentUser, setCurrentUser } = useCurentUserContext();
+
+  const initInput = {
+    name: '',
+    email: '',
+    password: '',
+    passwordConfirmation: '',
+  };
+
+  const { values, handleChange } = useUserDataInput(initInput);
 
   const userData = {
     id: currentUser ? currentUser.id : 0,
@@ -44,12 +56,13 @@ const EditUser: React.FC<RouteCurrentUserPropsType> = (_props) => {
 
   return (
     <>
-      <h1>ユーザー情報編集</h1>
+      <NormalText>ユーザー情報編集</NormalText>
       <UserDataForm
         values={values}
         handleChange={handleChange}
         onClick={submitUpdateUser}
         submitLabel="編集完了"
+        PassWordAllowNull
       />
     </>
   );

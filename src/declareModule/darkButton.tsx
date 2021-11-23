@@ -1,15 +1,17 @@
+import { FC } from 'react';
 import { Tooltip, IconButton } from '@mui/material';
 import Brightness5Icon from '@mui/icons-material/Brightness5';
 import Brightness3Icon from '@mui/icons-material/Brightness3';
 
 type TypeProps = {
   darkMode: boolean;
-  handleDarkModeOff: (e: React.MouseEvent) => void;
-  handleDarkModeOn: (e: React.MouseEvent) => void;
+  handleDarkModeOn: () => void;
+
+  handleDarkModeOff: () => void;
 };
 
-const DarkButton = (Props: TypeProps): JSX.Element => {
-  const { darkMode, handleDarkModeOff, handleDarkModeOn } = { ...Props };
+const DarkButton: FC<TypeProps> = ({ ...Props }) => {
+  const { darkMode, handleDarkModeOn, handleDarkModeOff } = { ...Props };
 
   return (
     <>

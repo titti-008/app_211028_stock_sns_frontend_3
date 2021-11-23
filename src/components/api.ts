@@ -5,7 +5,7 @@ import {
   LoginResponse,
   LogoutResponse,
   EditUserType,
-  DeleteResponse,
+  DeleteUserResponse,
   UsersResponse,
   MessageResponse,
   ShowUserResponse,
@@ -27,8 +27,11 @@ export const getUsers = (): Promise<AxiosResponse<UsersResponse, unknown>> =>
 
 export const getUser = (
   id: number,
+  currentLimit: number,
 ): Promise<AxiosResponse<ShowUserResponse, unknown>> =>
-  instance.get<ShowUserResponse>(`${usersUrl}/${id}`);
+  instance.get<ShowUserResponse>(`${usersUrl}/${id}`, {
+    params: { current_limit: currentLimit },
+  });
 
 export const createUser = (
   values: CreateUserType,
@@ -66,8 +69,8 @@ export const loggedIn = (): Promise<AxiosResponse<LoginResponse, unknown>> => {
 
 export const deleteUser = (
   id: number,
-): Promise<AxiosResponse<DeleteResponse, unknown>> =>
-  instance.delete<DeleteResponse>(`${usersUrl}/${id}`);
+): Promise<AxiosResponse<DeleteUserResponse, unknown>> =>
+  instance.delete<DeleteUserResponse>(`${usersUrl}/${id}`);
 
 export const updateUser = (
   values: EditUserType,
@@ -101,16 +104,26 @@ export const ResetPassword = (
     },
   });
 
-export const getMicroposts = (): Promise<
-  AxiosResponse<MicropostsResponse, unknown>
-> => instance.get<MicropostsResponse>(micropostsUrl);
+export const getMicroposts = (
+  currentLimit: number,
+): Promise<AxiosResponse<MicropostsResponse, any>> =>
+  instance.get<MicropostsResponse>(micropostsUrl, {
+    params: { current_limit: currentLimit },
+  });
 
 export const createMicropost = (
-  content: string,
+  params: FormData,
 ): Promise<AxiosResponse<MessageResponse, unknown>> =>
-  instance.post<MessageResponse>(micropostsUrl, {
-    micropost: { content: content },
+  instance.post<MessageResponse>(micropostsUrl, params, {
+    headers: {
+      'content-type': 'multipart/form-data',
+    },
   });
+
+export const deleteMicropost = (
+  id: number,
+): Promise<AxiosResponse<MessageResponse, unknown>> =>
+  instance.delete<MessageResponse>(`${micropostsUrl}/${id}`);
 
 /* eslint-disable */
 /* eslint-disable */

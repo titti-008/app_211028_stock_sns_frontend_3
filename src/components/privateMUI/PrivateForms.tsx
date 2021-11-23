@@ -33,7 +33,7 @@ export const NormalForm: FC<PropsType> = (_props) => {
 
   return (
     <Grid item sx={{ width: '100%' }}>
-      <FormControl variant="standard" margin="normal">
+      <FormControl variant="standard" margin="normal" fullWidth>
         <InputLabel>{props.label}</InputLabel>
         <Input
           error={props.error}
