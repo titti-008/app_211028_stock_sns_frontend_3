@@ -1,18 +1,16 @@
 import { FC, useState } from 'react';
-import { loginUserType, RouteUserPropsType } from '../Types';
+import { loginUserType } from '../Types';
 import { loginUser } from '../api';
 import { SuccessToasts, ErrorToasts } from '../toast/PrivateToast';
 import { NormalForm, RememberCheckBox } from '../privateMUI/PrivateForms';
 import { NormalText } from '../privateMUI/PrivateTexts';
 import { SubmitButton, LinkButton } from '../privateMUI/PrivateBottuns';
-import { useCurentUserContext } from '../../hooks/CurentUserContext';
+import { useLoginContext } from '../../hooks/ReduserContext';
 
 // toast.configure(); // トーストを10秒間保持する設定
 
-const LoginForm: FC<RouteUserPropsType> = ({ ...props }) => {
-  const { setIsLogin } = { ...props };
-
-  const { currentUser, setCurrentUser } = useCurentUserContext();
+const LoginForm: FC = () => {
+  const { state, dispatch } = useLoginContext();
 
   const [values, setvalues] = useState({
     email: '',
@@ -33,10 +31,12 @@ const LoginForm: FC<RouteUserPropsType> = ({ ...props }) => {
   const handleLoginUser = async () => {
     try {
       const response = await loginUser(values);
-      setCurrentUser(response.data.user);
-      setIsLogin(response.data.loggedIn);
-
       if (response.status === 200) {
+        dispatch({
+          type: 'saveUser',
+          setUser: response.data.user,
+          isLogin: response.data.loggedIn,
+        });
         SuccessToasts(response.data.messages);
       } else if (response.status === 202) {
         ErrorToasts(response.data.messages);
@@ -51,7 +51,7 @@ const LoginForm: FC<RouteUserPropsType> = ({ ...props }) => {
     <>
       <NormalText>
         <h1>Log in</h1>
-        <p>ログイン状態:{currentUser ? 'ログイン済み' : '未ログイン'}</p>
+        <p>ログイン状態:{state.currentUser ? 'ログイン済み' : '未ログイン'}</p>
       </NormalText>
 
       <NormalForm

@@ -6,16 +6,38 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import GroupIcon from '@mui/icons-material/Group';
 import { NormalText } from './privateMUI/PrivateTexts';
 import { LinkContainer, ButtonContainer } from './ConfigContainers';
-
+import { logoutUser } from './api';
 import { BaseCard, PrivateAppbar, PrivateBox } from './privateMUI/BaseCard';
+import { useLoginContext } from '../hooks/ReduserContext';
+import { SuccessToasts, ErrorToasts } from './toast/PrivateToast';
 
 type PropsType = {
-  handleLogout: () => void;
   handleDrawerClose: () => void;
 };
 
 const ConfigBar: FC<PropsType> = (_props) => {
   const props = _props;
+  const { dispatch } = useLoginContext();
+
+  // ----------ログアウトボタンの処理----------------------
+  const handleLogout = async () => {
+    try {
+      const response = await logoutUser();
+
+      if (response.status === 200) {
+        dispatch({
+          type: 'saveUser',
+          setUser: null,
+          isLogin: response.data.loggedIn,
+        });
+        SuccessToasts(response.data.messages);
+      }
+    } catch (err) {
+      ErrorToasts(['ログアウトに失敗しました。']);
+
+      console.log(err);
+    }
+  };
 
   return (
     <BaseCard>
@@ -30,10 +52,7 @@ const ConfigBar: FC<PropsType> = (_props) => {
         </Grid>
       </PrivateAppbar>
       <PrivateBox>
-        <ButtonContainer
-          handleAction={props.handleLogout}
-          linkText="ログアウト"
-        >
+        <ButtonContainer handleAction={handleLogout} linkText="ログアウト">
           <LogoutIcon />
         </ButtonContainer>
         <LinkContainer linkTo="/users" linkText="ユーザー一覧">

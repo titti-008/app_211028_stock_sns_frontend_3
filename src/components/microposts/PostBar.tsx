@@ -2,16 +2,17 @@ import { FC } from 'react';
 import { Grid, IconButton } from '@mui/material';
 import DehazeIcon from '@mui/icons-material/Dehaze';
 import { NormalText } from '../privateMUI/PrivateTexts';
-import { historyPropsType } from '../Types';
+import { HistoryPropsType } from '../Types';
 import PostNew from './PostNew';
 import IconText from '../privateMUI/IconText';
 
 import { BaseCard, PrivateAppbar, PrivateBox } from '../privateMUI/BaseCard';
-import { useCurentUserContext } from '../../hooks/CurentUserContext';
+import { useLoginContext } from '../../hooks/ReduserContext';
 
 /* eslint-disable */
-const PostBar: FC<historyPropsType> = ({ history }) => {
-  const { currentUser } = useCurentUserContext();
+const PostBar: FC<HistoryPropsType> = ({ history }) => {
+  const { state } = useLoginContext();
+  const { currentUser } = state;
 
   return (
     <BaseCard>

@@ -1,18 +1,19 @@
 import React from 'react';
 import { NormalText } from '../privateMUI/PrivateTexts';
-import { RouteCurrentUserPropsType, ErrorResponse } from '../Types';
+import { HistoryPropsType, ErrorResponse } from '../Types';
 import { updateUser } from '../api';
 import { SuccessToasts, ErrorToasts } from '../toast/PrivateToast';
 import { useUserDataInput } from '../../hooks/util';
 import UserDataForm from './UserDataForm';
-import { useCurentUserContext } from '../../hooks/CurentUserContext';
+import { useLoginContext } from '../../hooks/ReduserContext';
 
-const EditUser: React.FC<RouteCurrentUserPropsType> = (_props) => {
+const EditUser: React.FC<HistoryPropsType> = (_props) => {
   /* eslint-disable */
   const { history } = { ..._props };
   /* eslint-disable */
 
-  const { currentUser, setCurrentUser } = useCurentUserContext();
+  const { state, dispatch } = useLoginContext();
+  const { currentUser } = state;
 
   const initInput = {
     name: '',
@@ -34,8 +35,11 @@ const EditUser: React.FC<RouteCurrentUserPropsType> = (_props) => {
 
       if (response.status === 201) {
         SuccessToasts(response.data.messages);
-
-        setCurrentUser(response.data.user);
+        dispatch({
+          type: 'saveUser',
+          setUser: response.data.user,
+          isLogin: response.data.loggedIn,
+        });
         history.push('/current_user');
         console.log('編集完了', response);
       } else {

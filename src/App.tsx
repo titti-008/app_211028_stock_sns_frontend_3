@@ -1,5 +1,12 @@
 import { FC, useState, useRef, useEffect, ReactElement, useMemo } from 'react';
-import { Switch, Link, useHistory, useLocation } from 'react-router-dom';
+import { QueryClient, QueryClientProvider } from 'react-query';
+import {
+  Switch,
+  Link,
+  useHistory,
+  useLocation,
+  // Redirect,
+} from 'react-router-dom';
 import * as H from 'history';
 import { Drawer, Grid, Box, IconButton, Hidden } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home';
@@ -11,20 +18,19 @@ import GroupIcon from '@mui/icons-material/Group';
 import DehazeIcon from '@mui/icons-material/Dehaze';
 import { ThemeProvider, Theme, createTheme } from '@mui/material/styles';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
-import { loggedIn, logoutUser } from './components/api';
+import { loggedIn } from './components/api';
 import DarkButton from './declareModule/darkButton';
 import LoginForm from './components/users/LoginForm';
 import HelloWorld from './components/HelloWorld';
 import Users from './components/users/Users';
 import UserShow from './components/users/UserShow';
-import CurrentUserShow from './components/users/CurrentUserShow';
 import { ErrorResponse } from './components/Types';
 import { Colors } from './hooks/util';
-import PrivateRoute from './components/PrivateRoute';
-import UnAuthRoute from './components/authenticate/UnAuthRoute';
+import PrivateRoute from './components/router/PrivateRoute';
+import UnAuthRoute from './components/router/UnAuthRoute';
 import NewUsers from './components/users/NewUser';
 import EditUser from './components/users/EditUser';
-import { SuccessToasts, ErrorToasts } from './components/toast/PrivateToast';
+import { ErrorToasts } from './components/toast/PrivateToast';
 import './App.css';
 import ConfigBar from './components/ConfigBar';
 import ResetRequestForm from './components/authenticate/ResetRequest';
@@ -37,19 +43,18 @@ import {
   PrivateAppbar,
   PrivateBox,
 } from './components/privateMUI/BaseCard';
-import {
-  CurrentUserProvider,
-  useCurentUserContext,
-} from './hooks/CurentUserContext';
+import { LoginProvider, useLoginContext } from './hooks/ReduserContext';
 
 const App: FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
 
+  // ----------React Queryの設定----------------------
+  const queryClient = new QueryClient();
+
   // ----------ページ遷移履歴の管理----------------------
 
-  /* eslint-disable */
+  // eslint-disable-next-line
   const history: H.History = useHistory();
-  /* eslint-disable */
 
   // ----------ダークモードの状態管理----------------------
 
@@ -94,40 +99,33 @@ const App: FC = () => {
 
   // ----------カレントユーザー状態管理----------------------
 
-  const { currentUser, setCurrentUser } = useCurentUserContext();
+  // const { currentUser, setCurrentUser } = useCurentUserContext();
 
-  // const [currentUser, setCurrentUser] = useState<CurrentUser>(() => {
-  //   const usersJSON = localStorage.getItem('currentUser');
-  //   if (usersJSON) {
-  //     return JSON.parse(usersJSON) as CurrentUser;
-  //   } else {
-  //     return null;
-  //   }
-  // });
+  const { dispatch } = useLoginContext();
+
+  // // ----------ログイン状態管理----------------------
+
+  // const [isLogin, setIsLogin] = useState<boolean>(
+  //   localStorage.getItem('isLogin') === 'true',
+  // );
 
   // useEffect(() => {
-  //   localStorage.setItem('currentUser', JSON.stringify(currentUser));
-  // }, [currentUser]);
-
-  // ----------ログイン状態管理----------------------
-
-  const [isLogin, setIsLogin] = useState<boolean>(
-    localStorage.getItem('isLogin') === 'true',
-  );
-
-  useEffect(() => {
-    localStorage.setItem('isLogin', JSON.stringify(isLogin));
-  }, [isLogin]);
+  //   localStorage.setItem('isLogin', JSON.stringify(isLogin));
+  // }, [isLogin]);
 
   // ----------ログイン状態の確認通信----------------------
+  // eslint-disable-next-line
   const location = useLocation();
 
   useEffect(() => {
     const checkLoginStatus = async () => {
       try {
         const response = await loggedIn();
-        setIsLogin(response.data.loggedIn);
-        setCurrentUser(response.data.user);
+        dispatch({
+          type: 'saveUser',
+          setUser: response.data.user,
+          isLogin: response.data.loggedIn,
+        });
         if (response.status === 200) {
           console.log(response.data.messages);
         } else {
@@ -145,210 +143,208 @@ const App: FC = () => {
       }
     };
     void checkLoginStatus();
-  }, [location, isLogin]);
+  }, [location, dispatch]);
 
-  // ----------ログアウトボタンの処理----------------------
-  const handleLogout = async () => {
-    try {
-      const response = await logoutUser();
-      setIsLogin(false);
-      setCurrentUser(null);
-      if (response.status === 200) {
-        SuccessToasts(response.data.messages);
-      }
-    } catch (err) {
-      ErrorToasts(['ログアウトに失敗しました。']);
+  // // ----------ログアウトボタンの処理----------------------
+  // const handleLogout = async () => {
+  //   try {
+  //     const response = await logoutUser();
 
-      console.log(err);
-    }
-  };
+  //     if (response.status === 200) {
+  //       dispatch({
+  //         type: 'saveUser',
+  //         setUser: null,
+  //         isLogin: response.data.loggedIn,
+  //       });
+  //       SuccessToasts(response.data.messages);
+  //     }
+  //   } catch (err) {
+  //     ErrorToasts(['ログアウトに失敗しました。']);
+
+  //     console.log(err);
+  //   }
+  // };
 
   // ----------コンポーネント----------------------
   return (
-    <ThemeProvider theme={theme}>
-      <CurrentUserProvider>
-        <Box
-          ref={containerRef}
-          sx={{
-            width: '100%',
-            height: '100vh',
-            backgroundColor: colors.baseGround,
-            margin: 0,
-          }}
-        >
-          <Grid
-            container
-            direction="row"
-            justifyContent="flex-start"
-            columnSpacing={{ xs: 0, sm: 0, md: 1 }}
-            paddingY={{ xs: 0, sm: 0, md: 1 }}
-            alignItems="flex-start"
-            height="100%"
-            wrap="nowrap"
-            overflow="scroll"
+    <QueryClientProvider client={queryClient}>
+      <ThemeProvider theme={theme}>
+        <LoginProvider>
+          <Box
+            ref={containerRef}
+            sx={{
+              width: '100%',
+              height: '100vh',
+              backgroundColor: colors.baseGround,
+              margin: 0,
+            }}
           >
-            <Hidden mdDown implementation="js">
-              <PostBar history={history} />
-            </Hidden>
-            <Grid item height="100%" width="100%">
-              <Hidden mdUp implementation="js">
-                <Drawer
-                  anchor="left"
-                  variant="temporary"
-                  open={open}
-                  onClose={handleDrawerClose}
-                  sx={{
-                    // flexShrink: 0,
-                    backgroundColor: colors.baseSheet,
-                  }}
-                >
-                  <ConfigBar
-                    handleLogout={handleLogout}
-                    handleDrawerClose={handleDrawerClose}
-                  />
-                </Drawer>
+            <Grid
+              container
+              direction="row"
+              justifyContent="flex-start"
+              columnSpacing={{ xs: 0, sm: 0, md: 1 }}
+              paddingY={{ xs: 0, sm: 0, md: 1 }}
+              alignItems="flex-start"
+              height="100%"
+              wrap="nowrap"
+              overflow="scroll"
+            >
+              <Hidden mdDown implementation="js">
+                <PostBar history={history} />
+              </Hidden>
+              <Grid item height="100%" width="100%">
+                <Hidden mdUp implementation="js">
+                  <Drawer
+                    anchor="left"
+                    variant="temporary"
+                    open={open}
+                    onClose={handleDrawerClose}
+                    sx={{
+                      // flexShrink: 0,
+                      backgroundColor: colors.baseSheet,
+                    }}
+                  >
+                    <ConfigBar handleDrawerClose={handleDrawerClose} />
+                  </Drawer>
+                </Hidden>
+              </Grid>
+              <BaseCard>
+                <PrivateAppbar>
+                  <Grid item>
+                    <IconButton color="default" onClick={handleDrawerOpen}>
+                      <DehazeIcon />
+                    </IconButton>
+                  </Grid>
+                  <Grid item>
+                    <Link to="/signup">
+                      <IconButton color="default">
+                        <PersonAddIcon />
+                      </IconButton>
+                    </Link>
+                  </Grid>
+                  <Grid item>
+                    <Link to="/current_user">
+                      <IconButton color="default">
+                        <AccountCircleIcon />
+                      </IconButton>
+                    </Link>
+                  </Grid>
+                  <Grid item>
+                    <Link to="/">
+                      <IconButton color="default">
+                        <HomeIcon />
+                      </IconButton>
+                    </Link>
+                  </Grid>
+                  <Grid item>
+                    <Link to="/microposts/new">
+                      <IconButton color="default">
+                        <SendIcon />
+                      </IconButton>
+                    </Link>
+                  </Grid>
+
+                  <Grid item>
+                    <Link to="/hello_world">
+                      <IconButton color="default">
+                        <PublicIcon />
+                      </IconButton>
+                    </Link>
+                  </Grid>
+                  <Grid item>
+                    <Link to="/users">
+                      <IconButton color="default">
+                        <GroupIcon />
+                      </IconButton>
+                    </Link>
+                  </Grid>
+                  <Grid item>
+                    <DarkButton
+                      darkMode={darkMode}
+                      handleDarkModeOn={handleDarkModeOn}
+                      handleDarkModeOff={handleDarkModeOff}
+                    />
+                  </Grid>
+                </PrivateAppbar>
+
+                <PrivateBox>
+                  <Switch>
+                    <PrivateRoute
+                      exact
+                      path="/hello_world"
+                      component={HelloWorld}
+                    />
+                    <PrivateRoute
+                      exact
+                      path="/users"
+                      render={(): ReactElement => <Users />}
+                    />
+                    <PrivateRoute
+                      exact
+                      path="/users/:id"
+                      component={UserShow}
+                    />
+                    {/* <PrivateRoute exact path="/current_user">
+                      <Redirect
+                        to={`/users/${
+                          state.currentUser ? state.currentUser?.id : ''
+                        }`}
+                      />
+                    </PrivateRoute> */}
+                    <PrivateRoute exact path="/edit_user">
+                      <EditUser history={history} />
+                    </PrivateRoute>
+                    <PrivateRoute exact path="/">
+                      <Microposts />
+                    </PrivateRoute>
+                    <PrivateRoute exact path="/microposts/new">
+                      <PostNew history={history} />
+                    </PrivateRoute>
+
+                    <UnAuthRoute
+                      exact
+                      path="/login"
+                      render={(): ReactElement => <LoginForm />}
+                    />
+                    <UnAuthRoute
+                      exact
+                      path="/signup"
+                      render={(): ReactElement => (
+                        <NewUsers history={history} />
+                      )}
+                    />
+                    <UnAuthRoute
+                      exact
+                      path="/password_resets/new"
+                      render={(): ReactElement => (
+                        <ResetRequestForm history={history} />
+                      )}
+                    />
+                    <UnAuthRoute
+                      path="/password_resets/:id/edit/email=:email"
+                      component={ResetPasswordForm}
+                    />
+                  </Switch>
+                </PrivateBox>
+              </BaseCard>
+              <Hidden mdDown implementation="js">
+                <ConfigBar
+                  // eslint-disable-next-line
+                  handleDrawerClose={() => {}}
+                />
+              </Hidden>
+              <Hidden mdDown implementation="js">
+                <PostBar history={history} />
+              </Hidden>
+              <Hidden mdDown implementation="js">
+                <PostBar history={history} />
               </Hidden>
             </Grid>
-            <BaseCard>
-              <PrivateAppbar>
-                <Grid item>
-                  <IconButton color="default">
-                    <DehazeIcon onClick={handleDrawerOpen} />
-                  </IconButton>
-                </Grid>
-                <Grid item>
-                  <Link to="/signup">
-                    <IconButton color="default">
-                      <PersonAddIcon />
-                    </IconButton>
-                  </Link>
-                </Grid>
-                <Grid item>
-                  <Link to="/current_user">
-                    <IconButton color="default">
-                      <AccountCircleIcon />
-                    </IconButton>
-                  </Link>
-                </Grid>
-                <Grid item>
-                  <Link to="/">
-                    <IconButton color="default">
-                      <HomeIcon />
-                    </IconButton>
-                  </Link>
-                </Grid>
-                <Grid item>
-                  <Link to="/microposts/new">
-                    <IconButton color="default">
-                      <SendIcon />
-                    </IconButton>
-                  </Link>
-                </Grid>
-
-                <Grid item>
-                  <Link to="/hello_world">
-                    <IconButton color="default">
-                      <PublicIcon />
-                    </IconButton>
-                  </Link>
-                </Grid>
-                <Grid item>
-                  <Link to="/users">
-                    <IconButton color="default">
-                      <GroupIcon />
-                    </IconButton>
-                  </Link>
-                </Grid>
-                <Grid item>
-                  <DarkButton
-                    darkMode={darkMode}
-                    handleDarkModeOn={handleDarkModeOn}
-                    handleDarkModeOff={handleDarkModeOff}
-                  />
-                </Grid>
-              </PrivateAppbar>
-
-              <PrivateBox>
-                <Switch>
-                  <PrivateRoute
-                    isLogin={isLogin}
-                    exact
-                    path="/hello_world"
-                    component={HelloWorld}
-                  />
-                  <PrivateRoute
-                    isLogin={isLogin}
-                    exact
-                    path="/users"
-                    render={(): ReactElement => (
-                      <Users currentUser={currentUser} />
-                    )}
-                  />
-                  <PrivateRoute
-                    isLogin={isLogin}
-                    exact
-                    path="/users/:id"
-                    component={UserShow}
-                  />
-                  <PrivateRoute isLogin={isLogin} exact path="/current_user">
-                    <CurrentUserShow />
-                  </PrivateRoute>
-                  <PrivateRoute isLogin={isLogin} exact path="/edit_user">
-                    <EditUser history={history} />
-                  </PrivateRoute>
-                  <PrivateRoute isLogin={isLogin} exact path="/">
-                    <Microposts />
-                  </PrivateRoute>
-                  <PrivateRoute isLogin={isLogin} exact path="/microposts/new">
-                    <PostNew history={history} />
-                  </PrivateRoute>
-
-                  <UnAuthRoute
-                    isLogin={isLogin}
-                    exact
-                    path="/login"
-                    render={(): ReactElement => (
-                      <LoginForm setIsLogin={setIsLogin} />
-                    )}
-                  />
-                  <UnAuthRoute
-                    isLogin={isLogin}
-                    exact
-                    path="/signup"
-                    render={(): ReactElement => <NewUsers history={history} />}
-                  />
-                  <UnAuthRoute
-                    isLogin={isLogin}
-                    exact
-                    path="/password_resets/new"
-                    render={(): ReactElement => (
-                      <ResetRequestForm history={history} />
-                    )}
-                  />
-                  <UnAuthRoute
-                    isLogin={isLogin}
-                    path="/password_resets/:id/edit/email=:email"
-                    component={ResetPasswordForm}
-                  />
-                </Switch>
-              </PrivateBox>
-            </BaseCard>
-            <Hidden mdDown implementation="js">
-              <ConfigBar
-                handleLogout={handleLogout}
-                handleDrawerClose={() => {}}
-              />
-            </Hidden>
-            <Hidden mdDown implementation="js">
-              <PostBar history={history} />
-            </Hidden>
-            <Hidden mdDown implementation="js">
-              <PostBar history={history} />
-            </Hidden>
-          </Grid>
-        </Box>
-      </CurrentUserProvider>
-    </ThemeProvider>
+          </Box>
+        </LoginProvider>
+      </ThemeProvider>
+    </QueryClientProvider>
   );
 };
 
@@ -356,4 +352,6 @@ export default App;
 
 // tslint:disable-next-line
 /* eslint-disable */
+/* eslint-disable */
+
 /* eslint-disable */

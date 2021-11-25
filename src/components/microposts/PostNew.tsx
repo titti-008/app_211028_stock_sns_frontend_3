@@ -11,13 +11,11 @@ import AttachFileIcon from '@mui/icons-material/AttachFile';
 import imageCompression from 'browser-image-compression';
 import { createMicropost } from '../api';
 import { SubmitButton } from '../privateMUI/PrivateBottuns';
-import { historyPropsType, ErrorResponse } from '../Types';
-// import { range } from '../../hooks/util';
+import { HistoryPropsType, ErrorResponse } from '../Types';
 import { SuccessToasts, ErrorToasts } from '../toast/PrivateToast';
-// import FileUploader from './FileUploader';
 import PrivateImageList from './PrivateImageList';
 
-const PostNew: FC<historyPropsType> = (_props) => {
+const PostNew: FC<HistoryPropsType> = (_props) => {
   const props = _props;
 
   const [content, setContent] = useState<string>('');
@@ -32,8 +30,6 @@ const PostNew: FC<historyPropsType> = (_props) => {
   const isError = isOver || content.length === 0;
 
   const [images, setImages] = useState<File[]>([]);
-
-  // const data = new FormData();
 
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -62,15 +58,6 @@ const PostNew: FC<historyPropsType> = (_props) => {
     const compressFile = await imageCompression(file, complessOption);
 
     setImages([...images, compressFile]);
-
-    // setImages((previmages: string[]) => [...previmages, imageUrl]);
-
-    // const reader = new FileReader();
-    // reader.readAsDataURL(file);
-    // reader.onload = () => {
-    //   const result = reader.result as string;
-    //   setImages((previmages: string[]) => [...previmages, result]);
-    // };
   };
 
   const params = new FormData();

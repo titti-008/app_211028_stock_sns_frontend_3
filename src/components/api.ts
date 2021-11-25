@@ -27,11 +27,8 @@ export const getUsers = (): Promise<AxiosResponse<UsersResponse, unknown>> =>
 
 export const getUser = (
   id: number,
-  currentLimit: number,
 ): Promise<AxiosResponse<ShowUserResponse, unknown>> =>
-  instance.get<ShowUserResponse>(`${usersUrl}/${id}`, {
-    params: { current_limit: currentLimit },
-  });
+  instance.get<ShowUserResponse>(`${usersUrl}/${id}`);
 
 export const createUser = (
   values: CreateUserType,
@@ -105,11 +102,23 @@ export const ResetPassword = (
   });
 
 export const getMicroposts = (
+  userId: number,
   currentLimit: number,
 ): Promise<AxiosResponse<MicropostsResponse, any>> =>
-  instance.get<MicropostsResponse>(micropostsUrl, {
-    params: { current_limit: currentLimit },
+  instance.get<MicropostsResponse>(`${micropostsUrl}`, {
+    params: {
+      user_id: userId,
+      current_limit: currentLimit,
+    },
   });
+
+export const queryGetMicroposts = async (
+  userId: number,
+  currentLimit: number,
+) => {
+  const response = await getMicroposts(userId, currentLimit);
+  return response.data;
+};
 
 export const createMicropost = (
   params: FormData,

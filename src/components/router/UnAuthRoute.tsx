@@ -1,13 +1,15 @@
 import React from 'react';
 
-import { Route, Redirect } from 'react-router-dom';
-import { LoginRouteProps } from '../Types';
+import { Route, Redirect, RouteProps } from 'react-router-dom';
+import { useLoginContext } from '../../hooks/ReduserContext';
 
 // ----------PrivateRouteコンポーネントの作成(ログイン状態によるリダイレクト)----------------------
-const UnAuthRoute: React.FC<LoginRouteProps> = ({ ...props }) => {
+const UnAuthRoute: React.FC<RouteProps> = ({ ...props }) => {
   /* eslint-disable */
-  const { isLogin, path } = props;
+  const { path } = props;
   /* eslint-disable */
+  const { state } = useLoginContext();
+  const { isLogin } = state;
 
   console.log(isLogin ? 'ログイン済み' : 'ログインできていない');
 
