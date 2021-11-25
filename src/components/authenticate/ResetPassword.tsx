@@ -22,7 +22,7 @@ const ResetPasswordForm: React.FC<
   );
 
   const userData = {
-    id: props.match.params.id,
+    id: Number(props.match.params.id),
     email: decodeURIComponent(props.match.params.email),
     ...values,
   };

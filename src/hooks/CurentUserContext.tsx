@@ -12,11 +12,11 @@ type ContextType = {
   setCurrentUser: React.Dispatch<React.SetStateAction<CurrentUser>>;
 };
 
-const CurrrentUserContext = createContext({} as ContextType);
+const CurrrentUserContexta = createContext({} as ContextType);
 
-export const useCurentUserContext = () => useContext(CurrrentUserContext);
+export const useCurentUserContexta = () => useContext(CurrrentUserContexta);
 
-export const CurrentUserProvider: FC = ({ children }) => {
+export const CurrentUserProvidera: FC = ({ children }) => {
   const [currentUser, setCurrentUser] = useState<CurrentUser>(() => {
     const usersJSON = localStorage.getItem('currentUser');
 
@@ -32,9 +32,9 @@ export const CurrentUserProvider: FC = ({ children }) => {
   }, [currentUser]);
 
   return (
-    <CurrrentUserContext.Provider value={value}>
+    <CurrrentUserContexta.Provider value={value}>
       {children}
-    </CurrrentUserContext.Provider>
+    </CurrrentUserContexta.Provider>
   );
 };
 

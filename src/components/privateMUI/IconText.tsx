@@ -1,16 +1,16 @@
 import { FC } from 'react';
-import { IconButton, Grid, Divider, Avatar } from '@mui/material';
+import { Grid, Divider, Avatar } from '@mui/material';
 import PersonIcon from '@mui/icons-material/Person';
 import { Link } from 'react-router-dom';
 
 import formatDistanceToNow from 'date-fns/formatDistanceToNow';
 import { NormalText } from './PrivateTexts';
-
+/* eslint-disable */
 type PropsType = {
   linkTo: string;
   key: number;
   name: string;
-  date: Date;
+  date?: Date;
 };
 
 const IconText: FC<PropsType> = (_props) => {
@@ -25,14 +25,12 @@ const IconText: FC<PropsType> = (_props) => {
         alignItems="flex-start"
         wrap="nowrap"
       >
-        <Grid item>
-          <IconButton color="default">
-            <Link to={props.linkTo}>
-              <Avatar>
-                <PersonIcon fontSize="large" />
-              </Avatar>
-            </Link>
-          </IconButton>
+        <Grid item p={1}>
+          <Link to={props.linkTo}>
+            <Avatar>
+              <PersonIcon fontSize="large" />
+            </Avatar>
+          </Link>
         </Grid>
         <Grid item xs sx={{ width: '50%' }}>
           <Grid
@@ -48,7 +46,9 @@ const IconText: FC<PropsType> = (_props) => {
               </Link>
             </Grid>
             <Grid item>
-              <NormalText>{formatDistanceToNow(props.date)}</NormalText>
+              {props.date && (
+                <NormalText>{formatDistanceToNow(props.date)}</NormalText>
+              )}
             </Grid>
           </Grid>
 

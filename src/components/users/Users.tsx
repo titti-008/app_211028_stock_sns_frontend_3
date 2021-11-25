@@ -1,20 +1,18 @@
 import { FC, useState, useEffect, useCallback } from 'react';
+import SupervisorAccountIcon from '@mui/icons-material/SupervisorAccount';
 import { CircularProgress } from '@mui/material';
-import { UserType, CurrentUser, ErrorResponse } from '../Types';
+import { UsersUser, UsersType, ErrorResponse } from '../Types';
 import { getUsers, deleteUser } from '../api';
 import { SubmitButton } from '../privateMUI/PrivateBottuns';
 import { SuccessToasts, ErrorToasts } from '../toast/PrivateToast';
-import { NormalText } from '../privateMUI/PrivateTexts';
 import IconText from '../privateMUI/IconText';
+import { useLoginContext } from '../../hooks/ReduserContext';
 
-type PropsType = {
-  currentUser: CurrentUser;
-};
-
-const Users: FC<PropsType> = ({ currentUser }: PropsType) => {
-  /* eslint-disable */
-  const [users, setUsers] = useState<UserType[]>([]);
-  /* eslint-disable */
+/* eslint-disable */
+const Users: FC = () => {
+  const [users, setUsers] = useState<UsersType>([] as UsersType);
+  const { state } = useLoginContext();
+  const { currentUser } = state;
 
   const load = useCallback(() => getUsers(), []);
 
@@ -63,16 +61,9 @@ const Users: FC<PropsType> = ({ currentUser }: PropsType) => {
   return (
     <>
       {users.length !== 0 ? (
-        users.map((user: UserType) => (
-          <IconText
-            linkTo={`/users/${user.id}`}
-            key={user.id}
-            name={user.name}
-            date={new Date(user.createdAt)}
-          >
-            <NormalText>{user.email}</NormalText>
-            <NormalText>管理者権限: {user.admin ? 'あり' : 'なし'}</NormalText>
-            <NormalText>投稿数:{user.countMicroposts}件</NormalText>
+        users.map((user: UsersUser) => (
+          <IconText linkTo={`/users/${user.id}`} key={user.id} name={user.name}>
+            {user.admin && <SupervisorAccountIcon />}
             {currentUser?.admin ? (
               <SubmitButton
                 label="削除"

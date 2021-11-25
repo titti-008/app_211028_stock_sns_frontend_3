@@ -38,12 +38,6 @@ const Users: FC<Micropost> = (_micropost) => {
               {micropost.user.name}
             </Typography>
           </Link>
-          <Typography
-            sx={{ color: colors.text }}
-            style={{ overflowWrap: 'break-word' }}
-          >
-            {micropost.user.email}
-          </Typography>
 
           <Typography sx={{ color: colors.text }}>
             {formatDistanceToNow(new Date(micropost.createdAt))}
