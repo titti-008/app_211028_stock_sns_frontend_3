@@ -1,15 +1,22 @@
-import { FC, useState, useCallback, useEffect } from 'react';
+import { FC } from 'react';
+import { useQuery } from 'react-query';
+import { RouteComponentProps } from 'react-router-dom';
+import { CircularProgress } from '@mui/material';
+import { AxiosError } from 'axios';
+import { ShowUserResponse } from '../Types';
 import {
-  Grid,
-  Button,
-  // CircularProgress,
-} from '@mui/material';
-import { RouteComponentProps, Link } from 'react-router-dom';
-import { UserType } from '../Types';
-import { getUser, queryGetMicroposts } from '../api';
+  getUser,
+  getMyFeed,
+  createUserRelationship,
+  deleteUserRelationship,
+} from '../api';
 import IconText from '../privateMUI/IconText';
+import {
+  LinkButton,
+  TextButton,
+  SubmitButton,
+} from '../privateMUI/PrivateBottuns';
 import { NormalText } from '../privateMUI/PrivateTexts';
-
 import { useLoginContext } from '../../hooks/ReduserContext';
 import { ErrorToasts } from '../toast/PrivateToast';
 import Feed from '../microposts/Feed';
@@ -18,47 +25,61 @@ const UserShow: FC<RouteComponentProps<{ id: string }>> = (props) => {
   const { state } = useLoginContext();
   const { currentUser } = state;
 
-  const [user, setUser] = useState<UserType>({
-    createdAt: new Date(),
-    email: 'loading...',
-    name: 'loading...',
-    id: 0,
-    admin: false,
-    countMicroposts: 0,
-    countFollowing: 0,
-    countFollowers: 0,
-  });
+  const { data, isLoading, isError, error } = useQuery<
+    ShowUserResponse,
+    AxiosError
+  >('UserShow', () => getUser(Number(props.match.params.id)));
 
-  const isCurrentUser = currentUser?.id === user.id;
+  if (isLoading) {
+    return <CircularProgress />;
+  }
 
-  const load = useCallback(
-    () => getUser(Number(props.match.params.id)),
-    [props],
-  );
+  if (isError && error) {
+    ErrorToasts([error.message]);
+  }
 
-  useEffect(() => {
-    const componetDitMount = async () => {
-      try {
-        const response = await load();
-        if (response.status === 200) {
-          setUser(response.data.user);
-          console.log(response.data.messages);
-        } else {
-          ErrorToasts(response.data.messages);
-        }
-      } catch (err) {
-        console.log('データの取得に失敗');
-        console.log(err);
+  if (!data) {
+    return <div>ユーザーがいません</div>;
+  }
+
+  const { user, messages } = data;
+
+  console.log(...messages);
+
+  const isCurrentUser = currentUser?.id === data?.user.id;
+
+  const handleFollow = async () => {
+    try {
+      const response = await createUserRelationship(user.id);
+      if (response.status === 200) {
+        console.log(response.data.messages);
+      } else {
+        ErrorToasts(response.data.messages);
       }
-    };
+    } catch (err) {
+      console.log('失敗');
+      console.log(err);
+    }
+  };
 
-    void componetDitMount();
-  }, [load]);
+  const handleClearFollow = async () => {
+    try {
+      const response = await deleteUserRelationship(user.id);
+      if (response.status === 200) {
+        console.log(response.data.messages);
+      } else {
+        ErrorToasts(response.data.messages);
+      }
+    } catch (err) {
+      console.log('失敗');
+      console.log(err);
+    }
+  };
 
   return (
     <>
       <IconText
-        linkTo={`/users/${user.id}`}
+        linkTo={`/users/${data.user.id}`}
         key={user.id}
         name={user.name}
         date={new Date(user.createdAt)}
@@ -68,21 +89,36 @@ const UserShow: FC<RouteComponentProps<{ id: string }>> = (props) => {
         <NormalText>投稿数:{user.countMicroposts}件</NormalText>
         <NormalText>
           <small>
-            フォロー:{user.countFollowing} フォロワー:{user.countFollowers}
+            <TextButton linkTo={`/users/${user.id}/following`} size="small">
+              フォロー:{user.countFollowing}
+            </TextButton>
+
+            <TextButton linkTo={`/users/${user.id}/followers`} size="small">
+              フォロワー:{user.countFollowers}
+            </TextButton>
           </small>
         </NormalText>
 
         {isCurrentUser && (
-          <Grid item marginTop="10px">
-            <Button variant="outlined">
-              <Link to="/edit_user">
-                <NormalText>ユーザー情報編集</NormalText>
-              </Link>
-            </Button>
-          </Grid>
+          <LinkButton linkTo="/edit_user" label="ユーザー情報編集" />
+        )}
+
+        {!isCurrentUser && user.isFollowing && (
+          <SubmitButton
+            onClick={handleClearFollow}
+            label="フォロー解除"
+            disabled={false}
+          />
+        )}
+        {!isCurrentUser && !user.isFollowing && (
+          <SubmitButton
+            onClick={handleFollow}
+            label="フォロー"
+            disabled={false}
+          />
         )}
       </IconText>
-      <Feed userId={user.id} getQuery={queryGetMicroposts} />
+      <Feed type={user.id} getMicropost={getMyFeed} />
     </>
   );
 };

@@ -14,15 +14,25 @@ type Name = { name: string };
 type Password = { password: string };
 type PassConf = { passwordConfirmation: string };
 
-type CreatedAt = { createdAt: Date };
+type CreatedAt = { createdAt: Date | number };
 type Admin = { admin: boolean };
 type UserCounts = {
   countMicroposts: number;
   countFollowing: number;
   countFollowers: number;
 };
+type Follow = {
+  isFollower: boolean;
+  isFollowing: boolean;
+};
 
-export type UserType = Id & Email & Name & CreatedAt & Admin & UserCounts;
+export type UserType = Id &
+  Email &
+  Name &
+  CreatedAt &
+  Admin &
+  UserCounts &
+  Follow;
 
 export type UsersUser = Id & Name & Admin;
 export type UsersType = UsersUser[];
@@ -45,6 +55,7 @@ export type loginUserType = Email &
 // -------- マイクロポスト ----------
 type Content = { content: string };
 type Images = { images: string[] };
+type Page = { nextId: number };
 
 export type Micropost = Id &
   Content &
@@ -81,4 +92,10 @@ export type ResetEmail = Email;
 
 export type ErrorResponse = AxiosError<Messages>;
 
-export type MicropostsResponse = Messages & Microposts;
+export type MicropostsResponse = Messages & Microposts & Page;
+
+export type PageType = {
+  previousId: number;
+  nextId: number;
+  data: MicropostsResponse;
+};

@@ -1,51 +1,66 @@
-import { FC, useEffect, useState } from 'react';
+import React, { FC } from 'react';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import { CircularProgress, Button, Grid, IconButton } from '@mui/material';
+import { AxiosResponse } from 'axios';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-// import InfiniteScroll from 'react-infinite-scroller';
-import { useQuery } from 'react-query';
-import { Micropost, MicropostsResponse } from '../Types';
+import { useInfiniteQuery } from 'react-query';
+import useInteractionObserver from '../../hooks/useIntersectionObserver';
+import { Micropost, ErrorResponse, MicropostsResponse } from '../Types';
 import { NormalText } from '../privateMUI/PrivateTexts';
 import IconText from '../privateMUI/IconText';
 import { SuccessToasts, ErrorToasts } from '../toast/PrivateToast';
-
 import PrivateImageList from './PrivateImageList';
 import { useLoginContext } from '../../hooks/ReduserContext';
-// import { Micropost } from '../Types';
 import { deleteMicropost } from '../api';
 
-type PropsType = {
-  userId: number;
-  getQuery: (
-    userId: number,
-    MicropostsLimit: number,
-  ) => Promise<MicropostsResponse>;
+type PropsType<T> = {
+  type: T;
+  getMicropost: (
+    type: T,
+    pageParam?: number | undefined,
+  ) => Promise<AxiosResponse<MicropostsResponse, unknown>>;
 };
 
-const Feed: FC<PropsType> = ({ userId, getQuery }) => {
+/* eslint-disable */
+
+const Feed: FC<PropsType<'myfeed' | number>> = ({ type, getMicropost }) => {
   const { state } = useLoginContext();
   const { currentUser } = state;
 
-  const [microposts, setMicroposts] = useState<Micropost[]>([]);
+  const {
+    status,
+    data,
+    error,
+    // isFetching,
+    isFetchingNextPage,
+    fetchNextPage,
+    hasNextPage,
+  } = useInfiniteQuery<MicropostsResponse, ErrorResponse, MicropostsResponse>(
+    'microposts',
+    async ({ pageParam = 1 }: { pageParam?: number }) => {
+      const res = await getMicropost(type, pageParam);
 
-  const { data, isLoading, isError, refetch } = useQuery('getMicroposts', () =>
-    getQuery(userId, microposts.length),
+      return res.data;
+    },
+    {
+      getNextPageParam: (lastPage) => lastPage.nextId ?? false,
+    },
   );
 
-  useEffect(() => {
-    if (data?.microposts) {
-      setMicroposts((prevMicropots) => [...prevMicropots, ...data.microposts]);
-    }
-  }, [data]);
+  const loadMoreButtonRef = React.useRef<HTMLButtonElement>(null);
 
-  if (isLoading) {
+  useInteractionObserver({
+    target: loadMoreButtonRef,
+    onIntersect: fetchNextPage,
+    enabled: hasNextPage,
+  });
+
+  if (status === 'loading') {
     return <CircularProgress />;
   }
 
-  if (isError) {
-    ErrorToasts(data?.messages);
-
-    return <div>エラー</div>;
+  if (status === 'error' && error) {
+    ErrorToasts([error.message]);
   }
 
   const handleDelete = async (id: number) => {
@@ -70,34 +85,45 @@ const Feed: FC<PropsType> = ({ userId, getQuery }) => {
 
   return (
     <>
-      {/* <InfiniteScroll loadMore={() => props.getFeed()} hasMore> */}
-      {microposts.length !== 0 ? (
-        microposts.map((micropost: Micropost) => (
-          <IconText
-            linkTo={`/users/${micropost.user.id}`}
-            key={micropost.user.id}
-            name={micropost.user.name}
-            date={new Date(micropost.createdAt)}
-          >
-            <NormalText>{micropost.content}</NormalText>
-            {micropost.images && <PrivateImageList src={micropost.images} />}
+      {data?.pages.map((page) => (
+        <React.Fragment key={page.nextId}>
+          {page.microposts.map((micropost: Micropost) => (
+            <IconText
+              linkTo={`/users/${micropost.user.id}`}
+              key={micropost.user.id}
+              name={micropost.user.name}
+              date={new Date(micropost.createdAt)}
+            >
+              <NormalText>{micropost.content}</NormalText>
+              {micropost.images && <PrivateImageList src={micropost.images} />}
 
-            {currentUser?.id === micropost.user.id ? (
-              <IconButton onClick={() => handleDelete(micropost.id)}>
-                <DeleteForeverIcon />
-              </IconButton>
+              {currentUser?.id === micropost.user.id && (
+                <IconButton onClick={() => handleDelete(micropost.id)}>
+                  <DeleteForeverIcon />
+                </IconButton>
+              )}
+            </IconText>
+          ))}
+        </React.Fragment>
+      ))}
+
+      <Grid item width="100%" paddingTop={1}>
+        <Button
+          ref={loadMoreButtonRef}
+          sx={{ width: '100%', height: 50 }}
+          onClick={() => fetchNextPage()}
+          disabled={!hasNextPage || isFetchingNextPage}
+        >
+          {
+            /* eslint-disable */
+            isFetchingNextPage ? (
+              <CircularProgress />
+            ) : hasNextPage ? (
+              <KeyboardArrowDownIcon />
             ) : (
               <></>
-            )}
-          </IconText>
-        ))
-      ) : (
-        <NormalText>no data</NormalText>
-      )}
-      {/* </InfiniteScroll> */}
-      <Grid item width="100%" paddingTop={1}>
-        <Button sx={{ width: '100%', height: 50 }} onClick={() => refetch}>
-          <KeyboardArrowDownIcon />
+            )
+          }
         </Button>
       </Grid>
     </>
@@ -108,6 +134,8 @@ export default Feed;
 
 /* eslint-disable */
 /* eslint-disable */
+/* eslint-disable */
+
 /* eslint-disable */
 
 /* eslint-disable */

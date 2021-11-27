@@ -18,17 +18,39 @@ const env = process.env.REACT_APP_SERVER_URL ?? ''; // 文字列型であるこ�
 
 const apiUrl = `${env}/api/v1`;
 const usersUrl = `${apiUrl}/users`;
-const micropostsUrl = `${apiUrl}/microposts`;
+export const micropostsUrl = `${apiUrl}/microposts`;
+const relationshipsUrl = `${apiUrl}/relationships`;
 
-const instance = axios.create({ withCredentials: true });
+export const instance = axios.create({ withCredentials: true });
 
 export const getUsers = (): Promise<AxiosResponse<UsersResponse, unknown>> =>
   instance.get<UsersResponse>(`${usersUrl}`);
 
-export const getUser = (
-  id: number,
+export const getFollowers = (
+  id: string,
+): Promise<AxiosResponse<UsersResponse, unknown>> =>
+  instance.get<UsersResponse>(`${usersUrl}/${id}/followers`);
+
+export const getFollowing = (
+  id: string,
+): Promise<AxiosResponse<UsersResponse, unknown>> =>
+  instance.get<UsersResponse>(`${usersUrl}/${id}/following`);
+
+export const createUserRelationship = (
+  userId: number,
 ): Promise<AxiosResponse<ShowUserResponse, unknown>> =>
-  instance.get<ShowUserResponse>(`${usersUrl}/${id}`);
+  instance.post<ShowUserResponse>(`${relationshipsUrl}`, { id: userId });
+
+export const deleteUserRelationship = (
+  userId: number,
+): Promise<AxiosResponse<ShowUserResponse, unknown>> =>
+  instance.delete<ShowUserResponse>(`${relationshipsUrl}/${userId}`);
+
+export const getUser = async (id: number) => {
+  const response = await instance.get<ShowUserResponse>(`${usersUrl}/${id}`);
+
+  return response.data;
+};
 
 export const createUser = (
   values: CreateUserType,
@@ -101,24 +123,63 @@ export const ResetPassword = (
     },
   });
 
-export const getMicroposts = (
-  userId: number,
-  currentLimit: number,
-): Promise<AxiosResponse<MicropostsResponse, any>> =>
-  instance.get<MicropostsResponse>(`${micropostsUrl}`, {
-    params: {
-      user_id: userId,
-      current_limit: currentLimit,
-    },
-  });
+// export const getMicroposts = (
+//   userId: number,
+//   currentLimit: number,
+// ): Promise<AxiosResponse<MicropostsResponse, any>> =>
+//   instance.get<MicropostsResponse>(`${micropostsUrl}`, {
+//     params: {
+//       user_id: userId,
+//       current_limit: currentLimit,
+//     },
+//   });
 
-export const queryGetMicroposts = async (
-  userId: number,
-  currentLimit: number,
+export const getMyFeed = (
+  type: 'myfeed' | number,
+  pageParam?: number | undefined,
 ) => {
-  const response = await getMicroposts(userId, currentLimit);
-  return response.data;
+  const res = instance.get<MicropostsResponse>(
+    `${micropostsUrl}/${type}/${pageParam}`,
+  );
+  return res;
 };
+
+// export const queryGetMicroposts = async (
+//   userId: number,
+//   currentLimit: number,
+// ) => {
+//   const response = await getMicroposts(userId, currentLimit);
+//   return response.data;
+// };
+
+// export const getMyFeed = (
+//   userId: number,
+//   currentLimit: number,
+// ): Promise<AxiosResponse<MicropostsResponse, any>> =>
+//   instance.get<MicropostsResponse>(`${micropostsUrl}/myfeed`, {
+//     params: {
+//       user_id: userId,
+//       current_limit: currentLimit,
+//     },
+//   });
+
+// export const getTestFeed = async (userId: number, { pageParam = 0 }) => {
+//   const response = await instance.get<MicropostsResponse>(
+//     `${micropostsUrl}/testfeed/${pageParam}`,
+//     {
+//       params: {
+//         user_id: userId,
+//       },
+//     },
+//   );
+
+//   return response.data;
+// };
+
+// export const queryGetMyFeed = async (userId: number, currentLimit: number) => {
+//   const response = await getMicroposts(userId, currentLimit);
+//   return response.data;
+// };
 
 export const createMicropost = (
   params: FormData,

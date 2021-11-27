@@ -6,7 +6,7 @@ import { FC } from 'react';
 // import { ErrorToasts } from '../toast/PrivateToast';
 import Feed from './Feed';
 // import { Micropost } from '../Types';
-import { queryGetMicroposts } from '../api';
+import { getMyFeed } from '../api';
 
 import { useLoginContext } from '../../hooks/ReduserContext';
 
@@ -15,15 +15,16 @@ const Microposts: FC = () => {
   const { currentUser } = state;
 
   const userId = currentUser ? currentUser?.id : 0;
+  console.log(userId);
 
   return (
     <>
-      <Feed userId={userId} getQuery={queryGetMicroposts} />
+      <Feed type="myfeed" getMicropost={getMyFeed} />
     </>
   );
 };
 // getFeed={loadMicroPosts}
-
+// userId={userId} getQuery={queryGetMyFeed}
 export default Microposts;
 
 /* eslint-disable */

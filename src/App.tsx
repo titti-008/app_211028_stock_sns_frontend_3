@@ -7,6 +7,7 @@ import {
   useLocation,
   // Redirect,
 } from 'react-router-dom';
+import { ReactQueryDevtools } from 'react-query/devtools';
 import * as H from 'history';
 import { Drawer, Grid, Box, IconButton, Hidden } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home';
@@ -22,8 +23,10 @@ import { loggedIn } from './components/api';
 import DarkButton from './declareModule/darkButton';
 import LoginForm from './components/users/LoginForm';
 import HelloWorld from './components/HelloWorld';
-import Users from './components/users/Users';
+import AllUsers from './components/users/AllUsers';
 import UserShow from './components/users/UserShow';
+import Followers from './components/users/Followers';
+import Following from './components/users/Following';
 import { ErrorResponse } from './components/Types';
 import { Colors } from './hooks/util';
 import PrivateRoute from './components/router/PrivateRoute';
@@ -35,7 +38,7 @@ import './App.css';
 import ConfigBar from './components/ConfigBar';
 import ResetRequestForm from './components/authenticate/ResetRequest';
 import ResetPasswordForm from './components/authenticate/ResetPassword';
-import Microposts from './components/microposts/Microposts';
+import Microposts from './components/microposts/MyFeed';
 import PostBar from './components/microposts/PostBar';
 import PostNew from './components/microposts/PostNew';
 import {
@@ -99,19 +102,7 @@ const App: FC = () => {
 
   // ----------カレントユーザー状態管理----------------------
 
-  // const { currentUser, setCurrentUser } = useCurentUserContext();
-
-  const { dispatch } = useLoginContext();
-
-  // // ----------ログイン状態管理----------------------
-
-  // const [isLogin, setIsLogin] = useState<boolean>(
-  //   localStorage.getItem('isLogin') === 'true',
-  // );
-
-  // useEffect(() => {
-  //   localStorage.setItem('isLogin', JSON.stringify(isLogin));
-  // }, [isLogin]);
+  const { state, dispatch } = useLoginContext();
 
   // ----------ログイン状態の確認通信----------------------
   // eslint-disable-next-line
@@ -144,26 +135,6 @@ const App: FC = () => {
     };
     void checkLoginStatus();
   }, [location, dispatch]);
-
-  // // ----------ログアウトボタンの処理----------------------
-  // const handleLogout = async () => {
-  //   try {
-  //     const response = await logoutUser();
-
-  //     if (response.status === 200) {
-  //       dispatch({
-  //         type: 'saveUser',
-  //         setUser: null,
-  //         isLogin: response.data.loggedIn,
-  //       });
-  //       SuccessToasts(response.data.messages);
-  //     }
-  //   } catch (err) {
-  //     ErrorToasts(['ログアウトに失敗しました。']);
-
-  //     console.log(err);
-  //   }
-  // };
 
   // ----------コンポーネント----------------------
   return (
@@ -224,11 +195,13 @@ const App: FC = () => {
                     </Link>
                   </Grid>
                   <Grid item>
-                    <Link to="/current_user">
-                      <IconButton color="default">
-                        <AccountCircleIcon />
-                      </IconButton>
-                    </Link>
+                    {state?.currentUser && (
+                      <Link to={`/users/${state.currentUser.id}`}>
+                        <IconButton color="default">
+                          <AccountCircleIcon />
+                        </IconButton>
+                      </Link>
+                    )}
                   </Grid>
                   <Grid item>
                     <Link to="/">
@@ -275,23 +248,23 @@ const App: FC = () => {
                       path="/hello_world"
                       component={HelloWorld}
                     />
-                    <PrivateRoute
-                      exact
-                      path="/users"
-                      render={(): ReactElement => <Users />}
-                    />
+                    <PrivateRoute exact path="/users" component={AllUsers} />
                     <PrivateRoute
                       exact
                       path="/users/:id"
                       component={UserShow}
                     />
-                    {/* <PrivateRoute exact path="/current_user">
-                      <Redirect
-                        to={`/users/${
-                          state.currentUser ? state.currentUser?.id : ''
-                        }`}
-                      />
-                    </PrivateRoute> */}
+                    <PrivateRoute
+                      exact
+                      path="/users/:id/followers"
+                      component={Followers}
+                    />
+                    <PrivateRoute
+                      exact
+                      path="/users/:id/following"
+                      component={Following}
+                    />
+
                     <PrivateRoute exact path="/edit_user">
                       <EditUser history={history} />
                     </PrivateRoute>
@@ -342,6 +315,7 @@ const App: FC = () => {
               </Hidden>
             </Grid>
           </Box>
+          <ReactQueryDevtools />
         </LoginProvider>
       </ThemeProvider>
     </QueryClientProvider>

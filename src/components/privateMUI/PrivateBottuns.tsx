@@ -58,3 +58,29 @@ export const LinkButton: FC<LinkType> = (_props) => {
     </Grid>
   );
 };
+
+type TextButtonType = {
+  linkTo: string;
+  children: React.ReactNode;
+  size: 'small' | 'large' | 'medium' | undefined;
+};
+
+export const TextButton: FC<TextButtonType> = ({ linkTo, children, size }) => {
+  const colors = useColors();
+
+  return (
+    <Link to={linkTo}>
+      <Button
+        variant="text"
+        size={size}
+        sx={{
+          color: colors.text,
+          borderColor: colors.text,
+          margin: '10px 0',
+        }}
+      >
+        {children}
+      </Button>
+    </Link>
+  );
+};
