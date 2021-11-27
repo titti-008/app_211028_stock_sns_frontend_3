@@ -8,13 +8,13 @@ import { deleteUser } from '../api';
 import { SubmitButton } from '../privateMUI/PrivateBottuns';
 
 import IconText from '../privateMUI/IconText';
-import { useLoginContext } from '../../hooks/ReduserContext';
+import { useAppContext } from '../../hooks/ReduserContext';
 
 type PropsType = {
   users: UsersType;
 };
 const Users: FC<PropsType> = ({ users }) => {
-  const { state } = useLoginContext();
+  const { state } = useAppContext();
   const { currentUser } = state;
 
   const handleDeleteUser = async (id: number) => {

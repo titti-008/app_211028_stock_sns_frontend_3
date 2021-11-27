@@ -5,13 +5,16 @@ import { CssBaseline } from '@mui/material';
 // import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import { AppProvider } from './hooks/ReduserContext';
 
 ReactDOM.render(
   <React.StrictMode>
-    <BrowserRouter>
-      <CssBaseline />
-      <App />
-    </BrowserRouter>
+    <AppProvider>
+      <BrowserRouter>
+        <CssBaseline />
+        <App />
+      </BrowserRouter>
+    </AppProvider>
   </React.StrictMode>,
   document.getElementById('root'),
 );

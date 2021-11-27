@@ -1,32 +1,54 @@
 import React, { FC, createContext, useContext, useReducer } from 'react';
+import { QueryClient, QueryClientProvider } from 'react-query';
+import { ThemeProvider, Theme, createTheme } from '@mui/material/styles';
 import { CurrentUser } from '../components/Types';
 
 type State = {
   currentUser: CurrentUser;
   isLogin: boolean;
-  // darkMode: boolean;
+  theme: Theme;
+  drawerIsOpen: boolean;
 };
 
-type Action = {
-  type: 'saveUser';
-  setUser: CurrentUser;
-  isLogin: boolean;
-};
-// | {
-//     type: 'setDarkMode';
-//   }
-// | {
-//     type: 'setLightMode';
-//   };
+type Action =
+  | {
+      type: 'saveUser';
+      setUser: CurrentUser;
+      isLogin: boolean;
+    }
+  | {
+      type: 'OpenDrawer';
+    }
+  | {
+      type: 'closeDrawer';
+    }
+  | {
+      type: 'setDarkMode';
+    }
+  | {
+      type: 'setLightMode';
+    };
+
+const themeDark = createTheme({
+  palette: {
+    mode: 'dark',
+  },
+});
+
+const themeLight = createTheme({
+  palette: {
+    mode: 'light',
+  },
+});
 
 type ContextType = {
   state: State;
   dispatch: React.Dispatch<Action>;
 };
 
-const LoginContext = createContext({} as ContextType);
+const AppContext = createContext({} as ContextType);
 
-export const useLoginContext = () => useContext(LoginContext);
+export const useAppContext = () => useContext(AppContext);
 
 const reducer = (state: State, action: Action) => {
   switch (action.type) {
@@ -40,21 +62,30 @@ const reducer = (state: State, action: Action) => {
         isLogin: action.isLogin,
       };
     }
+    case 'OpenDrawer':
+      return {
+        ...state,
+        drawerIsOpen: true,
+      };
+    case 'closeDrawer':
+      return {
+        ...state,
+        drawerIsOpen: false,
+      };
+    case 'setDarkMode':
+      localStorage.setItem('darkMode', JSON.stringify('dark'));
 
-    // case 'setDarkMode':
-    //   localStorage.setItem('darkMode', 'on');
+      return {
+        ...state,
+        theme: themeDark,
+      };
+    case 'setLightMode':
+      localStorage.setItem('darkMode', JSON.stringify('light'));
 
-    //   return {
-    //     ...state,
-    //     darkMode: true,
-    //   };
-    // case 'setLightMode':
-    //   localStorage.setItem('darkMode', 'off');
-
-    //   return {
-    //     ...state,
-    //     darkMode: false,
-    //   };
+      return {
+        ...state,
+        theme: themeLight,
+      };
 
     default:
       return state;
@@ -66,19 +97,27 @@ const initCurrentUser = usersJSON
   ? (JSON.parse(usersJSON) as CurrentUser)
   : null;
 
-const initialState = {
+const initialState: State = {
   currentUser: initCurrentUser,
   isLogin: localStorage.getItem('isLogin') === 'true',
-  // darkMode: localStorage.getItem('darkMode') === 'on',
+  drawerIsOpen: false,
+  theme: localStorage.getItem('darkMode') === 'light' ? themeLight : themeDark,
 };
 
-export const LoginProvider: FC = ({ children }) => {
+// ----------React Queryの設定----------------------
+const queryClient = new QueryClient();
+
+export const AppProvider: FC = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
 
   const value = { state, dispatch };
 
   return (
-    <LoginContext.Provider value={value}>{children}</LoginContext.Provider>
+    <QueryClientProvider client={queryClient}>
+      <AppContext.Provider value={value}>
+        <ThemeProvider theme={state.theme}>{children}</ThemeProvider>
+      </AppContext.Provider>
+    </QueryClientProvider>
   );
 };
 
