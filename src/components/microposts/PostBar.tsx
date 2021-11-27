@@ -7,11 +7,11 @@ import PostNew from './PostNew';
 import IconText from '../privateMUI/IconText';
 
 import { BaseCard, PrivateAppbar, PrivateBox } from '../privateMUI/BaseCard';
-import { useLoginContext } from '../../hooks/ReduserContext';
+import { useAppContext } from '../../hooks/ReduserContext';
 
 /* eslint-disable */
 const PostBar: FC<HistoryPropsType> = ({ history }) => {
-  const { state } = useLoginContext();
+  const { state } = useAppContext();
   const { currentUser } = state;
 
   return (

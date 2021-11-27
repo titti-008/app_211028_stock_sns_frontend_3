@@ -7,7 +7,12 @@ export const BaseCard: FC = ({ children }) => {
   const colors = useColors();
 
   return (
-    <Grid item height="100%" minWidth={{ xs: '100%', sm: '100%', md: 350 }}>
+    <Grid
+      item
+      height="100%"
+      width="100%"
+      minWidth={{ xs: '100%', sm: '100%', md: 350 }}
+    >
       <Box
         sx={{
           width: '100%',
@@ -33,11 +38,18 @@ export const PrivateAppbar: FC = ({ children }) => {
     <AppBar
       position="static"
       sx={{
+        width: '100%',
         height: `${appBerHeight}px`,
         backgroundColor: colors.header,
       }}
     >
-      <Grid container direction="row" justifyContent="left" alignItems="center">
+      <Grid
+        width="100%"
+        container
+        direction="row"
+        justifyContent="left"
+        alignItems="center"
+      >
         {children}
       </Grid>
     </AppBar>
@@ -46,12 +58,14 @@ export const PrivateAppbar: FC = ({ children }) => {
 
 export const PrivateBox: FC = ({ children }) => (
   <Box
+    width="100%"
     sx={{
       height: `calc(100% - ${appBerHeight}px)`,
       overflow: 'scroll',
     }}
   >
     <Grid
+      width="100%"
       container
       direction="column"
       justifyContent="flex-start"

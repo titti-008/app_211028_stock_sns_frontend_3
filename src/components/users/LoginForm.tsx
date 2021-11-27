@@ -5,12 +5,12 @@ import { SuccessToasts, ErrorToasts } from '../toast/PrivateToast';
 import { NormalForm, RememberCheckBox } from '../privateMUI/PrivateForms';
 import { NormalText } from '../privateMUI/PrivateTexts';
 import { SubmitButton, LinkButton } from '../privateMUI/PrivateBottuns';
-import { useLoginContext } from '../../hooks/ReduserContext';
+import { useAppContext } from '../../hooks/ReduserContext';
 
 // toast.configure(); // トーストを10秒間保持する設定
 
 const LoginForm: FC = () => {
-  const { state, dispatch } = useLoginContext();
+  const { state, dispatch } = useAppContext();
 
   const [values, setvalues] = useState({
     email: '',

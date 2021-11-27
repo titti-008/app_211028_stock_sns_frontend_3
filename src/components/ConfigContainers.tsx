@@ -45,7 +45,8 @@ export const ButtonContainer: FC<ButtonPropsType> = (_props) => {
   return (
     <Grid
       item
-      sx={{ width: '100%', cursor: 'pointer' }}
+      width="100"
+      sx={{ cursor: 'pointer' }}
       onClick={props.handleAction}
     >
       <Grid
@@ -54,6 +55,7 @@ export const ButtonContainer: FC<ButtonPropsType> = (_props) => {
         justifyContent="start"
         alignItems="center"
         wrap="nowrap"
+        width="100"
       >
         <IconButton color="default">
           <Grid item>{props.children}</Grid>

@@ -5,14 +5,14 @@ import { updateUser } from '../api';
 import { SuccessToasts, ErrorToasts } from '../toast/PrivateToast';
 import { useUserDataInput } from '../../hooks/util';
 import UserDataForm from './UserDataForm';
-import { useLoginContext } from '../../hooks/ReduserContext';
+import { useAppContext } from '../../hooks/ReduserContext';
 
 const EditUser: React.FC<HistoryPropsType> = (_props) => {
   /* eslint-disable */
   const { history } = { ..._props };
   /* eslint-disable */
 
-  const { state, dispatch } = useLoginContext();
+  const { state, dispatch } = useAppContext();
   const { currentUser } = state;
 
   const initInput = {

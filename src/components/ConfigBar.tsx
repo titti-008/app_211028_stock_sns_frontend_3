@@ -8,7 +8,7 @@ import { NormalText } from './privateMUI/PrivateTexts';
 import { LinkContainer, ButtonContainer } from './ConfigContainers';
 import { logoutUser } from './api';
 import { BaseCard, PrivateAppbar, PrivateBox } from './privateMUI/BaseCard';
-import { useLoginContext } from '../hooks/ReduserContext';
+import { useAppContext } from '../hooks/ReduserContext';
 import { SuccessToasts, ErrorToasts } from './toast/PrivateToast';
 
 type PropsType = {
@@ -17,7 +17,7 @@ type PropsType = {
 
 const ConfigBar: FC<PropsType> = (_props) => {
   const props = _props;
-  const { dispatch } = useLoginContext();
+  const { dispatch } = useAppContext();
 
   // ----------ログアウトボタンの処理----------------------
   const handleLogout = async () => {
@@ -47,7 +47,7 @@ const ConfigBar: FC<PropsType> = (_props) => {
             <DehazeIcon />
           </IconButton>
         </Grid>
-        <Grid item>
+        <Grid item width="300px">
           <NormalText>設定</NormalText>
         </Grid>
       </PrivateAppbar>

@@ -17,12 +17,12 @@ import {
   SubmitButton,
 } from '../privateMUI/PrivateBottuns';
 import { NormalText } from '../privateMUI/PrivateTexts';
-import { useLoginContext } from '../../hooks/ReduserContext';
+import { useAppContext } from '../../hooks/ReduserContext';
 import { ErrorToasts } from '../toast/PrivateToast';
 import Feed from '../microposts/Feed';
 
 const UserShow: FC<RouteComponentProps<{ id: string }>> = (props) => {
-  const { state } = useLoginContext();
+  const { state } = useAppContext();
   const { currentUser } = state;
 
   const { data, isLoading, isError, error } = useQuery<

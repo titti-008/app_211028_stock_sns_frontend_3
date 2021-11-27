@@ -2,26 +2,29 @@ import { FC } from 'react';
 import { Tooltip, IconButton } from '@mui/material';
 import Brightness5Icon from '@mui/icons-material/Brightness5';
 import Brightness3Icon from '@mui/icons-material/Brightness3';
+import { useAppContext } from '../hooks/ReduserContext';
+// type TypeProps = {
+//   darkMode: boolean;
+//   handleDarkModeOn: () => void;
 
-type TypeProps = {
-  darkMode: boolean;
-  handleDarkModeOn: () => void;
+//   handleDarkModeOff: () => void;
+// };
 
-  handleDarkModeOff: () => void;
-};
-
-const DarkButton: FC<TypeProps> = ({ ...Props }) => {
-  const { darkMode, handleDarkModeOn, handleDarkModeOff } = { ...Props };
+const DarkButton: FC = () => {
+  const { state, dispatch } = useAppContext();
 
   return (
     <>
-      {darkMode ? (
+      {state.theme.palette.mode === 'dark' ? (
         <Tooltip
           disableFocusListener
           disableTouchListener
           title="ダークモードをやめるのです"
         >
-          <IconButton color="default" onClick={handleDarkModeOff}>
+          <IconButton
+            color="default"
+            onClick={() => dispatch({ type: 'setLightMode' })}
+          >
             <Brightness5Icon />
           </IconButton>
         </Tooltip>
@@ -31,7 +34,10 @@ const DarkButton: FC<TypeProps> = ({ ...Props }) => {
           disableTouchListener
           title="ダークモードはいいぞ"
         >
-          <IconButton color="default" onClick={handleDarkModeOn}>
+          <IconButton
+            color="default"
+            onClick={() => dispatch({ type: 'setDarkMode' })}
+          >
             <Brightness3Icon />
           </IconButton>
         </Tooltip>

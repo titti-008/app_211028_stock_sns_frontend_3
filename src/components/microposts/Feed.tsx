@@ -10,7 +10,7 @@ import { NormalText } from '../privateMUI/PrivateTexts';
 import IconText from '../privateMUI/IconText';
 import { SuccessToasts, ErrorToasts } from '../toast/PrivateToast';
 import PrivateImageList from './PrivateImageList';
-import { useLoginContext } from '../../hooks/ReduserContext';
+import { useAppContext } from '../../hooks/ReduserContext';
 import { deleteMicropost } from '../api';
 
 type PropsType<T> = {
@@ -24,14 +24,13 @@ type PropsType<T> = {
 /* eslint-disable */
 
 const Feed: FC<PropsType<'myfeed' | number>> = ({ type, getMicropost }) => {
-  const { state } = useLoginContext();
+  const { state } = useAppContext();
   const { currentUser } = state;
 
   const {
     status,
     data,
     error,
-    // isFetching,
     isFetchingNextPage,
     fetchNextPage,
     hasNextPage,
@@ -131,11 +130,5 @@ const Feed: FC<PropsType<'myfeed' | number>> = ({ type, getMicropost }) => {
 };
 
 export default Feed;
-
-/* eslint-disable */
-/* eslint-disable */
-/* eslint-disable */
-
-/* eslint-disable */
 
 /* eslint-disable */
