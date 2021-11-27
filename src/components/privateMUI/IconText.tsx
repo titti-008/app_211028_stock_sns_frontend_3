@@ -17,7 +17,7 @@ const IconText: FC<PropsType> = (_props) => {
   const props = _props;
 
   return (
-    <Grid item sx={{ width: '100%' }} key={props.key}>
+    <Grid item sx={{ width: '100%' }}>
       <Grid
         container
         direction="row"

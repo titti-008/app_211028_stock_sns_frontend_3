@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Theme, useTheme } from '@mui/material';
 // import formatDistanceToNow from 'date-fns/formatDistanceToNow';
+import { AxiosError } from 'axios';
 import { CreateUserType } from '../components/Types';
 // PasswordConfirmationType
 
@@ -102,3 +103,7 @@ export const useUserDataInput = <T>(initInput: T) => {
 
   return { values, handleChange };
 };
+
+export function isAxiosError(error: AxiosError): error is AxiosError {
+  return !!error.isAxiosError;
+}
