@@ -21,14 +21,16 @@ import { useAppContext } from '../../hooks/ReduserContext';
 import { ErrorToasts } from '../toast/PrivateToast';
 import Feed from '../microposts/Feed';
 
-const UserShow: FC<RouteComponentProps<{ id: string }>> = (props) => {
+const UserShow: FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
   const { state } = useAppContext();
   const { currentUser } = state;
+
+  const userId = match.params.id;
 
   const { data, isLoading, isError, error } = useQuery<
     ShowUserResponse,
     AxiosError
-  >('UserShow', () => getUser(Number(props.match.params.id)));
+  >('UserShow', () => getUser(Number(userId)));
 
   if (isLoading) {
     return <CircularProgress />;
@@ -118,7 +120,7 @@ const UserShow: FC<RouteComponentProps<{ id: string }>> = (props) => {
           />
         )}
       </IconText>
-      <Feed type={user.id} getMicropost={getMyFeed} />
+      <Feed type={Number(userId)} getMicropost={getMyFeed} />
     </>
   );
 };

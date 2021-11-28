@@ -33,7 +33,7 @@ const Feed: FC<PropsType<'myfeed' | number>> = ({ type, getMicropost }) => {
     fetchNextPage,
     hasNextPage,
   } = useInfiniteQuery<MicropostsResponse, ErrorResponse, MicropostsResponse>(
-    'microposts',
+    `microposts-${type}`,
     async ({ pageParam = 1 }: { pageParam?: number }) => {
       const res = await getMicropost(type, pageParam);
 

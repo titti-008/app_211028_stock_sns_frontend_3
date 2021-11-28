@@ -17,7 +17,7 @@ type PropsType = {
 
 const ConfigBar: FC<PropsType> = (_props) => {
   const props = _props;
-  const { dispatch } = useAppContext();
+  const { state, dispatch } = useAppContext();
 
   // ----------ログアウトボタンの処理----------------------
   const handleLogout = async () => {
@@ -58,7 +58,11 @@ const ConfigBar: FC<PropsType> = (_props) => {
         <LinkContainer linkTo="/users" linkText="ユーザー一覧">
           <GroupIcon />
         </LinkContainer>
-        <LinkContainer linkTo="/current_user" linkText="プロフィール">
+
+        <LinkContainer
+          linkTo={`/users/${state.currentUser ? state.currentUser.id : ''}`}
+          linkText="プロフィール"
+        >
           <AccountCircleIcon />
         </LinkContainer>
       </PrivateBox>
