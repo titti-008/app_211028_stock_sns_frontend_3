@@ -60,6 +60,7 @@ const UserShow: FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
       }
     } catch (err) {
       console.log('失敗');
+
       console.log(err);
     }
   };
