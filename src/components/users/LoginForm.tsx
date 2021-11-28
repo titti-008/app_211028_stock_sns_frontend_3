@@ -7,8 +7,6 @@ import { NormalText } from '../privateMUI/PrivateTexts';
 import { SubmitButton, LinkButton } from '../privateMUI/PrivateBottuns';
 import { useAppContext } from '../../hooks/ReduserContext';
 
-// toast.configure(); // トーストを10秒間保持する設定
-
 const LoginForm: FC = () => {
   const { state, dispatch } = useAppContext();
 
