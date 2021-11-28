@@ -21,8 +21,6 @@ type PropsType<T> = {
   ) => Promise<AxiosResponse<MicropostsResponse, unknown>>;
 };
 
-/* eslint-disable */
-
 const Feed: FC<PropsType<'myfeed' | number>> = ({ type, getMicropost }) => {
   const { state } = useAppContext();
   const { currentUser } = state;
@@ -130,5 +128,7 @@ const Feed: FC<PropsType<'myfeed' | number>> = ({ type, getMicropost }) => {
 };
 
 export default Feed;
+
+/* eslint-disable */
 
 /* eslint-disable */

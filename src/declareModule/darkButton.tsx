@@ -1,4 +1,5 @@
 import { FC } from 'react';
+import { useTheme } from '@mui/material/styles';
 import { Tooltip, IconButton } from '@mui/material';
 import Brightness5Icon from '@mui/icons-material/Brightness5';
 import Brightness3Icon from '@mui/icons-material/Brightness3';
@@ -11,11 +12,12 @@ import { useAppContext } from '../hooks/ReduserContext';
 // };
 
 const DarkButton: FC = () => {
-  const { state, dispatch } = useAppContext();
+  const { dispatch } = useAppContext();
+  const theme = useTheme();
 
   return (
     <>
-      {state.theme.palette.mode === 'dark' ? (
+      {theme.palette.mode === 'dark' ? (
         <Tooltip
           disableFocusListener
           disableTouchListener

@@ -9,12 +9,12 @@ import { AppProvider } from './hooks/ReduserContext';
 
 ReactDOM.render(
   <React.StrictMode>
-    <AppProvider>
-      <BrowserRouter>
+    <BrowserRouter>
+      <AppProvider>
         <CssBaseline />
         <App />
-      </BrowserRouter>
-    </AppProvider>
+      </AppProvider>
+    </BrowserRouter>
   </React.StrictMode>,
   document.getElementById('root'),
 );

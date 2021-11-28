@@ -73,14 +73,14 @@ const reducer = (state: State, action: Action) => {
         drawerIsOpen: false,
       };
     case 'setDarkMode':
-      localStorage.setItem('darkMode', JSON.stringify('dark'));
+      localStorage.setItem('darkMode', 'dark');
 
       return {
         ...state,
         theme: themeDark,
       };
     case 'setLightMode':
-      localStorage.setItem('darkMode', JSON.stringify('light'));
+      localStorage.setItem('darkMode', 'light');
 
       return {
         ...state,

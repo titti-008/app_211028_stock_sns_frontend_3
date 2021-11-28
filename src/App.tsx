@@ -15,7 +15,7 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import SendIcon from '@mui/icons-material/Send';
 import GroupIcon from '@mui/icons-material/Group';
 import DehazeIcon from '@mui/icons-material/Dehaze';
-import { useTheme } from '@mui/material/styles';
+// import { useTheme } from '@mui/material/styles';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import { loggedIn } from './components/api';
 import DarkButton from './declareModule/darkButton';
@@ -59,8 +59,8 @@ const App: FC = () => {
   const { state, dispatch } = useAppContext();
 
   // // ----------テーマカラーの状態管理----------------------
-  const theme = useTheme();
-  const colors = Colors(theme);
+  // const theme = useTheme();
+  const colors = Colors(state.theme);
 
   // ----------ログイン状態の確認通信----------------------
   // eslint-disable-next-line
@@ -120,7 +120,12 @@ const App: FC = () => {
           <Hidden mdDown implementation="js">
             <PostBar history={history} />
           </Hidden>
-          <Grid item height="100%" width="100%">
+          <Grid
+            item
+            height="100%"
+            width="100%"
+            onClick={() => dispatch({ type: 'closeDrawer' })}
+          >
             <Hidden mdUp implementation="js">
               <Drawer
                 anchor="left"

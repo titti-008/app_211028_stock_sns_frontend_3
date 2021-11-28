@@ -2,6 +2,7 @@ import React from 'react';
 
 import { Route, Redirect, RouteProps } from 'react-router-dom';
 import { useAppContext } from '../../hooks/ReduserContext';
+import { ErrorToasts } from '../toast/PrivateToast';
 
 // ----------PrivateRouteコンポーネントの作成(ログイン状態によるリダイレクト)----------------------
 const UnAuthRoute: React.FC<RouteProps> = ({ ...props }) => {
@@ -14,7 +15,7 @@ const UnAuthRoute: React.FC<RouteProps> = ({ ...props }) => {
   console.log(isLogin ? 'ログイン済み' : 'ログインできていない');
 
   if (isLogin) {
-    console.log(`ログイン済みのユーザーは`, path, `へはアクセスできません`);
+    ErrorToasts([`ログイン済みのユーザーは${path}へはアクセスできません`]);
 
     return <Redirect to="/" />;
   }
