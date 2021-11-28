@@ -268,9 +268,9 @@ const App: FC = () => {
           <Hidden mdDown implementation="js">
             <PostBar history={history} />
           </Hidden>
+          <ReactQueryDevtools />
         </Grid>
       </Box>
-      <ReactQueryDevtools />
     </>
   );
 };
