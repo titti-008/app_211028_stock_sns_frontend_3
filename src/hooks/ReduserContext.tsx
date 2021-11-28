@@ -1,4 +1,10 @@
-import React, { FC, createContext, useContext, useReducer } from 'react';
+import React, {
+  FC,
+  createContext,
+  useContext,
+  useReducer,
+  useEffect,
+} from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { ThemeProvider, Theme, createTheme } from '@mui/material/styles';
 import { CurrentUser } from '../components/Types';
@@ -53,9 +59,6 @@ export const useAppContext = () => useContext(AppContext);
 const reducer = (state: State, action: Action) => {
   switch (action.type) {
     case 'saveUser': {
-      localStorage.setItem('currentUser', JSON.stringify(action.setUser));
-      localStorage.setItem('isLogin', JSON.stringify(action.isLogin));
-
       return {
         ...state,
         currentUser: action.setUser,
@@ -73,20 +76,15 @@ const reducer = (state: State, action: Action) => {
         drawerIsOpen: false,
       };
     case 'setDarkMode':
-      localStorage.setItem('darkMode', 'dark');
-
       return {
         ...state,
         theme: themeDark,
       };
     case 'setLightMode':
-      localStorage.setItem('darkMode', 'light');
-
       return {
         ...state,
         theme: themeLight,
       };
-
     default:
       return state;
   }
@@ -109,6 +107,15 @@ const queryClient = new QueryClient();
 
 export const AppProvider: FC = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
+
+  useEffect(() => {
+    localStorage.setItem('isLogin', JSON.stringify(state.isLogin));
+    localStorage.setItem('currentUser', JSON.stringify(state.currentUser));
+    localStorage.setItem(
+      'darkMode',
+      state.theme === themeDark ? 'dark' : 'light',
+    );
+  }, [state]);
 
   const value = { state, dispatch };
 
