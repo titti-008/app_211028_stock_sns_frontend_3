@@ -1,14 +1,42 @@
 import { FC, useState, useEffect } from 'react';
 import axios from 'axios';
+import saveAs from 'file-saver';
+// import alphavantage from 'alphavantage';
 import { ApiResponse } from './Types';
 import logo from '../logo.svg';
 
 const HelloWorld: FC = () => {
   const [state, setState] = useState<string>('');
 
-  const env = process.env.REACT_APP_SERVER_URL ?? ''; // 文字列型であることを強制
+  const baseUrl = process.env.REACT_APP_SERVER_URL ?? ''; // 文字列型であることを強制
 
-  const url = `${env}/hello_world`;
+  const url = `${baseUrl}/hello_world`;
+
+  /* eslint-disable */
+
+  const exportCSV = async () => {
+    try {
+      const response = await axios.get(
+        `${baseUrl}/api/v1/earnings/export_csv`,
+        {
+          responseType: 'blob',
+        },
+      );
+
+      if (response.status === 200) {
+        const mineType = response.headers['content-type'];
+        const name = response.headers['content-disposition'];
+        const blob = new Blob([response.data], { type: mineType });
+        saveAs(blob, name);
+      } else {
+        console.log('status200以外のレスポンス発生');
+        console.log(response);
+      }
+    } catch (err) {
+      console.log('データの取得に失敗');
+      console.log(err);
+    }
+  };
 
   const componetDitMount = async () => {
     try {
@@ -44,6 +72,7 @@ const HelloWorld: FC = () => {
           Learn React
         </a>
       </header>
+      <button onClick={exportCSV}>Api</button>
     </div>
   );
 };
@@ -51,3 +80,4 @@ const HelloWorld: FC = () => {
 export default HelloWorld;
 
 // tslint:disable-next-line
+/* eslint-disable */

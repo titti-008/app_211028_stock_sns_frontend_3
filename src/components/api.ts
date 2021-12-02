@@ -12,6 +12,7 @@ import {
   ResetEmail,
   ResetPasswordData,
   MicropostsResponse,
+  EarningsResponse,
 } from './Types';
 
 const env = process.env.REACT_APP_SERVER_URL ?? ''; // 文字列型であることを強制
@@ -20,6 +21,7 @@ const apiUrl = `${env}/api/v1`;
 const usersUrl = `${apiUrl}/users`;
 export const micropostsUrl = `${apiUrl}/microposts`;
 const relationshipsUrl = `${apiUrl}/relationships`;
+const StockUrl = `${apiUrl}/stocks`;
 
 export const instance = axios.create({ withCredentials: true });
 
@@ -194,6 +196,28 @@ export const deleteMicropost = (
   id: number,
 ): Promise<AxiosResponse<MessageResponse, unknown>> =>
   instance.delete<MessageResponse>(`${micropostsUrl}/${id}`);
+
+export const textStockApi = async () => {
+  const base_uri = 'https://www.alphavantage.co/query';
+  const apiKey = process.env.API_ACCESS_KEY;
+
+  const response = axios.post<unknown>(base_uri, {
+    function: 'TIME_SERIES_DAILY',
+    symbol: 'tsla',
+    datatype: 'json',
+    apikey: apiKey,
+  });
+
+  return response;
+};
+
+export const getEarnings = async (symbol: string) => {
+  const response = await instance.get<EarningsResponse>(
+    `${StockUrl}/${symbol}`,
+  );
+
+  return response.data;
+};
 
 /* eslint-disable */
 /* eslint-disable */

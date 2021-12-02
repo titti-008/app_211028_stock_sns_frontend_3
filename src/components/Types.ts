@@ -64,6 +64,39 @@ export type Micropost = Id &
     user: Id & Name;
   };
 
+// -------- Stocks ----------
+export type StockType = {
+  stock: Id &
+    Name & {
+      symbol: string;
+      country: string;
+      ipoYear: number;
+      sector: string;
+      industry: string;
+    };
+};
+
+// -------- Earnings ----------
+
+export type EarningType = Id & {
+  symbol: string;
+  fiscalDateEnding: Date;
+  reportedDate: Date;
+  reportedEPS: number;
+  estimatedEPS: number;
+  surprisePercentage: number;
+  reportedCurrency: number;
+  totalRevenue: number;
+  costOfRevenue: number;
+  operatingIncome: number;
+  grossProfit: number;
+  operatingCashflow: number;
+  netIncome: number;
+};
+
+export type Earnings = {
+  earnings: EarningType[];
+};
 // -------- サーバーレスポンス ----------
 type User = { user: UserType };
 type Users = { users: UsersType };
@@ -83,6 +116,8 @@ export type ShowUserResponse = User & Messages;
 export type MessageResponse = Messages;
 
 export type DeleteUserResponse = Messages & Users;
+
+export type EarningsResponse = Messages & Earnings & StockType;
 
 export type HistoryPropsType = {
   history: H.History;
