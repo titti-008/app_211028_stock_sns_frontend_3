@@ -3,6 +3,7 @@ import { Grid, IconButton } from '@mui/material';
 import DehazeIcon from '@mui/icons-material/Dehaze';
 import LogoutIcon from '@mui/icons-material/Logout';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import ShowChartIcon from '@mui/icons-material/ShowChart';
 import GroupIcon from '@mui/icons-material/Group';
 import { NormalText } from './privateMUI/PrivateTexts';
 import { LinkContainer, ButtonContainer } from './ConfigContainers';
@@ -64,6 +65,9 @@ const ConfigBar: FC<PropsType> = (_props) => {
           linkText="プロフィール"
         >
           <AccountCircleIcon />
+        </LinkContainer>
+        <LinkContainer linkTo="/stocks/tsla" linkText="earnings">
+          <ShowChartIcon />
         </LinkContainer>
       </PrivateBox>
     </BaseCard>

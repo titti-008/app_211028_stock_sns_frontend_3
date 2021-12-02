@@ -45,6 +45,7 @@ import {
   PrivateBox,
 } from './components/privateMUI/BaseCard';
 import { useAppContext } from './hooks/ReduserContext';
+import Earnings from './components/earnings/Earnings';
 
 const App: FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -120,13 +121,13 @@ const App: FC = () => {
           <Hidden mdDown implementation="js">
             <PostBar history={history} />
           </Hidden>
-          <Grid
-            item
-            height="100%"
-            width="100%"
-            onClick={() => dispatch({ type: 'closeDrawer' })}
-          >
-            <Hidden mdUp implementation="js">
+          <Hidden mdUp implementation="js">
+            <Grid
+              item
+              height="100%"
+              width="100%"
+              onClick={() => dispatch({ type: 'closeDrawer' })}
+            >
               <Drawer
                 anchor="left"
                 variant="temporary"
@@ -140,8 +141,8 @@ const App: FC = () => {
                   handleDrawerClose={() => dispatch({ type: 'closeDrawer' })}
                 />
               </Drawer>
-            </Hidden>
-          </Grid>
+            </Grid>
+          </Hidden>
           <BaseCard>
             <PrivateAppbar>
               <Grid item>
@@ -231,7 +232,11 @@ const App: FC = () => {
                 <PrivateRoute exact path="/microposts/new">
                   <PostNew history={history} />
                 </PrivateRoute>
-
+                <PrivateRoute
+                  exact
+                  path="/stocks/:symbol"
+                  component={Earnings}
+                />
                 <UnAuthRoute
                   exact
                   path="/login"
