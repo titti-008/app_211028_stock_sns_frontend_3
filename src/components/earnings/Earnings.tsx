@@ -1,7 +1,6 @@
 import { FC } from 'react';
 import { useQuery } from 'react-query';
 import { RouteComponentProps } from 'react-router-dom';
-import { CircularProgress } from '@mui/material';
 import { AxiosError } from 'axios';
 import { EarningsResponse } from '../Types';
 import {
@@ -10,21 +9,16 @@ import {
   // createUserRelationship,
   // deleteUserRelationship,
 } from '../api';
-import IconText from '../privateMUI/IconText';
-import // LinkButton,
-// TextButton,
-// SubmitButton,
-'../privateMUI/PrivateBottuns';
-import { NormalText } from '../privateMUI/PrivateTexts';
+import PrivateLoading from '../privateMUI/PrivateLoading';
+
 // import { useAppContext } from '../../hooks/ReduserContext';
 import { ErrorToasts } from '../toast/PrivateToast';
 // import Feed from '../microposts/Feed';
+import EarningStatus from './EarningStatus';
 
 const Earnings: FC<RouteComponentProps<{ symbol: string }>> = ({ match }) => {
   // const { state } = useAppContext();
   // const { currentUser } = state;
-
-  // const symbol = match.params.symbolA
 
   const { data, isLoading, isError, error } = useQuery<
     EarningsResponse,
@@ -32,7 +26,7 @@ const Earnings: FC<RouteComponentProps<{ symbol: string }>> = ({ match }) => {
   >(`Earnings-${match.params.symbol}`, () => getEarnings(match.params.symbol));
 
   if (isLoading) {
-    return <CircularProgress />;
+    return <PrivateLoading />;
   }
 
   if (isError && error) {
@@ -40,7 +34,7 @@ const Earnings: FC<RouteComponentProps<{ symbol: string }>> = ({ match }) => {
   }
 
   if (!data) {
-    return <div>ユーザーがいません</div>;
+    return <div>データがありません</div>;
   }
 
   const { stock, earnings, messages } = data;
@@ -49,19 +43,12 @@ const Earnings: FC<RouteComponentProps<{ symbol: string }>> = ({ match }) => {
 
   return (
     <>
-      {earnings.map((earning) => (
-        <IconText
-          linkTo={`/stocks/${match.params.symbol}`}
-          key={stock.id}
-          name={stock.symbol}
-          date={new Date(earning.reportedDate)}
-        >
-          <NormalText>costOfRevenue:{earning.costOfRevenue}</NormalText>
-          <NormalText>estimatedEPS:{earning.estimatedEPS}</NormalText>
-          <NormalText>reportedEPS:{earning.reportedEPS}</NormalText>
-          <NormalText>operatingCashflow:{earning.operatingCashflow}</NormalText>
-          <NormalText>operatingCashflow:{earning.totalRevenue}</NormalText>
-        </IconText>
+      {earnings.map((earning, index: number) => (
+        <EarningStatus
+          stock={stock}
+          earning={earning}
+          lastYearEarning={earnings[index + 4]}
+        />
       ))}
     </>
   );

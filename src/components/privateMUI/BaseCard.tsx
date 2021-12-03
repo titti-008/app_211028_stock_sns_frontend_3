@@ -11,7 +11,7 @@ export const BaseCard: FC = ({ children }) => {
       item
       height="100%"
       width="100%"
-      minWidth={{ xs: '100%', sm: '100%', md: 350 }}
+      minWidth={{ xs: '100%', sm: '100%', md: 400 }}
     >
       <Box
         sx={{
