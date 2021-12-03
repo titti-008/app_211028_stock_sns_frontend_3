@@ -267,12 +267,6 @@ const App: FC = () => {
               handleDrawerClose={() => {}}
             />
           </Hidden>
-          <Hidden mdDown implementation="js">
-            <PostBar history={history} />
-          </Hidden>
-          <Hidden mdDown implementation="js">
-            <PostBar history={history} />
-          </Hidden>
           <ReactQueryDevtools />
         </Grid>
       </Box>

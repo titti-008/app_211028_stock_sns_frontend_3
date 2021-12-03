@@ -11,6 +11,9 @@ import { logoutUser } from './api';
 import { BaseCard, PrivateAppbar, PrivateBox } from './privateMUI/BaseCard';
 import { useAppContext } from '../hooks/ReduserContext';
 import { SuccessToasts, ErrorToasts } from './toast/PrivateToast';
+import { NormalForm } from './privateMUI/PrivateForms';
+import { useUserDataInput } from '../hooks/util';
+import { LinkButton } from './privateMUI/PrivateBottuns';
 
 type PropsType = {
   handleDrawerClose: () => void;
@@ -40,6 +43,13 @@ const ConfigBar: FC<PropsType> = (_props) => {
     }
   };
 
+  const initInput = {
+    name: '',
+  };
+
+  const { values, handleChange } =
+    useUserDataInput<typeof initInput>(initInput);
+
   return (
     <BaseCard>
       <PrivateAppbar>
@@ -66,9 +76,19 @@ const ConfigBar: FC<PropsType> = (_props) => {
         >
           <AccountCircleIcon />
         </LinkContainer>
-        <LinkContainer linkTo="/stocks/tsla" linkText="earnings">
+
+        <Grid item width="100%">
           <ShowChartIcon />
-        </LinkContainer>
+          <NormalForm
+            value={values.name}
+            handleChange={handleChange('name')}
+            label="検索したいシンボルを入力してください"
+            isPassword={false}
+            error={false}
+            errorText=""
+          />
+          <LinkButton linkTo={`/stocks/${values.name}`} label="シンボル検索" />
+        </Grid>
       </PrivateBox>
     </BaseCard>
   );

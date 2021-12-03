@@ -65,16 +65,17 @@ export type Micropost = Id &
   };
 
 // -------- Stocks ----------
-export type StockType = {
-  stock: Id &
-    Name & {
-      symbol: string;
-      country: string;
-      ipoYear: number;
-      sector: string;
-      industry: string;
-    };
-};
+
+export type Stock = Id &
+  Name & {
+    symbol: string;
+    country: string;
+    ipoYear: number;
+    sector: string;
+    industry: string;
+  };
+
+export type StockType = { stock: Stock };
 
 // -------- Earnings ----------
 
@@ -84,6 +85,7 @@ export type EarningType = Id & {
   reportedDate: Date;
   reportedEPS: number;
   estimatedEPS: number;
+  surprise: number;
   surprisePercentage: number;
   reportedCurrency: number;
   totalRevenue: number;
