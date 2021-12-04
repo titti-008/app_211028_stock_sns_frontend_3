@@ -1,11 +1,5 @@
 import { FC, useRef, useEffect, ReactElement } from 'react';
-import {
-  Switch,
-  Link,
-  useHistory,
-  useLocation,
-  // Redirect,
-} from 'react-router-dom';
+import { Switch, Link, useHistory, useLocation } from 'react-router-dom';
 import { ReactQueryDevtools } from 'react-query/devtools';
 import * as H from 'history';
 import { Drawer, Grid, Box, IconButton, Hidden } from '@mui/material';
@@ -15,7 +9,6 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import SendIcon from '@mui/icons-material/Send';
 import GroupIcon from '@mui/icons-material/Group';
 import DehazeIcon from '@mui/icons-material/Dehaze';
-// import { useTheme } from '@mui/material/styles';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import { loggedIn } from './components/api';
 import DarkButton from './declareModule/darkButton';
@@ -60,7 +53,6 @@ const App: FC = () => {
   const { state, dispatch } = useAppContext();
 
   // // ----------テーマカラーの状態管理----------------------
-  // const theme = useTheme();
   const colors = Colors(state.theme);
 
   // ----------ログイン状態の確認通信----------------------
@@ -68,6 +60,7 @@ const App: FC = () => {
   const location = useLocation();
 
   useEffect(() => {
+    dispatch({ type: 'closeDrawer' });
     const checkLoginStatus = async () => {
       try {
         const response = await loggedIn();
@@ -122,12 +115,7 @@ const App: FC = () => {
             <PostBar history={history} />
           </Hidden>
           <Hidden mdUp implementation="js">
-            <Grid
-              item
-              height="100%"
-              width="100%"
-              onClick={() => dispatch({ type: 'closeDrawer' })}
-            >
+            <Grid item height="100%" width="100%">
               <Drawer
                 anchor="left"
                 variant="temporary"
@@ -277,7 +265,4 @@ const App: FC = () => {
 export default App;
 
 // tslint:disable-next-line
-/* eslint-disable */
-/* eslint-disable */
-
 /* eslint-disable */

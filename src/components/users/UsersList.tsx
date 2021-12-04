@@ -1,6 +1,5 @@
 import { FC } from 'react';
 import SupervisorAccountIcon from '@mui/icons-material/SupervisorAccount';
-import { CircularProgress } from '@mui/material';
 import { UsersUser, UsersType, ErrorResponse } from '../Types';
 import { SuccessToasts, ErrorToasts } from '../toast/PrivateToast';
 import { deleteUser } from '../api';
@@ -9,6 +8,7 @@ import { SubmitButton } from '../privateMUI/PrivateBottuns';
 
 import IconText from '../privateMUI/IconText';
 import { useAppContext } from '../../hooks/ReduserContext';
+import PrivateLoading from '../privateMUI/PrivateLoading';
 
 type PropsType = {
   users: UsersType;
@@ -40,7 +40,12 @@ const Users: FC<PropsType> = ({ users }) => {
     <>
       {users?.length !== 0 ? (
         users?.map((user: UsersUser) => (
-          <IconText linkTo={`/users/${user.id}`} key={user.id} name={user.name}>
+          <IconText
+            linkTo={`/users/${user.id}`}
+            key={user.id}
+            name={user.name}
+            distanceToNow
+          >
             {user.admin && <SupervisorAccountIcon />}
             {currentUser?.admin ? (
               <SubmitButton
@@ -56,7 +61,7 @@ const Users: FC<PropsType> = ({ users }) => {
           </IconText>
         ))
       ) : (
-        <CircularProgress />
+        <PrivateLoading />
       )}
     </>
   );

@@ -1,20 +1,29 @@
-import { CircularProgress, Grid } from '@mui/material';
+import { FC } from 'react';
+import { Grid } from '@mui/material';
+import './privateCSS.css';
+import { useColors } from '../../hooks/util';
 
-const PrivateLoading = () => (
-  <Grid item width="100%" height="100%">
-    <Grid
-      container
-      direction="row"
-      justifyContent="center"
-      alignItems="center"
-      width="100%"
-      height="100%"
-    >
-      <Grid item width="100%" height="100%">
-        <CircularProgress />
+const PrivateLoading: FC = ({ children }) => {
+  const colors = useColors();
+
+  return (
+    <Grid item width="100%" height="100%">
+      <Grid
+        container
+        direction="row"
+        justifyContent="center"
+        alignItems="center"
+        width="100%"
+        height="100%"
+      >
+        <Grid item width="100%" height="100%">
+          <div className="loader" style={{ color: colors.text }}>
+            {children}
+          </div>
+        </Grid>
       </Grid>
     </Grid>
-  </Grid>
-);
+  );
+};
 
 export default PrivateLoading;

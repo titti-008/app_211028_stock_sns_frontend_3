@@ -3,7 +3,6 @@ import { Grid, IconButton } from '@mui/material';
 import DehazeIcon from '@mui/icons-material/Dehaze';
 import LogoutIcon from '@mui/icons-material/Logout';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import ShowChartIcon from '@mui/icons-material/ShowChart';
 import GroupIcon from '@mui/icons-material/Group';
 import { NormalText } from './privateMUI/PrivateTexts';
 import { LinkContainer, ButtonContainer } from './ConfigContainers';
@@ -11,9 +10,7 @@ import { logoutUser } from './api';
 import { BaseCard, PrivateAppbar, PrivateBox } from './privateMUI/BaseCard';
 import { useAppContext } from '../hooks/ReduserContext';
 import { SuccessToasts, ErrorToasts } from './toast/PrivateToast';
-import { NormalForm } from './privateMUI/PrivateForms';
-import { useUserDataInput } from '../hooks/util';
-import { LinkButton } from './privateMUI/PrivateBottuns';
+import SearchSymbol from './earnings/SearchSymbol';
 
 type PropsType = {
   handleDrawerClose: () => void;
@@ -43,13 +40,6 @@ const ConfigBar: FC<PropsType> = (_props) => {
     }
   };
 
-  const initInput = {
-    name: '',
-  };
-
-  const { values, handleChange } =
-    useUserDataInput<typeof initInput>(initInput);
-
   return (
     <BaseCard>
       <PrivateAppbar>
@@ -76,19 +66,7 @@ const ConfigBar: FC<PropsType> = (_props) => {
         >
           <AccountCircleIcon />
         </LinkContainer>
-
-        <Grid item width="100%">
-          <ShowChartIcon />
-          <NormalForm
-            value={values.name}
-            handleChange={handleChange('name')}
-            label="検索したいシンボルを入力してください"
-            isPassword={false}
-            error={false}
-            errorText=""
-          />
-          <LinkButton linkTo={`/stocks/${values.name}`} label="シンボル検索" />
-        </Grid>
+        <SearchSymbol />
       </PrivateBox>
     </BaseCard>
   );
