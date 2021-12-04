@@ -2,7 +2,7 @@ import { FC, useLayoutEffect } from 'react';
 import * as am4core from '@amcharts/amcharts4/core';
 import * as am4charts from '@amcharts/amcharts4/charts';
 import am4themesMaterial from '@amcharts/amcharts4/themes/material';
-// import am4themesAnimated from '@amcharts/amcharts4/themes/animated';
+
 import { Stock, EarningType } from '../Types';
 import IconText from '../privateMUI/IconText';
 import // LinkButton,
@@ -17,44 +17,44 @@ am4core.useTheme(am4themesMaterial);
 type PropsType = {
   stock: Stock;
   earning: EarningType;
-  lastYearEarning: EarningType;
 };
 
-const EarningStatus: FC<PropsType> = ({ stock, earning, lastYearEarning }) => {
+const EarningStatus: FC<PropsType> = ({ stock, earning }) => {
   // const { state } = useAppContext();
   // const { currentUser } = state;
 
-  // const symbol = match.params.symbolA
-
-  // const chart = useRef<am4charts.RadarChart>(null!);
-
   // 営業キャッシュフローマージン
   const operatingCashflowMargin =
-    Math.round((earning.operatingCashflow / earning.totalRevenue) * 1000) / 10;
+    Math.round((earning.operatingCashFlow / earning.revenue) * 1000) / 10;
 
   // 信頼性(粉飾決算リスクの低さ)
   const notWindowdressing =
     Math.round(
-      ((earning.operatingCashflow - earning.netIncome) /
-        earning.operatingCashflow) *
+      ((earning.operatingCashFlow - earning.netIncome) /
+        earning.operatingCashFlow) *
         1000,
     ) / 10;
 
   // EPS サプライズ
-  const EpsSurprise = Math.round(earning.surprisePercentage * 10) / 10;
+  const revenueSurprise =
+    Math.round((earning.revenue / earning.estimatedRevenueAvg - 1) * 1000) / 10;
+
+  // Revenue サプライズ
+  const epsSurprise =
+    Math.round((earning.eps / earning.estimatedEpsAvg - 1) * 1000) / 10;
 
   // 営業キャッシュフローの伸び率
-  const operatingCashflowGrowth = lastYearEarning?.operatingCashflow
-    ? Math.round(
-        (earning.operatingCashflow / lastYearEarning.operatingCashflow - 1) *
-          1000,
-      ) / 10
-    : 100;
+  const operatingCashflowGrowth =
+    Math.round(earning.operatingCashFlowGrowth * 1000) / 10;
 
-  const nextEpsEstimateVsGuidance =
-    Math.round((0 / earning.estimatedEPS) * 1000) / 10;
+  const signCheck = (value: number) =>
+    Math.sign(value) >= 0 ? `+${value}` : value;
 
-  console.log(stock);
+  // 次期アナリスト予想と会社の見通し
+  const nextRevenueEstimateVsGuidance =
+    Math.round(
+      (earning.estimatedRevenueAvg / earning.estimatedRevenueAvg - 1) * 1000,
+    ) / 10;
 
   useLayoutEffect(() => {
     const chart = am4core.create(
@@ -78,20 +78,24 @@ const EarningStatus: FC<PropsType> = ({ stock, earning, lastYearEarning }) => {
         },
       },
       {
-        earning: '決算の信頼性',
+        earning: '信頼性',
         Percentage: notWindowdressing,
       },
       {
         earning: 'EPSサプライズ',
-        Percentage: EpsSurprise,
+        Percentage: epsSurprise,
+      },
+      {
+        earning: 'Revenue サプライズ',
+        Percentage: revenueSurprise,
       },
       {
         earning: '営業キャッシュフローの伸び率',
         Percentage: operatingCashflowGrowth,
       },
       {
-        earning: '来期ガイダンスvs予想',
-        Percentage: nextEpsEstimateVsGuidance,
+        earning: 'ガイダンスvs予想',
+        Percentage: nextRevenueEstimateVsGuidance,
       },
     ];
     chart.start = 0;
@@ -127,11 +131,12 @@ const EarningStatus: FC<PropsType> = ({ stock, earning, lastYearEarning }) => {
     //   chart.dispose();
     // };
   }, [
-    EpsSurprise,
-    nextEpsEstimateVsGuidance,
+    epsSurprise,
+    nextRevenueEstimateVsGuidance,
     notWindowdressing,
     operatingCashflowGrowth,
     operatingCashflowMargin,
+    revenueSurprise,
     earning,
   ]);
 
@@ -140,49 +145,51 @@ const EarningStatus: FC<PropsType> = ({ stock, earning, lastYearEarning }) => {
       <IconText
         linkTo={`/stocks/${earning.symbol}`}
         key={earning.id}
-        name={earning.symbol}
-        date={new Date(earning.reportedDate)}
+        name={`${earning.symbol}(${stock.name})`}
+        date={new Date(earning.date)}
+        distanceToNow={false}
       >
         <div
           id={`chartdiv-${earning.id}`}
-          style={{ width: '100%', height: '350px' }}
+          style={{ width: '400px', height: '300px' }}
         />
         {/* <NormalText>CompanyName:{stock.name}</NormalText> */}
-        {earning?.operatingCashflow && (
+        {earning?.operatingCashFlow && (
           <>
             <NormalText>
               営業キャッシュフロー:
-              {earning.operatingCashflow.toLocaleString()}
+              {earning.operatingCashFlow}
               {earning.reportedCurrency}
             </NormalText>
+
             <NormalText>
               売上高:
-              {earning.totalRevenue.toLocaleString()}
+              {earning.revenue}
               {earning.reportedCurrency}
             </NormalText>
             <NormalText>
               営業キャッシュフローマージン:
-              {operatingCashflowMargin}%
+              {signCheck(operatingCashflowMargin)}%
             </NormalText>
             <NormalText>
-              決算の信頼性:
+              信頼性:
               {notWindowdressing}%
             </NormalText>
-            <NormalText>EPS Suprise:{EpsSurprise}%</NormalText>
+            <NormalText>EPS Suprise:{signCheck(epsSurprise)}%</NormalText>
           </>
         )}
-        <NormalText>estimatedEPS:{earning.estimatedEPS}</NormalText>
-        {lastYearEarning?.operatingCashflow && earning?.operatingCashflow && (
+        <NormalText>estimatedEPS:{earning.eps}</NormalText>
+        {earning?.operatingCashFlow && (
           <>
             <NormalText>
-              営業キャッシュフローの伸び率:{operatingCashflowGrowth}%
+              営業キャッシュフローの伸び率:
+              {}
+              {signCheck(operatingCashflowGrowth)}%
             </NormalText>
-            <NormalText>今回:{earning.fiscalDateEnding}</NormalText>
-            <NormalText>前年:{lastYearEarning.fiscalDateEnding}</NormalText>
           </>
         )}
         <NormalText>
-          来期ガイダンスvs予想:{nextEpsEstimateVsGuidance}%
+          ガイダンスvs予想:{signCheck(nextRevenueEstimateVsGuidance)}%
         </NormalText>
       </IconText>
     </>

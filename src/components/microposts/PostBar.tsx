@@ -33,6 +33,7 @@ const PostBar: FC<HistoryPropsType> = ({ history }) => {
           key={currentUser ? currentUser?.id : 0}
           name={currentUser ? currentUser?.name : ''}
           date={new Date(currentUser ? currentUser?.createdAt : Date.now())}
+          distanceToNow
         >
           <NormalText>{currentUser?.email}</NormalText>
           <NormalText>

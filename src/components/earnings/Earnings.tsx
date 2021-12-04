@@ -39,16 +39,17 @@ const Earnings: FC<RouteComponentProps<{ symbol: string }>> = ({ match }) => {
 
   const { stock, earnings, messages } = data;
 
+  if (!earnings || !stock) {
+    return <div>データがありません</div>;
+  }
   console.log(...messages);
+
+  console.log(earnings);
 
   return (
     <>
-      {earnings.map((earning, index: number) => (
-        <EarningStatus
-          stock={stock}
-          earning={earning}
-          lastYearEarning={earnings[index + 4]}
-        />
+      {earnings.map((earning) => (
+        <EarningStatus stock={stock} earning={earning} />
       ))}
     </>
   );

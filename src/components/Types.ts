@@ -81,19 +81,21 @@ export type StockType = { stock: Stock };
 
 export type EarningType = Id & {
   symbol: string;
-  fiscalDateEnding: Date;
-  reportedDate: Date;
-  reportedEPS: number;
-  estimatedEPS: number;
-  surprise: number;
-  surprisePercentage: number;
+  date: Date;
+  fillingDate: Date;
+  revenue: number;
+  estimatedRevenueAvg: number;
+  revenueGrowth: number;
+  eps: number;
+  estimatedEpsAvg: number;
+  epsgrowth: number;
   reportedCurrency: number;
-  totalRevenue: number;
-  costOfRevenue: number;
-  operatingIncome: number;
-  grossProfit: number;
-  operatingCashflow: number;
+  operatingCashFlow: number;
+  operatingCashFlowGrowth: number;
   netIncome: number;
+  stockPrice: number;
+  numberOfShares: number;
+  marketCapitalization: number;
 };
 
 export type Earnings = {

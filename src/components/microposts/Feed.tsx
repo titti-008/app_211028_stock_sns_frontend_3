@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
-import { CircularProgress, Button, Grid, IconButton } from '@mui/material';
+import { Button, Grid, IconButton, CircularProgress } from '@mui/material';
 import { AxiosResponse } from 'axios';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { useInfiniteQuery } from 'react-query';
@@ -12,6 +12,7 @@ import { SuccessToasts, ErrorToasts } from '../toast/PrivateToast';
 import PrivateImageList from './PrivateImageList';
 import { useAppContext } from '../../hooks/ReduserContext';
 import { deleteMicropost } from '../api';
+import PrivateLoading from '../privateMUI/PrivateLoading';
 
 type PropsType<T> = {
   type: T;
@@ -40,11 +41,20 @@ const Feed: FC<PropsType<'myfeed' | number>> = ({ type, getMicropost }) => {
       return res.data;
     },
     {
-      getNextPageParam: (lastPage) => lastPage.nextId ?? false,
+      getNextPageParam: (lastPage) => {
+        console.log('lastPage.nextId ', lastPage.nextId);
+
+        return lastPage.nextId ? lastPage.nextId : undefined;
+      },
+      retry: false,
+      refetchOnWindowFocus: false,
+      cacheTime: 1800,
     },
   );
 
-  const loadMoreButtonRef = React.useRef<HTMLButtonElement>(null);
+  console.log('feed', 'hasNextPage', hasNextPage);
+
+  const loadMoreButtonRef = React.useRef<HTMLButtonElement | null>(null);
 
   useInteractionObserver({
     target: loadMoreButtonRef,
@@ -53,7 +63,7 @@ const Feed: FC<PropsType<'myfeed' | number>> = ({ type, getMicropost }) => {
   });
 
   if (status === 'loading') {
-    return <CircularProgress />;
+    return <PrivateLoading />;
   }
 
   if (status === 'error' && error) {
@@ -87,9 +97,10 @@ const Feed: FC<PropsType<'myfeed' | number>> = ({ type, getMicropost }) => {
           {page.microposts.map((micropost: Micropost) => (
             <IconText
               linkTo={`/users/${micropost.user.id}`}
-              key={micropost.user.id}
+              key={micropost.id}
               name={micropost.user.name}
               date={new Date(micropost.createdAt)}
+              distanceToNow
             >
               <NormalText>{micropost.content}</NormalText>
               {micropost.images && <PrivateImageList src={micropost.images} />}

@@ -1,15 +1,11 @@
 import { FC } from 'react';
 import axios from 'axios';
 import saveAs from 'file-saver';
-// import alphavantage from 'alphavantage';
-
-import logo from '../logo.svg';
 import { SubmitButton } from './privateMUI/PrivateBottuns';
 import { useAppContext } from '../hooks/ReduserContext';
 
 const HelloWorld: FC = () => {
   const { state } = useAppContext();
-
   const { currentUser } = state;
 
   const baseUrl = process.env.REACT_APP_SERVER_URL ?? ''; // 文字列型であることを強制
@@ -39,32 +35,20 @@ const HelloWorld: FC = () => {
   };
 
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>responces: {state}</p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-
-      <SubmitButton
-        onClick={exportCSV}
-        label="earnings CSVダウンロード"
-        disabled={!currentUser?.admin}
-      />
-    </div>
+    <>
+      {currentUser?.admin && (
+        <SubmitButton
+          onClick={exportCSV}
+          label="earnings CSVダウンロード"
+          disabled={false}
+        />
+      )}
+    </>
   );
 };
 
 export default HelloWorld;
 
-// tslint:disable-next-line
 /* eslint-disable */
 
 /* eslint-disable */

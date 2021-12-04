@@ -3,7 +3,7 @@ import { Grid, Divider, Avatar } from '@mui/material';
 import PersonIcon from '@mui/icons-material/Person';
 import { Link } from 'react-router-dom';
 
-import formatDistanceToNow from 'date-fns/formatDistanceToNow';
+import { formatDistanceToNow, format } from 'date-fns';
 import { NormalText } from './PrivateTexts';
 /* eslint-disable */
 type PropsType = {
@@ -11,6 +11,7 @@ type PropsType = {
   key: number;
   name: string;
   date?: Date;
+  distanceToNow: boolean;
 };
 
 const IconText: FC<PropsType> = (_props) => {
@@ -46,8 +47,11 @@ const IconText: FC<PropsType> = (_props) => {
               </Link>
             </Grid>
             <Grid item>
-              {props.date && (
+              {props.date && props.distanceToNow && (
                 <NormalText>{formatDistanceToNow(props.date)}</NormalText>
+              )}
+              {props.date && !props.distanceToNow && (
+                <NormalText>{format(props.date, 'yyyy/MM/dd')}</NormalText>
               )}
             </Grid>
           </Grid>

@@ -1,8 +1,9 @@
 import { FC } from 'react';
 import { useQuery } from 'react-query';
 import { RouteComponentProps } from 'react-router-dom';
-import { CircularProgress } from '@mui/material';
+
 import { AxiosError } from 'axios';
+// import { format, formatDistanceToNow } from 'date-fns';
 import { ShowUserResponse } from '../Types';
 import {
   getUser,
@@ -20,6 +21,7 @@ import { NormalText } from '../privateMUI/PrivateTexts';
 import { useAppContext } from '../../hooks/ReduserContext';
 import { ErrorToasts } from '../toast/PrivateToast';
 import Feed from '../microposts/Feed';
+import PrivateLoading from '../privateMUI/PrivateLoading';
 
 const UserShow: FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
   const { state } = useAppContext();
@@ -33,7 +35,7 @@ const UserShow: FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
   >('UserShow', () => getUser(Number(userId)));
 
   if (isLoading) {
-    return <CircularProgress />;
+    return <PrivateLoading />;
   }
 
   if (isError && error) {
@@ -82,21 +84,21 @@ const UserShow: FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
   return (
     <>
       <IconText
-        linkTo={`/users/${data.user.id}`}
+        linkTo={`/users/${userId}`}
         key={user.id}
         name={user.name}
         date={new Date(user.createdAt)}
+        distanceToNow
       >
-        <NormalText>{user.email}</NormalText>
-        <NormalText>管理者権限: {user.admin ? 'あり' : 'なし'}</NormalText>
+        <NormalText>{user.admin ? '管理者権限あり' : ''}</NormalText>
         <NormalText>投稿数:{user.countMicroposts}件</NormalText>
         <NormalText>
           <small>
-            <TextButton linkTo={`/users/${user.id}/following`} size="small">
+            <TextButton linkTo={`/users/${userId}/following`} size="small">
               フォロー:{user.countFollowing}
             </TextButton>
 
-            <TextButton linkTo={`/users/${user.id}/followers`} size="small">
+            <TextButton linkTo={`/users/${userId}/followers`} size="small">
               フォロワー:{user.countFollowers}
             </TextButton>
           </small>
