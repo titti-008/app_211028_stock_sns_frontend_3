@@ -18,6 +18,7 @@ type ColorsType = {
     upBorderColor: string;
     downColor: string;
     downBorderColor: string;
+    borderColor: string;
   };
 };
 
@@ -33,9 +34,10 @@ export const Colors = (theme: Theme): ColorsType => {
     icon: '#99BDFF',
     chart: {
       upColor: '#786060',
-      upBorderColor: '#4F0000',
+      upBorderColor: 'red',
       downColor: '#005C3C',
-      downBorderColor: '#004012',
+      downBorderColor: 'lightgreen',
+      borderColor: '#9096AB',
     },
   };
 
@@ -53,6 +55,7 @@ export const Colors = (theme: Theme): ColorsType => {
     colors.chart.upBorderColor = '#8A0000';
     colors.chart.downColor = '#00da3c';
     colors.chart.downBorderColor = '#008F28';
+    colors.chart.borderColor = '#6B84B0';
   }
 
   return colors;
