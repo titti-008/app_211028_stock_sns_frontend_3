@@ -13,6 +13,7 @@ import {
   ResetPasswordData,
   MicropostsResponse,
   EarningsResponse,
+  StockPriceResponse,
 } from './Types';
 
 const env = process.env.REACT_APP_SERVER_URL ?? ''; // 文字列型であることを強制
@@ -22,6 +23,9 @@ const usersUrl = `${apiUrl}/users`;
 export const micropostsUrl = `${apiUrl}/microposts`;
 const relationshipsUrl = `${apiUrl}/relationships`;
 const StockUrl = `${apiUrl}/stocks`;
+
+const financialUrl = process.env.REACT_APP_FINANCIAL_URL ?? '';
+const apiKey = process.env.REACT_APP_API_KEY ?? '';
 
 export const instance = axios.create({ withCredentials: true });
 
@@ -214,6 +218,17 @@ export const textStockApi = async () => {
 export const getEarnings = async (symbol: string) => {
   const response = await instance.get<EarningsResponse>(
     `${StockUrl}/${symbol}`,
+  );
+
+  return response.data;
+};
+
+export const getStockPrice = async (symbol: string) => {
+  console.log(
+    `${financialUrl}/historical-price-full/${symbol}?apikey=${apiKey}`,
+  );
+  const response = await axios.get<StockPriceResponse>(
+    `${financialUrl}/historical-price-full/${symbol}?apikey=${apiKey}`,
   );
 
   return response.data;

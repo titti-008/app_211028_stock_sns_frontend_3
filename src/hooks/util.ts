@@ -13,6 +13,12 @@ type ColorsType = {
   text: string;
   errorText: string;
   icon: string;
+  chart: {
+    upColor: string;
+    upBorderColor: string;
+    downColor: string;
+    downBorderColor: string;
+  };
 };
 
 export const Colors = (theme: Theme): ColorsType => {
@@ -25,6 +31,12 @@ export const Colors = (theme: Theme): ColorsType => {
     text: '#D4DEFC',
     errorText: '#E04E27',
     icon: '#99BDFF',
+    chart: {
+      upColor: '#786060',
+      upBorderColor: '#4F0000',
+      downColor: '#005C3C',
+      downBorderColor: '#004012',
+    },
   };
 
   if (theme.palette?.mode === 'light') {
@@ -36,6 +48,11 @@ export const Colors = (theme: Theme): ColorsType => {
     colors.text = '#3C4A63';
     colors.errorText = '#E04E27';
     colors.icon = '#85A4DE';
+
+    colors.chart.upColor = '#e3b5b5';
+    colors.chart.upBorderColor = '#8A0000';
+    colors.chart.downColor = '#00da3c';
+    colors.chart.downBorderColor = '#008F28';
   }
 
   return colors;

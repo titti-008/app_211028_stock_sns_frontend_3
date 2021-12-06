@@ -101,6 +101,21 @@ export type EarningType = Id & {
 export type Earnings = {
   earnings: EarningType[];
 };
+
+// -------- stockPrice ----------
+export type StockPrice = {
+  date: Date;
+  open: number;
+  close: number;
+  low: number;
+  high: number;
+  volume: number;
+};
+
+export type StockPrices = {
+  stockPrices: StockPrice[];
+};
+
 // -------- サーバーレスポンス ----------
 type User = { user: UserType };
 type Users = { users: UsersType };
@@ -137,4 +152,10 @@ export type PageType = {
   previousId: number;
   nextId: number;
   data: MicropostsResponse;
+};
+
+export type StockPriceResponse = {
+  message: string;
+  symbol: string;
+  historical: StockPrice[];
 };

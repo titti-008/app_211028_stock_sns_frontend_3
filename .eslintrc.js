@@ -11,7 +11,7 @@ module.exports = {
     'airbnb/hooks', // 追加
     'plugin:import/errors', // 追加
     'plugin:import/typescript', // 追加
-    'plugin:@typescript-eslint/recommended', // 追加 "plugin:react/recommended"　"airbnb"　より下に書く
+    'plugin:@typescript-eslint/recommended', // 追加 "plugin:react/recommended" "airbnb" より下に書く
     'plugin:@typescript-eslint/recommended-requiring-type-checking', // 追加
     'prettier', // 追加 自動校正 他のルール設定を上書きして調整するものなのでかならず最後に書く
   ],

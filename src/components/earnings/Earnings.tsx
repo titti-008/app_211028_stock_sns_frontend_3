@@ -15,6 +15,7 @@ import PrivateLoading from '../privateMUI/PrivateLoading';
 import { ErrorToasts } from '../toast/PrivateToast';
 // import Feed from '../microposts/Feed';
 import EarningStatus from './EarningStatus';
+import GetStockPrice from './GetStockPrice';
 
 const Earnings: FC<RouteComponentProps<{ symbol: string }>> = ({ match }) => {
   // const { state } = useAppContext();
@@ -48,8 +49,9 @@ const Earnings: FC<RouteComponentProps<{ symbol: string }>> = ({ match }) => {
 
   return (
     <>
+      <GetStockPrice symbol={stock.symbol} />
       {earnings.map((earning) => (
-        <EarningStatus stock={stock} earning={earning} />
+        <EarningStatus stock={stock} earning={earning} key={earning.id} />
       ))}
     </>
   );
