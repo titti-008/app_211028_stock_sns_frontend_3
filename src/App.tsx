@@ -38,7 +38,7 @@ import {
   PrivateBox,
 } from './components/privateMUI/BaseCard';
 import { useAppContext } from './hooks/ReduserContext';
-import Earnings from './components/earnings/Earnings';
+import StockBoard from './components/earnings/StockBoard';
 
 const App: FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -223,7 +223,7 @@ const App: FC = () => {
                 <PrivateRoute
                   exact
                   path="/stocks/:symbol"
-                  component={Earnings}
+                  component={StockBoard}
                 />
                 <UnAuthRoute
                   exact

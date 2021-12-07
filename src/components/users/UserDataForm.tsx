@@ -77,6 +77,7 @@ const UserDataForm: React.FC<PropsType> = ({
         onClick={onClick}
         label={submitLabel}
         disabled={PassWordAllowNull ? isDisablePasswordNull : isDisable}
+        isLoading={false}
       />
     </>
   );

@@ -1,6 +1,5 @@
 import { FC } from 'react';
-
-import { Grid, Button } from '@mui/material';
+import { Grid, Button, CircularProgress } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { NormalText } from './PrivateTexts';
 import { useColors } from '../../hooks/util';
@@ -9,12 +8,14 @@ type SubmitType<T> = {
   onClick: (props?: T) => void;
   label: string;
   disabled: boolean;
+  isLoading: boolean;
 };
 
 export const SubmitButton = ({
   onClick,
   label,
   disabled,
+  isLoading,
 }: SubmitType<React.MouseEvent<HTMLButtonElement, MouseEvent>>) => {
   const colors = useColors();
 
@@ -26,7 +27,7 @@ export const SubmitButton = ({
         sx={{ color: colors.text, borderColor: colors.text }}
         disabled={disabled}
       >
-        <NormalText>{label}</NormalText>
+        {isLoading ? <CircularProgress /> : <NormalText>{label}</NormalText>}
       </Button>
     </Grid>
   );

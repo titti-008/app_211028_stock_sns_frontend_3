@@ -1,30 +1,36 @@
 import { FC } from 'react';
-import { useQuery } from 'react-query';
-import { RouteComponentProps } from 'react-router-dom';
+import { useQuery, useMutation, useQueryClient } from 'react-query';
 import { AxiosError } from 'axios';
 import { EarningsResponse } from '../Types';
-import {
-  getEarnings,
-  // getMyFeed,
-  // createUserRelationship,
-  // deleteUserRelationship,
-} from '../api';
+import { SubmitButton } from '../privateMUI/PrivateBottuns';
+import { getEarnings, followStock } from '../api';
 import PrivateLoading from '../privateMUI/PrivateLoading';
-
-// import { useAppContext } from '../../hooks/ReduserContext';
 import { ErrorToasts } from '../toast/PrivateToast';
-// import Feed from '../microposts/Feed';
 import EarningStatus from './EarningStatus';
-import GetStockPrice from './GetStockPrice';
+import { NormalText } from '../privateMUI/PrivateTexts';
 
-const Earnings: FC<RouteComponentProps<{ symbol: string }>> = ({ match }) => {
-  // const { state } = useAppContext();
-  // const { currentUser } = state;
+/* eslint-disable */
+const Earnings: FC<{ symbol: string }> = ({ symbol }) => {
+  const queryClient = useQueryClient();
+
+  const mutation = useMutation(followStock, {
+    onSuccess: (res) => {
+      const prevData = queryClient.getQueryData<EarningsResponse>(
+        `Earnings-${symbol}`,
+      );
+      if (prevData) {
+        queryClient.setQueryData<EarningsResponse>(`Earnings-${symbol}`, {
+          ...prevData,
+          isFollowingStock: res.data.isFollowingStock,
+        });
+      }
+    },
+  });
 
   const { data, isLoading, isError, error } = useQuery<
     EarningsResponse,
     AxiosError
-  >(`Earnings-${match.params.symbol}`, () => getEarnings(match.params.symbol));
+  >(`Earnings-${symbol}`, () => getEarnings(symbol));
 
   if (isLoading) {
     return <PrivateLoading />;
@@ -38,18 +44,24 @@ const Earnings: FC<RouteComponentProps<{ symbol: string }>> = ({ match }) => {
     return <div>データがありません</div>;
   }
 
-  const { stock, earnings, messages } = data;
+  const { stock, earnings, isFollowingStock } = data;
 
   if (!earnings || !stock) {
     return <div>データがありません</div>;
   }
-  console.log(...messages);
-
-  console.log(earnings);
 
   return (
     <>
-      <GetStockPrice symbol={stock.symbol} />
+      <NormalText>{stock.symbol}</NormalText>
+      <SubmitButton
+        onClick={() =>
+          mutation.mutate({ symbol: stock.symbol, follow: !isFollowingStock })
+        }
+        label={isFollowingStock ? 'フォロー解除' : 'フォローする'}
+        disabled={false}
+        isLoading={mutation.isLoading}
+      />
+
       {earnings.map((earning) => (
         <EarningStatus stock={stock} earning={earning} key={earning.id} />
       ))}
@@ -58,7 +70,5 @@ const Earnings: FC<RouteComponentProps<{ symbol: string }>> = ({ match }) => {
 };
 
 export default Earnings;
-
-/* eslint-disable */
 
 /* eslint-disable */

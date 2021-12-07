@@ -55,6 +55,7 @@ const ResetRequestForm: React.FC<HistoryPropsType> = ({ ...props }) => {
         onClick={handleResetRequest}
         label="再設定メール送信"
         disabled={false}
+        isLoading={false}
       />
       <LinkButton linkTo="/signup" label="新規登録はこちら" />
     </>

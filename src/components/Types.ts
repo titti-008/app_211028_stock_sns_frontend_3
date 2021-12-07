@@ -75,6 +75,10 @@ export type Stock = Id &
     industry: string;
   };
 
+type IsFollowingStock = {
+  isFollowingStock: boolean;
+};
+
 export type StockType = { stock: Stock };
 
 // -------- Earnings ----------
@@ -136,7 +140,10 @@ export type MessageResponse = Messages;
 
 export type DeleteUserResponse = Messages & Users;
 
-export type EarningsResponse = Messages & Earnings & StockType;
+export type EarningsResponse = Messages &
+  Earnings &
+  StockType &
+  IsFollowingStock;
 
 export type HistoryPropsType = {
   history: H.History;
