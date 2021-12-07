@@ -18,7 +18,7 @@ import {
 
 const env = process.env.REACT_APP_SERVER_URL ?? ''; // 文字列型であることを強制
 
-const apiUrl = `${env}/api/v1`;
+export const apiUrl = `${env}/api/v1`;
 const usersUrl = `${apiUrl}/users`;
 export const micropostsUrl = `${apiUrl}/microposts`;
 const relationshipsUrl = `${apiUrl}/relationships`;
@@ -224,14 +224,29 @@ export const getEarnings = async (symbol: string) => {
 };
 
 export const getStockPrice = async (symbol: string) => {
-  console.log(
-    `${financialUrl}/historical-price-full/${symbol}?apikey=${apiKey}`,
-  );
   const response = await axios.get<StockPriceResponse>(
     `${financialUrl}/historical-price-full/${symbol}?apikey=${apiKey}`,
   );
 
   return response.data;
+};
+
+export const followStock = ({
+  symbol,
+  follow,
+}: {
+  symbol: string;
+  follow: boolean;
+}) => {
+  if (follow) {
+    return instance.post<EarningsResponse>(`${apiUrl}/stock_relationships`, {
+      id: symbol,
+    });
+  } else {
+    return instance.delete<EarningsResponse>(
+      `${apiUrl}/stock_relationships/${symbol}`,
+    );
+  }
 };
 
 /* eslint-disable */

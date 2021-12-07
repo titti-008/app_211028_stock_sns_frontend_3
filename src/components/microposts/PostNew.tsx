@@ -129,6 +129,7 @@ const PostNew: FC<HistoryPropsType> = (_props) => {
           onClick={submitCreateContent}
           label="投稿する"
           disabled={isError}
+          isLoading={false}
         />
       </Grid>
     </>

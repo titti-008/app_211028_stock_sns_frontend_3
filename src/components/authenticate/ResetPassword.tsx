@@ -74,6 +74,7 @@ const ResetPasswordForm: React.FC<
         onClick={handleResetPassword}
         label="パスワード変更"
         disabled={isDisablePassword}
+        isLoading={false}
       />
     </>
   );

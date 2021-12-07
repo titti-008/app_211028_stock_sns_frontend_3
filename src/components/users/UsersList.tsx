@@ -54,6 +54,7 @@ const Users: FC<PropsType> = ({ users }) => {
                   void handleDeleteUser(user.id);
                 }}
                 disabled={false}
+                isLoading={false}
               />
             ) : (
               <></>

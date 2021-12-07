@@ -95,11 +95,11 @@ const UserShow: FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
         <NormalText>
           <small>
             <TextButton linkTo={`/users/${userId}/following`} size="small">
-              フォロー:{user.countFollowing}
+              フォロー:{user.countFollowing}人
             </TextButton>
 
             <TextButton linkTo={`/users/${userId}/followers`} size="small">
-              フォロワー:{user.countFollowers}
+              フォロワー:{user.countFollowers}人
             </TextButton>
           </small>
         </NormalText>
@@ -108,18 +108,12 @@ const UserShow: FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
           <LinkButton linkTo="/edit_user" label="ユーザー情報編集" />
         )}
 
-        {!isCurrentUser && user.isFollowing && (
+        {!isCurrentUser && (
           <SubmitButton
-            onClick={handleClearFollow}
-            label="フォロー解除"
+            onClick={user.isFollowing ? handleClearFollow : handleFollow}
+            label={user.isFollowing ? 'フォロー解除' : 'フォローする'}
             disabled={false}
-          />
-        )}
-        {!isCurrentUser && !user.isFollowing && (
-          <SubmitButton
-            onClick={handleFollow}
-            label="フォロー"
-            disabled={false}
+            isLoading={false}
           />
         )}
       </IconText>

@@ -79,6 +79,7 @@ const LoginForm: FC = () => {
         onClick={handleLoginUser}
         label="ログイン"
         disabled={disable}
+        isLoading={false}
       />
       <LinkButton linkTo="/signup" label="新規登録はこちら" />
     </>

@@ -1,13 +1,10 @@
 /* eslint-disable */
 
 import { FC, useRef, useEffect } from 'react';
-
 import { useTheme } from '@mui/material';
 import * as echarts from 'echarts';
 import { useColors } from '../../hooks/util';
 import { StockPrice } from '../Types';
-import './dark.js';
-import './vintage.js';
 
 type PropsType = {
   historical: StockPrice[];
@@ -17,8 +14,6 @@ type PropsType = {
 const CandleChart: FC<PropsType> = ({ historical, symbol }) => {
   const theme = useTheme();
   const colors = useColors();
-
-  const setTheme = theme.palette.mode === 'dark' ? 'dark' : 'vintage';
 
   // const { currentUser } = state;
   console.log('historical', historical);
@@ -85,7 +80,7 @@ const CandleChart: FC<PropsType> = ({ historical, symbol }) => {
     myChart.setOption(
       {
         legend: {
-          top: 30,
+          top: 35,
           left: 'center',
           data: ['日足', 'MA50', 'MA200', '出来高'],
           textStyle: {
@@ -137,18 +132,32 @@ const CandleChart: FC<PropsType> = ({ historical, symbol }) => {
           },
         },
         toolbox: {
+          iconStyle: {
+            borderColor: colors.chart.borderColor,
+          },
+          right: 30,
           feature: {
             show: true,
+            showTitle: false,
             dataZoom: {
               yAxisIndex: 'none',
+              title: 'ズーム',
             },
-            dataView: { readOnly: false },
-            magicType: { type: ['line', 'bar'] },
+            dataView: { readOnly: false, title: 'データを参照' },
+            magicType: { type: ['line', 'bar'], title: 'magicType!!' },
             brush: {
               type: ['lineX', 'clear'],
+              title: 'brush!!',
             },
-            restore: {},
-            saveAsImage: {},
+            restore: { title: '元に戻す' },
+            saveAsImage: {
+              title: '画像で保存',
+            },
+          },
+          tooltip: {
+            show: true,
+            formatter: (param: { title: string }) =>
+              `<div>${param.title}</div>`,
           },
         },
         brush: {
@@ -301,19 +310,19 @@ const CandleChart: FC<PropsType> = ({ historical, symbol }) => {
               borderColor0: downBorderColor,
             },
 
-            tooltip: {
-              formatter(param: any) {
-                param = param[0];
+            // tooltip: {
+            //   formatter(param:echarts.EChartOption.Tooltip.Format | echarts.EChartOption.Tooltip.Format[]) {
+            //     param = param[0];
 
-                return [
-                  `Date: ${param.name}<hr size=1 style="margin: 3px 0">`,
-                  `Open: ${param.data[0]}<br/>`,
-                  `Close: ${param.data[1]}<br/>`,
-                  `Lowest: ${param.data[2]}<br/>`,
-                  `Highest: ${param.data[3]}<br/>`,
-                ].join('');
-              },
-            },
+            //     return [
+            //       `Date: ${param.name}<hr size=1 style="margin: 3px 0">`,
+            //       `Open: ${param.data[0]}<br/>`,
+            //       `Close: ${param.data[1]}<br/>`,
+            //       `Lowest: ${param.data[2]}<br/>`,
+            //       `Highest: ${param.data[3]}<br/>`,
+            //     ].join('');
+            //   },
+            // },
           },
           {
             name: 'MA50',
@@ -321,7 +330,8 @@ const CandleChart: FC<PropsType> = ({ historical, symbol }) => {
             data: calculateMA(50),
             smooth: true,
             lineStyle: {
-              opacity: 0.4,
+              opacity: 0.7,
+              color: colors.chart.borderColor,
             },
           },
           {
@@ -330,7 +340,9 @@ const CandleChart: FC<PropsType> = ({ historical, symbol }) => {
             data: calculateMA(200),
             smooth: true,
             lineStyle: {
-              opacity: 0.4,
+              opacity: 0.7,
+
+              color: colors.chart.downBorderColor,
             },
           },
           {
@@ -339,6 +351,9 @@ const CandleChart: FC<PropsType> = ({ historical, symbol }) => {
             xAxisIndex: 1,
             yAxisIndex: 1,
             data: data0.volumes,
+            itemStyle: {
+              color: colors.chart.borderColor,
+            },
           },
         ],
       },
