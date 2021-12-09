@@ -7,17 +7,17 @@ import {
   FormHelperText,
   IconButton,
 } from '@mui/material';
+import { useMutation, useQueryClient } from 'react-query';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 import imageCompression from 'browser-image-compression';
 import { createMicropost } from '../api';
 import { SubmitButton } from '../privateMUI/PrivateBottuns';
-import { HistoryPropsType, ErrorResponse } from '../Types';
+// import { HistoryPropsType, ErrorResponse } from '../Types';
 import { SuccessToasts, ErrorToasts } from '../toast/PrivateToast';
 import PrivateImageList from './PrivateImageList';
+import { HistoryPropsType } from '../Types';
 
-const PostNew: FC<HistoryPropsType> = (_props) => {
-  const props = _props;
-
+const PostNew: FC<HistoryPropsType> = ({ history }) => {
   const [content, setContent] = useState<string>('');
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -49,6 +49,11 @@ const PostNew: FC<HistoryPropsType> = (_props) => {
     if (file === null) {
       return;
     }
+    if (images.length >= 4) {
+      ErrorToasts(['画像のアップロードは一度に4枚までです']);
+
+      return;
+    }
 
     const complessOption = {
       maxSizeMB: 1,
@@ -57,7 +62,7 @@ const PostNew: FC<HistoryPropsType> = (_props) => {
 
     const compressFile = await imageCompression(file, complessOption);
 
-    setImages([...images, compressFile]);
+    setImages([...images, compressFile].slice(0, 4));
   };
 
   const params = new FormData();
@@ -70,27 +75,19 @@ const PostNew: FC<HistoryPropsType> = (_props) => {
     return imageUrl;
   });
 
-  const submitCreateContent = async () => {
-    try {
-      const response = await createMicropost(params);
-      if (response.status === 200) {
-        SuccessToasts(response.data.messages);
-        setContent('');
-        setImages([]);
-        props.history.push('/');
-      } else if (response.status === 202) {
-        ErrorToasts(response.data.messages);
-      }
-    } catch (err) {
-      if ((err as ErrorResponse).response !== undefined)
-        console.log('投稿失敗');
-      console.log((err as ErrorResponse).response);
-      ErrorToasts([
-        '投稿に失敗しました。',
-        'データサーバーとの接続に問題がある可能性があります。',
-      ]);
-    }
-  };
+  const queryKey = `microposts-myfeed`;
+
+  const queryClient = useQueryClient();
+
+  const mutation = useMutation(createMicropost, {
+    onSuccess: (res) => {
+      SuccessToasts(res.data.messages);
+      void queryClient.invalidateQueries(queryKey);
+      setContent('');
+      setImages([]);
+      history.push('/');
+    },
+  });
 
   return (
     <>
@@ -126,7 +123,7 @@ const PostNew: FC<HistoryPropsType> = (_props) => {
 
       <Grid item>
         <SubmitButton
-          onClick={submitCreateContent}
+          onClick={() => mutation.mutate(params)}
           label="投稿する"
           disabled={isError}
           isLoading={false}

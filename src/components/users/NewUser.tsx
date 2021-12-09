@@ -49,7 +49,11 @@ const NewUsers: React.FC<HistoryPropsType> = (_props) => {
         submitLabel="ユーザー登録"
         PassWordAllowNull={false}
       />
-      <LinkButton linkTo="/login" label="登録済みならこちらからログイン" />
+      <LinkButton
+        linkTo="/login"
+        label="登録済みならこちらからログイン"
+        disabled={false}
+      />
     </>
   );
 };

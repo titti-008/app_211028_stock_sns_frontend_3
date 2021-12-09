@@ -57,7 +57,7 @@ const ResetRequestForm: React.FC<HistoryPropsType> = ({ ...props }) => {
         disabled={false}
         isLoading={false}
       />
-      <LinkButton linkTo="/signup" label="新規登録はこちら" />
+      <LinkButton linkTo="/signup" label="新規登録はこちら" disabled={false} />
     </>
   );
 };

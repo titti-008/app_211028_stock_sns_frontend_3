@@ -1,7 +1,8 @@
 import { FC, useState } from 'react';
-import { loginUserType } from '../Types';
-import { loginUser } from '../api';
-import { SuccessToasts, ErrorToasts } from '../toast/PrivateToast';
+import { useMutation, useQueryClient } from 'react-query';
+import { loginUserType, LoginResponse } from '../Types';
+import { loginRequest } from '../api';
+import { SuccessToasts } from '../toast/PrivateToast';
 import { NormalForm, RememberCheckBox } from '../privateMUI/PrivateForms';
 import { NormalText } from '../privateMUI/PrivateTexts';
 import { SubmitButton, LinkButton } from '../privateMUI/PrivateBottuns';
@@ -26,24 +27,42 @@ const LoginForm: FC = () => {
       setvalues({ ...values, [key]: event.target.value });
     };
 
-  const handleLoginUser = async () => {
-    try {
-      const response = await loginUser(values);
-      if (response.status === 200) {
-        dispatch({
-          type: 'saveUser',
-          setUser: response.data.user,
-          isLogin: response.data.loggedIn,
-        });
-        SuccessToasts(response.data.messages);
-      } else if (response.status === 202) {
-        ErrorToasts(response.data.messages);
+  const queryClient = useQueryClient();
+  const queryKey = `loginData`;
+
+  const mutation = useMutation(loginRequest, {
+    onSuccess: (res) => {
+      SuccessToasts(res.data.messages);
+      dispatch({
+        type: 'saveUser',
+        setUser: res.data.user,
+        isLogin: res.data.loggedIn,
+      });
+      const prevData = queryClient.getQueryData<LoginResponse>(queryKey);
+      if (prevData) {
+        queryClient.setQueryData<LoginResponse>(queryKey, res.data);
       }
-    } catch (err: unknown) {
-      console.log('ログイン失敗');
-      console.log(err);
-    }
-  };
+    },
+  });
+
+  // const handleLoginUser = async () => {
+  //   try {
+  //     const response = await loginUser(values);
+  //     if (response.status === 200) {
+  //       dispatch({
+  //         type: 'saveUser',
+  //         setUser: response.data.user,
+  //         isLogin: response.data.loggedIn,
+  //       });
+  //       SuccessToasts(response.data.messages);
+  //     } else if (response.status === 202) {
+  //       ErrorToasts(response.data.messages);
+  //     }
+  //   } catch (err: unknown) {
+  //     console.log('ログイン失敗');
+  //     console.log(err);
+  //   }
+  // };
 
   return (
     <>
@@ -63,6 +82,7 @@ const LoginForm: FC = () => {
       <LinkButton
         linkTo="/password_resets/new"
         label="パスワードを忘れた場合"
+        disabled={false}
       />
       <NormalForm
         value={values.password}
@@ -76,12 +96,12 @@ const LoginForm: FC = () => {
       <RememberCheckBox handleChange={handleChange('rememberMe')} />
 
       <SubmitButton
-        onClick={handleLoginUser}
+        onClick={() => mutation.mutate({ user: values })}
         label="ログイン"
         disabled={disable}
         isLoading={false}
       />
-      <LinkButton linkTo="/signup" label="新規登録はこちら" />
+      <LinkButton linkTo="/signup" label="新規登録はこちら" disabled={false} />
     </>
   );
 };

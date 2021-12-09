@@ -1,9 +1,9 @@
 import axios, { AxiosResponse } from 'axios';
+import { useQuery } from 'react-query';
 import {
   CreateUserType,
   loginUserType,
   LoginResponse,
-  LogoutResponse,
   EditUserType,
   DeleteUserResponse,
   UsersResponse,
@@ -14,6 +14,8 @@ import {
   MicropostsResponse,
   EarningsResponse,
   StockPriceResponse,
+  ErrorResponse,
+  // StocksResponse,
 } from './Types';
 
 const env = process.env.REACT_APP_SERVER_URL ?? ''; // 文字列型であることを強制
@@ -28,9 +30,6 @@ const financialUrl = process.env.REACT_APP_FINANCIAL_URL ?? '';
 const apiKey = process.env.REACT_APP_API_KEY ?? '';
 
 export const instance = axios.create({ withCredentials: true });
-
-export const getUsers = (): Promise<AxiosResponse<UsersResponse, unknown>> =>
-  instance.get<UsersResponse>(`${usersUrl}`);
 
 export const getFollowers = (
   id: string,
@@ -70,27 +69,58 @@ export const createUser = (
     },
   });
 
-export const loginUser = (
-  values: loginUserType,
-): Promise<AxiosResponse<LoginResponse, unknown>> =>
-  instance.post<LoginResponse>(`${apiUrl}/login`, {
-    user: {
-      email: values.email,
-      password: values.password,
-      /* eslint-disable */
-      remember_me: values.rememberMe,
-      /* eslint-disable */
+export const loginRequest = (values: { user: loginUserType }) =>
+  instance.post<{ user: loginUserType }, AxiosResponse<LoginResponse>>(
+    `${apiUrl}/login`,
+    {
+      user: {
+        email: values.user.email,
+        password: values.user.password,
+        rememberMe: values.user.rememberMe,
+      },
     },
-  });
+  );
 
-export const logoutUser = (): Promise<AxiosResponse<LogoutResponse, unknown>> =>
-  instance.delete<LogoutResponse>(`${apiUrl}/logout`);
+export const logoutRequest = () =>
+  instance.delete<LoginResponse, LoginResponse, ErrorResponse>(
+    `${apiUrl}/logout`,
+  );
 
-export const loggedIn = (): Promise<AxiosResponse<LoginResponse, unknown>> => {
-  console.log(`LogdedIn Url: ${apiUrl}/logged_in`);
+/// /////////////////////////////////////////////////
+export const usePrivateQuery = <T, U>(
+  request: () => Promise<T>,
+  queryKey: string,
+) => {
+  const { data, isLoading, isError, error } = useQuery<T, U>(queryKey, request);
 
-  return instance.get<LoginResponse>(`${apiUrl}/logged_in`);
+  return { data, isLoading, isError, error };
 };
+/// /////////////////////////////////////////////////
+
+export const useLoggedQuery = () =>
+  usePrivateQuery<LoginResponse, ErrorResponse>(
+    () =>
+      instance.get<LoginResponse, LoginResponse, ErrorResponse>(
+        `${apiUrl}/logged_in`,
+      ),
+    'loginData',
+  );
+
+export const useStockPriceQuery = (symbol: string) =>
+  usePrivateQuery<StockPriceResponse, ErrorResponse>(
+    () =>
+      axios.get<StockPriceResponse, StockPriceResponse, ErrorResponse>(
+        `${financialUrl}/historical-price-full/${symbol}?apikey=${apiKey}`,
+      ),
+    `price-${symbol}`,
+  );
+
+export const useGetUsers = () =>
+  usePrivateQuery<UsersResponse, ErrorResponse>(
+    async () =>
+      instance.get<UsersResponse, UsersResponse, ErrorResponse>(`${usersUrl}`),
+    'allUsers',
+  );
 
 export const deleteUser = (
   id: number,
@@ -145,8 +175,9 @@ export const getMyFeed = (
   pageParam?: number | undefined,
 ) => {
   const res = instance.get<MicropostsResponse>(
-    `${micropostsUrl}/${type}/${pageParam}`,
+    `${micropostsUrl}/${type}/${pageParam ?? ''}`,
   );
+
   return res;
 };
 
@@ -196,36 +227,12 @@ export const createMicropost = (
     },
   });
 
-export const deleteMicropost = (
-  id: number,
-): Promise<AxiosResponse<MessageResponse, unknown>> =>
+export const deleteMicropost = (id: number) =>
   instance.delete<MessageResponse>(`${micropostsUrl}/${id}`);
-
-export const textStockApi = async () => {
-  const base_uri = 'https://www.alphavantage.co/query';
-  const apiKey = process.env.API_ACCESS_KEY;
-
-  const response = axios.post<unknown>(base_uri, {
-    function: 'TIME_SERIES_DAILY',
-    symbol: 'tsla',
-    datatype: 'json',
-    apikey: apiKey,
-  });
-
-  return response;
-};
 
 export const getEarnings = async (symbol: string) => {
   const response = await instance.get<EarningsResponse>(
     `${StockUrl}/${symbol}`,
-  );
-
-  return response.data;
-};
-
-export const getStockPrice = async (symbol: string) => {
-  const response = await axios.get<StockPriceResponse>(
-    `${financialUrl}/historical-price-full/${symbol}?apikey=${apiKey}`,
   );
 
   return response.data;
@@ -238,16 +245,23 @@ export const followStock = ({
   symbol: string;
   follow: boolean;
 }) => {
-  if (follow) {
-    return instance.post<EarningsResponse>(`${apiUrl}/stock_relationships`, {
+  if (!follow) {
+    return instance.post<LoginResponse>(`${apiUrl}/stock_relationships`, {
       id: symbol,
     });
-  } else {
-    return instance.delete<EarningsResponse>(
-      `${apiUrl}/stock_relationships/${symbol}`,
-    );
   }
+
+  return instance.delete<LoginResponse>(
+    `${apiUrl}/stock_relationships/${symbol}`,
+  );
 };
+// export const getFollowingStocks = async () => {
+//   const response = await instance.get<StocksResponse>(
+//     `${StockUrl}/my_following_stock`,
+//   );
+
+//   return response.data;
+// };
 
 /* eslint-disable */
 /* eslint-disable */

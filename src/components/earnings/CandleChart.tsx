@@ -15,9 +15,6 @@ const CandleChart: FC<PropsType> = ({ historical, symbol }) => {
   const theme = useTheme();
   const colors = useColors();
 
-  // const { currentUser } = state;
-  console.log('historical', historical);
-
   const divRef = useRef<HTMLDivElement>(null!);
 
   useEffect(() => {

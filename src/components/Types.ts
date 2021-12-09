@@ -26,13 +26,22 @@ type Follow = {
   isFollowing: boolean;
 };
 
+type FollowingStock = {
+  followingStocks: Stock[];
+};
+
+type RememberMe = {
+  rememberMe: boolean;
+};
+
 export type UserType = Id &
   Email &
   Name &
   CreatedAt &
   Admin &
   UserCounts &
-  Follow;
+  Follow &
+  FollowingStock;
 
 export type UsersUser = Id & Name & Admin;
 export type UsersType = UsersUser[];
@@ -47,10 +56,7 @@ export type EditUserType = Id & CreateUserType;
 
 export type ResetPasswordData = Id & Email & Password & PassConf;
 
-export type loginUserType = Email &
-  Password & {
-    rememberMe: boolean;
-  };
+export type loginUserType = Email & Password & RememberMe;
 
 // -------- マイクロポスト ----------
 type Content = { content: string };
@@ -75,11 +81,8 @@ export type Stock = Id &
     industry: string;
   };
 
-type IsFollowingStock = {
-  isFollowingStock: boolean;
-};
-
 export type StockType = { stock: Stock };
+export type StocksType = { stocks: Stock[] };
 
 // -------- Earnings ----------
 
@@ -130,9 +133,7 @@ type Microposts = { microposts: Micropost[] };
 
 export type UsersResponse = Messages & Users;
 
-export type LoginResponse = LoggedIn & Messages & User;
-
-export type LogoutResponse = LoggedIn & Messages;
+export type LoginResponse = LoggedIn & Messages & { user: CurrentUser };
 
 export type ShowUserResponse = User & Messages;
 
@@ -140,10 +141,7 @@ export type MessageResponse = Messages;
 
 export type DeleteUserResponse = Messages & Users;
 
-export type EarningsResponse = Messages &
-  Earnings &
-  StockType &
-  IsFollowingStock;
+export type EarningsResponse = Messages & Earnings & StockType;
 
 export type HistoryPropsType = {
   history: H.History;
@@ -166,3 +164,5 @@ export type StockPriceResponse = {
   symbol: string;
   historical: StockPrice[];
 };
+
+export type StocksResponse = Messages & StocksType;
