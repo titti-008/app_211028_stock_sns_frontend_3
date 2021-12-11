@@ -14,7 +14,7 @@ import PersonAddIcon from '@mui/icons-material/PersonAdd';
 // import { LoginResponse } from './components/Types';
 import { useLoggedQuery } from './components/api';
 import DarkButton from './declareModule/darkButton';
-import LoginForm from './components/users/LoginForm';
+import LoginForm from './components/authenticate/LoginForm';
 import HelloWorld from './components/HelloWorld';
 import AllUsers from './components/users/AllUsers';
 import UserShow from './components/users/UserShow';
@@ -44,10 +44,6 @@ import PrivateLoading from './components/privateMUI/PrivateLoading';
 
 const App: FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
-  // const queryClient = useQueryClient();
-  // const queryKey = `loginData`;
-
-  // const userData = queryClient.getQueryData<LoginResponse>(queryKey);
 
   // ----------ページ遷移履歴の管理----------------------
 
@@ -81,10 +77,13 @@ const App: FC = () => {
         isLogin: data.data.loggedIn,
       });
     }
+  }, [dispatch, data]);
+
+  useEffect(() => {
     if (!state.isLogin) {
       history.push('/login');
     }
-  }, [dispatch, data, history, state.isLogin]);
+  }, [history, state.isLogin]);
 
   if (!data) {
     return <div>データがありません</div>;
@@ -93,35 +92,6 @@ const App: FC = () => {
   if (isLoading) {
     return <PrivateLoading />;
   }
-
-  // useEffect(() => {
-  //   dispatch({ type: 'closeDrawer' });
-  //   const checkLoginStatus = async () => {
-  //     try {
-  //       const response = await loggedIn();
-  //       dispatch({
-  //         type: 'saveUser',
-  //         setUser: response.data.user,
-  //         isLogin: response.state.isLogin,
-  //       });
-  //       if (response.status === 200) {
-  //         console.log(response.data.messages);
-  //       } else {
-  //         ErrorToasts(response.data.messages);
-  //       }
-  //     } catch (err) {
-  //       if ((err as ErrorResponse).response !== undefined) {
-  //         console.log(err);
-  //         console.log('login_response', (err as ErrorResponse).response);
-  //         ErrorToasts([
-  //           'ログイン状態の確認に失敗しました。',
-  //           'データサーバーとの接続に問題がある可能性があります。',
-  //         ]);
-  //       }
-  //     }
-  //   };
-  //   void checkLoginStatus();
-  // }, [location, dispatch]);
 
   // ----------コンポーネント----------------------
   return (

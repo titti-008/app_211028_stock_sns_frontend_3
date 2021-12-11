@@ -82,7 +82,7 @@ export const loginRequest = (values: { user: loginUserType }) =>
   );
 
 export const logoutRequest = () =>
-  instance.delete<LoginResponse, LoginResponse, ErrorResponse>(
+  instance.delete<LoginResponse, AxiosResponse<LoginResponse>, ErrorResponse>(
     `${apiUrl}/logout`,
   );
 
