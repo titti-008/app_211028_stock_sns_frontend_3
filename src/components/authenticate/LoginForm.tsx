@@ -30,20 +30,21 @@ const LoginForm: FC<HistoryPropsType> = ({ history }) => {
   const queryClient = useQueryClient();
   const queryKey = `loginData`;
 
-  const mutation = useMutation(loginRequest, {
+  const mutation = useMutation(queryKey, loginRequest, {
     onSuccess: (res) => {
+      history.push('/');
       SuccessToasts(res.data.messages);
-      dispatch({
-        type: 'saveUser',
-        setUser: res.data.user,
-        isLogin: res.data.loggedIn,
-      });
+
       const prevData = queryClient.getQueryData<LoginResponse>(queryKey);
       if (prevData) {
         queryClient.setQueryData<LoginResponse>(queryKey, res.data);
       }
 
-      history.push('/');
+      dispatch({
+        type: 'saveUser',
+        setUser: res.data.user,
+        isLogin: true,
+      });
     },
   });
 

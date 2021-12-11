@@ -102,24 +102,15 @@ const initialState: State = {
   theme: localStorage.getItem('darkMode') === 'light' ? themeLight : themeDark,
 };
 
-// ----------React Queryの設定----------------------
-// const queryClient = new QueryClient({
-//   defaultOptions: {
-//     queries: {
-//       retry: false,
-//       refetchOnWindowFocus: false,
-//       staleTime: 600000,
-//     },
-//   },
-// });
-
 export const AppProvider: FC = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
+
+  // ----------React Queryの設定----------------------
   const queryClient = new QueryClient({
     defaultOptions: {
       queries: {
         retry: false,
-        refetchOnWindowFocus: false,
+        // refetchOnWindowFocus: false,
         staleTime: 600000,
       },
     },

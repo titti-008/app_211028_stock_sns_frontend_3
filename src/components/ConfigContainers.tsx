@@ -35,7 +35,7 @@ export const LinkContainer: FC<LinkPropsType> = (_props) => {
 };
 
 type ButtonPropsType = {
-  handleAction: () => void;
+  handleAction: React.MouseEventHandler<HTMLDivElement>;
   linkText: string;
   isLoading: boolean;
 };
@@ -57,7 +57,7 @@ export const ButtonContainer: FC<ButtonPropsType> = ({
     >
       <IconButton color="default">
         <Grid item>
-          {isLoading ? <CircularProgress size="20px" /> : { children }}
+          {isLoading ? <CircularProgress size="20px" /> : children}
         </Grid>
       </IconButton>
       <Grid item xs sx={{ width: '100%' }}>
