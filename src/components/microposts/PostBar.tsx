@@ -1,18 +1,19 @@
 import { FC } from 'react';
 import { Grid, IconButton } from '@mui/material';
 import DehazeIcon from '@mui/icons-material/Dehaze';
+import { useQueryClient } from 'react-query';
+import { HistoryPropsType, LoginResponse } from '../Types';
+
 import { NormalText } from '../privateMUI/PrivateTexts';
-import { HistoryPropsType } from '../Types';
 import PostNew from './PostNew';
 import IconText from '../privateMUI/IconText';
 
 import { BaseCard, PrivateAppbar, PrivateBox } from '../privateMUI/BaseCard';
-import { useAppContext } from '../../hooks/ReduserContext';
 
 /* eslint-disable */
 const PostBar: FC<HistoryPropsType> = ({ history }) => {
-  const { state } = useAppContext();
-  const { currentUser } = state;
+  const queryClient = useQueryClient();
+  const userData = queryClient.getQueryData<LoginResponse>(`loginData`);
 
   return (
     <BaseCard>
@@ -29,17 +30,23 @@ const PostBar: FC<HistoryPropsType> = ({ history }) => {
 
       <PrivateBox>
         <IconText
-          linkTo={`/users/${currentUser?.id}`}
-          key={currentUser ? currentUser?.id : 0}
-          name={currentUser ? currentUser?.name : ''}
-          date={new Date(currentUser ? currentUser?.createdAt : Date.now())}
+          linkTo={`/users/${userData?.user?.id}`}
+          key={userData?.user?.id ? userData?.user?.id : 0}
+          name={userData?.user?.name ? userData?.user?.name : ''}
+          date={
+            new Date(
+              userData?.user?.createdAt
+                ? userData?.user?.createdAt
+                : new Date(),
+            )
+          }
           distanceToNow
         >
-          <NormalText>{currentUser?.email}</NormalText>
+          <NormalText>{userData?.user?.email}</NormalText>
           <NormalText>
-            管理者権限: {currentUser?.admin ? 'あり' : 'なし'}
+            管理者権限: {userData?.user?.admin ? 'あり' : 'なし'}
           </NormalText>
-          <NormalText>投稿数:{currentUser?.countMicroposts}件</NormalText>
+          <NormalText>投稿数:{userData?.user?.countMicroposts}件</NormalText>
         </IconText>
 
         <PostNew history={history} />

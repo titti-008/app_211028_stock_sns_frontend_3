@@ -3,14 +3,14 @@ import { Grid, IconButton } from '@mui/material';
 import { useMutation, useQueryClient } from 'react-query';
 import DehazeIcon from '@mui/icons-material/Dehaze';
 import LogoutIcon from '@mui/icons-material/Logout';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+// import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import GroupIcon from '@mui/icons-material/Group';
 import { NormalText } from './privateMUI/PrivateTexts';
 import { LinkContainer, ButtonContainer } from './ConfigContainers';
 import { LoginResponse, ErrorResponse } from './Types';
 import { logoutRequest } from './api';
 import { BaseCard, PrivateAppbar, PrivateBox } from './privateMUI/BaseCard';
-import { useAppContext } from '../hooks/ReduserContext';
+// import { useAppContext } from '../hooks/ReduserContext';
 import { SuccessToasts, ErrorToasts } from './toast/PrivateToast';
 import SearchSymbol from './earnings/SearchSymbol';
 import MyFollowingStocks from './stock/MyFollowingStocks';
@@ -21,7 +21,7 @@ type PropsType = {
 
 const ConfigBar: FC<PropsType> = (_props) => {
   const props = _props;
-  const { state, dispatch } = useAppContext();
+  // const { state } = useAppContext();
 
   // ----------ログアウトボタンの処理----------------------
 
@@ -31,11 +31,11 @@ const ConfigBar: FC<PropsType> = (_props) => {
   const mutation = useMutation<LoginResponse, ErrorResponse>(logoutRequest, {
     onSuccess: (res) => {
       SuccessToasts(res.messages);
-      dispatch({
-        type: 'saveUser',
-        setUser: null,
-        isLogin: res.loggedIn,
-      });
+      // dispatch({
+      //   type: 'saveUser',
+      //   setUser: null,
+      //   isLogin: res.loggedIn,
+      // });
       const prevData = queryClient.getQueryData<LoginResponse>(queryKey);
       if (prevData) {
         queryClient.setQueryData<LoginResponse>(queryKey, res);
@@ -90,12 +90,12 @@ const ConfigBar: FC<PropsType> = (_props) => {
           <GroupIcon />
         </LinkContainer>
 
-        <LinkContainer
+        {/* <LinkContainer
           linkTo={`/users/${state.currentUser ? state.currentUser.id : ''}`}
           linkText="プロフィール"
         >
           <AccountCircleIcon />
-        </LinkContainer>
+        </LinkContainer> */}
         <SearchSymbol />
         <MyFollowingStocks />
       </PrivateBox>

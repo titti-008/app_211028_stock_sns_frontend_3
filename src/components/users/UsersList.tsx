@@ -1,21 +1,23 @@
 import { FC } from 'react';
 import SupervisorAccountIcon from '@mui/icons-material/SupervisorAccount';
-import { UsersUser, UsersType, ErrorResponse } from '../Types';
+import { useQueryClient } from 'react-query';
+import { LoginResponse, UsersUser, UsersType, ErrorResponse } from '../Types';
 import { SuccessToasts, ErrorToasts } from '../toast/PrivateToast';
 import { deleteUser } from '../api';
 
 import { SubmitButton } from '../privateMUI/PrivateBottuns';
 
 import IconText from '../privateMUI/IconText';
-import { useAppContext } from '../../hooks/ReduserContext';
+// import { useAppContext } from '../../hooks/ReduserContext';
 import PrivateLoading from '../privateMUI/PrivateLoading';
 
 type PropsType = {
   users: UsersType;
 };
 const Users: FC<PropsType> = ({ users }) => {
-  const { state } = useAppContext();
-  const { currentUser } = state;
+  const queryClient = useQueryClient();
+  const userData = queryClient.getQueryData<LoginResponse>(`loginData`);
+  const currentUser = userData?.user ? userData.user : null;
 
   const handleDeleteUser = async (id: number) => {
     try {

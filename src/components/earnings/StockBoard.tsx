@@ -2,7 +2,7 @@ import { FC } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import { useMutation, useQueryClient } from 'react-query';
 import { LoginResponse } from '../Types';
-import Earnings from './Earnings';
+// import Earnings from './Earnings';
 import GetStockPrice from './GetStockPrice';
 import { NormalText } from '../privateMUI/PrivateTexts';
 import { followStock } from '../api';
@@ -15,23 +15,23 @@ const StockBoard: FC<RouteComponentProps<{ symbol: string }>> = ({ match }) => {
 
   const queryClient = useQueryClient();
   const queryKey = `loginData`;
+  const prevData = queryClient.getQueryData<LoginResponse>(queryKey);
 
   const mutation = useMutation(followStock, {
     onSuccess: (res) => {
-      dispatch({
-        type: 'saveUser',
-        setUser: res.data.user,
-        isLogin: true,
-      });
-      const prevData = queryClient.getQueryData<LoginResponse>(queryKey);
+      // dispatch({
+      //   type: 'saveUser',
+      //   setUser: res.data.user,
+      //   isLogin: true,
+      // });
       if (prevData) {
         queryClient.setQueryData<LoginResponse>(queryKey, res.data);
       }
     },
   });
 
-  const isFollowingStock = state.currentUser?.followingStocks
-    ? !!state.currentUser?.followingStocks.some(
+  const isFollowingStock = prevData
+    ? !!prevData.user?.followingStocks.some(
         (stock) => stock.symbol === match.params.symbol,
       )
     : false;
@@ -54,7 +54,7 @@ const StockBoard: FC<RouteComponentProps<{ symbol: string }>> = ({ match }) => {
         />
       </NormalText>
       <GetStockPrice symbol={match.params.symbol} />
-      <Earnings symbol={match.params.symbol} />
+      {/* <Earnings symbol={match.params.symbol} /> */}
     </>
   );
 };

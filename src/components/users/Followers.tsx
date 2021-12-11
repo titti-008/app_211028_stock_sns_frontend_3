@@ -5,7 +5,7 @@ import { getFollowers } from '../api';
 import { SuccessToasts, ErrorToasts } from '../toast/PrivateToast';
 import { NormalText } from '../privateMUI/PrivateTexts';
 import UsersList from './UsersList';
-
+/* eslint-disable */
 const Followers: FC<RouteComponentProps<{ id: string }>> = (props) => {
   const [users, setUsers] = useState<UsersType>([] as UsersType);
 

@@ -1,10 +1,10 @@
 import { FC } from 'react';
-import { useQuery } from 'react-query';
+import { useQuery, useQueryClient } from 'react-query';
 import { RouteComponentProps } from 'react-router-dom';
 
 import { AxiosError } from 'axios';
 // import { format, formatDistanceToNow } from 'date-fns';
-import { ShowUserResponse } from '../Types';
+import { ShowUserResponse, LoginResponse } from '../Types';
 import {
   getUser,
   getMyFeed,
@@ -18,14 +18,15 @@ import {
   SubmitButton,
 } from '../privateMUI/PrivateBottuns';
 import { NormalText } from '../privateMUI/PrivateTexts';
-import { useAppContext } from '../../hooks/ReduserContext';
+// import { useAppContext } from '../../hooks/ReduserContext';
 import { ErrorToasts } from '../toast/PrivateToast';
 import Feed from '../microposts/Feed';
 import PrivateLoading from '../privateMUI/PrivateLoading';
 
 const UserShow: FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
-  const { state } = useAppContext();
-  const { currentUser } = state;
+  const queryClient = useQueryClient();
+  const userData = queryClient.getQueryData<LoginResponse>(`loginData`);
+  const currentUser = userData?.user ? userData.user : null;
 
   const userId = match.params.id;
 

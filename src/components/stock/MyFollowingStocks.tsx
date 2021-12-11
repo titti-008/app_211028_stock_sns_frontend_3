@@ -1,17 +1,19 @@
 import { FC } from 'react';
+import { useQueryClient } from 'react-query';
+import { LoginResponse } from '../Types';
 import { LinkButton } from '../privateMUI/PrivateBottuns';
 import { NormalText } from '../privateMUI/PrivateTexts';
-import { useAppContext } from '../../hooks/ReduserContext';
 
 /* eslint-disable */
 
 const MyFollowingStocks: FC = () => {
-  const { state } = useAppContext();
+  const queryClient = useQueryClient();
+  const userData = queryClient.getQueryData<LoginResponse>(`loginData`);
 
   return (
     <>
       <NormalText>フォローしている株式</NormalText>
-      {state.currentUser?.followingStocks?.map((stock) => (
+      {userData?.user?.followingStocks?.map((stock) => (
         <LinkButton
           linkTo={`/stocks/${stock.symbol}`}
           label={stock.symbol}

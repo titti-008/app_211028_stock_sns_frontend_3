@@ -1,12 +1,14 @@
 import { FC } from 'react';
 import axios from 'axios';
 import saveAs from 'file-saver';
+import { useQueryClient } from 'react-query';
+import { LoginResponse } from './Types';
 import { SubmitButton } from './privateMUI/PrivateBottuns';
-import { useAppContext } from '../hooks/ReduserContext';
 
 const HelloWorld: FC = () => {
-  const { state } = useAppContext();
-  const { currentUser } = state;
+  const queryClient = useQueryClient();
+  const queryKey = `loginData`;
+  const userData = queryClient.getQueryData<LoginResponse>(queryKey);
 
   const baseUrl = process.env.REACT_APP_SERVER_URL ?? ''; // 文字列型であることを強制
 
@@ -36,7 +38,7 @@ const HelloWorld: FC = () => {
 
   return (
     <>
-      {currentUser?.admin && (
+      {userData?.user?.admin && (
         <SubmitButton
           onClick={exportCSV}
           label="earnings CSVダウンロード"

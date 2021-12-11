@@ -1,4 +1,4 @@
-import { FC, useEffect, useRef, ReactElement } from 'react';
+import { FC, useRef, ReactElement } from 'react';
 import { Switch, Link, useHistory, useLocation } from 'react-router-dom';
 import { ReactQueryDevtools } from 'react-query/devtools';
 import * as H from 'history';
@@ -6,10 +6,12 @@ import { Drawer, Grid, Box, IconButton, Hidden } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home';
 import PublicIcon from '@mui/icons-material/Public';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+// import { useQueryClient } from 'react-query';
 import SendIcon from '@mui/icons-material/Send';
 import GroupIcon from '@mui/icons-material/Group';
 import DehazeIcon from '@mui/icons-material/Dehaze';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
+// import { LoginResponse } from './components/Types';
 import { useLoggedQuery } from './components/api';
 import DarkButton from './declareModule/darkButton';
 import LoginForm from './components/users/LoginForm';
@@ -42,6 +44,10 @@ import PrivateLoading from './components/privateMUI/PrivateLoading';
 
 const App: FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
+  // const queryClient = useQueryClient();
+  // const queryKey = `loginData`;
+
+  // const userData = queryClient.getQueryData<LoginResponse>(queryKey);
 
   // ----------ページ遷移履歴の管理----------------------
 
@@ -68,15 +74,15 @@ const App: FC = () => {
     ]);
   }
 
-  useEffect(() => {
-    if (data) {
-      dispatch({
-        type: 'saveUser',
-        setUser: data.user,
-        isLogin: data.loggedIn,
-      });
-    }
-  }, [dispatch, data]);
+  // useEffect(() => {
+  //   if (data) {
+  //     dispatch({
+  //       type: 'saveUser',
+  //       setUser: data.user,
+  //       isLogin: data.loggedIn,
+  //     });
+  //   }
+  // }, [dispatch, data]);
 
   if (!data) {
     return <></>;
@@ -134,12 +140,12 @@ const App: FC = () => {
           wrap="nowrap"
           overflow="scroll"
         >
-          {state.isLogin && (
+          {data.loggedIn && (
             <Hidden mdDown implementation="js">
               <PostBar history={history} />
             </Hidden>
           )}
-          {state.isLogin && (
+          {data.loggedIn && (
             <Hidden mdUp implementation="js">
               <Grid item height="100%" width="100%">
                 <Drawer
@@ -176,8 +182,8 @@ const App: FC = () => {
                 </Link>
               </Grid>
               <Grid item>
-                {state?.currentUser && (
-                  <Link to={`/users/${state.currentUser.id}`}>
+                {data.user && (
+                  <Link to={`/users/${data.user.id}`}>
                     <IconButton color="default">
                       <AccountCircleIcon />
                     </IconButton>
@@ -280,7 +286,7 @@ const App: FC = () => {
               )}
             </PrivateBox>
           </BaseCard>
-          {state.isLogin && (
+          {data.loggedIn && (
             <Hidden mdDown implementation="js">
               <ConfigBar
                 // eslint-disable-next-line
