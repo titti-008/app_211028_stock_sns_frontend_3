@@ -6,10 +6,7 @@ import { LinkButton } from '../privateMUI/PrivateBottuns';
 import { useUserDataInput } from '../../hooks/util';
 import UserDataForm from './UserDataForm';
 
-const NewUsers: React.FC<HistoryPropsType> = (_props) => {
-  /* eslint-disable */
-  const props = _props;
-  /* eslint-disable */
+const NewUsers: React.FC<HistoryPropsType> = ({ history }) => {
   const initInput = {
     name: '',
     email: '',
@@ -25,7 +22,7 @@ const NewUsers: React.FC<HistoryPropsType> = (_props) => {
 
       if (response.status === 200) {
         SuccessToasts(response.data.messages);
-        props.history.push('/current_user');
+        history.push('/current_user');
       } else if (response.status === 202) {
         ErrorToasts(response.data.messages);
       }
@@ -59,6 +56,3 @@ const NewUsers: React.FC<HistoryPropsType> = (_props) => {
 };
 
 export default NewUsers;
-
-/* eslint-disable */
-/* eslint-disable */

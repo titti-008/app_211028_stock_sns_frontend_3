@@ -8,5 +8,3 @@ const MyFeed: FC = () => (
   </>
 );
 export default MyFeed;
-
-/* eslint-disable */

@@ -1,26 +1,30 @@
 import React from 'react';
-
 import { Route, Redirect, RouteProps } from 'react-router-dom';
-import { useQueryClient } from 'react-query';
-import { LoginResponse } from '../Types';
+import { useAppContext } from '../../hooks/ReduserContext';
 
 // ----------PrivateRouteコンポーネントの作成(ログイン状態によるリダイレクト)----------------------
-const PrivateRoute: React.FC<RouteProps> = ({ ...props }) => {
-  const { path } = props;
-  /* eslint-disable */
+const PrivateRoute: React.FC<RouteProps> = ({
+  exact,
+  path,
+  component,
+  render,
+}) => {
+  const { state } = useAppContext();
 
-  const queryClient = useQueryClient();
-  const userData = queryClient.getQueryData<LoginResponse>(`loginData`);
+  console.log(state.isLogin ? 'ログイン済み' : 'ログインできていない');
 
-  console.log(userData?.loggedIn ? 'ログイン済み' : 'ログインできていない');
-
-  if (userData?.loggedIn) {
-    return <Route {...props} />;
-  } else {
-    console.log(`ログインいていないユーザーは${path}へはアクセスできません`);
-    return <Redirect to="/login" />;
+  if (state.isLogin) {
+    return (
+      <Route exact={exact} path={path} component={component} render={render} />
+    );
   }
+  console.log(
+    `ログインいていないユーザーは${
+      typeof path === 'string' ? path : ''
+    }へはアクセスできません`,
+  );
+
+  return <Redirect to="/login" />;
 };
 
 export default PrivateRoute;
-/* eslint-disable */

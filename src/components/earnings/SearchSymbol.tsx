@@ -69,6 +69,3 @@ const SearchSymbol: FC = () => {
 };
 
 export default SearchSymbol;
-
-/* eslint-disable */
-/* eslint-disable */

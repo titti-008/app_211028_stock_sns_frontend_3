@@ -1,5 +1,3 @@
-/* eslint-disable */
-
 import { FC, useRef, useEffect } from 'react';
 import { useTheme } from '@mui/material';
 import * as echarts from 'echarts';
@@ -378,7 +376,3 @@ const CandleChart: FC<PropsType> = ({ historical, symbol }) => {
 };
 
 export default CandleChart;
-
-/* eslint-disable */
-
-/* eslint-disable */

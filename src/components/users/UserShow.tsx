@@ -1,10 +1,10 @@
 import { FC } from 'react';
-import { useQuery, useQueryClient } from 'react-query';
+import { useQuery } from 'react-query';
 import { RouteComponentProps } from 'react-router-dom';
 
 import { AxiosError } from 'axios';
 // import { format, formatDistanceToNow } from 'date-fns';
-import { ShowUserResponse, LoginResponse } from '../Types';
+import { ShowUserResponse } from '../Types';
 import {
   getUser,
   getMyFeed,
@@ -22,11 +22,10 @@ import { NormalText } from '../privateMUI/PrivateTexts';
 import { ErrorToasts } from '../toast/PrivateToast';
 import Feed from '../microposts/Feed';
 import PrivateLoading from '../privateMUI/PrivateLoading';
+import { useAppContext } from '../../hooks/ReduserContext';
 
 const UserShow: FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
-  const queryClient = useQueryClient();
-  const userData = queryClient.getQueryData<LoginResponse>(`loginData`);
-  const currentUser = userData?.user ? userData.user : null;
+  const { state } = useAppContext();
 
   const userId = match.params.id;
 
@@ -51,7 +50,9 @@ const UserShow: FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
 
   console.log(...messages);
 
-  const isCurrentUser = currentUser?.id === data?.user.id;
+  const isCurrentUser = state.currentUser
+    ? state.currentUser?.id === data?.user.id
+    : false;
 
   const handleFollow = async () => {
     try {
@@ -128,7 +129,3 @@ const UserShow: FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
 };
 
 export default UserShow;
-
-/* eslint-disable */
-
-/* eslint-disable */

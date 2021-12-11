@@ -84,10 +84,3 @@ const UserDataForm: React.FC<PropsType> = ({
 };
 
 export default UserDataForm;
-
-// /* eslint-disable */
-// // const { currentUser, setCurrentUser, setIsLogin } = { ...props };
-// /* eslint-disable */
-
-/* eslint-disable */
-/* eslint-disable */

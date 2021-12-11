@@ -1,29 +1,33 @@
 import React from 'react';
 
 import { Route, Redirect, RouteProps } from 'react-router-dom';
-import { useQueryClient } from 'react-query';
-import { LoginResponse } from '../Types';
+import { useAppContext } from '../../hooks/ReduserContext';
 import { ErrorToasts } from '../toast/PrivateToast';
 
 // ----------PrivateRouteコンポーネントの作成(ログイン状態によるリダイレクト)----------------------
-const UnAuthRoute: React.FC<RouteProps> = ({ ...props }) => {
-  /* eslint-disable */
-  const { path } = props;
-  /* eslint-disable */
-  const queryClient = useQueryClient();
-  const userData = queryClient.getQueryData<LoginResponse>(`loginData`);
+const UnAuthRoute: React.FC<RouteProps> = ({
+  exact,
+  path,
+  component,
+  render,
+}) => {
+  const { state } = useAppContext();
 
-  console.log(userData?.loggedIn ? 'ログイン済み' : 'ログインできていない');
+  console.log(state.isLogin ? 'ログイン済み' : 'ログインできていない');
 
-  if (userData?.loggedIn) {
-    ErrorToasts([`ログイン済みのユーザーは${path}へはアクセスできません`]);
+  if (state.isLogin) {
+    ErrorToasts([
+      `ログイン済みのユーザーは${
+        typeof path === 'string' ? path : ''
+      }へはアクセスできません`,
+    ]);
 
     return <Redirect to="/" />;
   }
 
-  /* eslint-disable */
-  return <Route {...props} />;
-  /* eslint-disable */
+  return (
+    <Route exact={exact} path={path} component={component} render={render} />
+  );
 };
 
 export default UnAuthRoute;

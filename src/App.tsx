@@ -1,5 +1,5 @@
-import { FC, useRef, ReactElement } from 'react';
-import { Switch, Link, useHistory, useLocation } from 'react-router-dom';
+import { FC, useEffect, useRef, ReactElement } from 'react';
+import { Switch, Link, useHistory } from 'react-router-dom';
 import { ReactQueryDevtools } from 'react-query/devtools';
 import * as H from 'history';
 import { Drawer, Grid, Box, IconButton, Hidden } from '@mui/material';
@@ -30,7 +30,7 @@ import './App.css';
 import ConfigBar from './components/ConfigBar';
 import ResetRequestForm from './components/authenticate/ResetRequest';
 import ResetPasswordForm from './components/authenticate/ResetPassword';
-import Microposts from './components/microposts/MyFeed';
+import MyFeed from './components/microposts/MyFeed';
 import PostBar from './components/microposts/PostBar';
 import PostNew from './components/microposts/PostNew';
 import {
@@ -51,8 +51,7 @@ const App: FC = () => {
 
   // ----------ページ遷移履歴の管理----------------------
 
-  // eslint-disable-next-line
-  const history: H.History = useHistory();
+  const history = useHistory() as H.History;
 
   // ----------カレントユーザー状態管理----------------------
 
@@ -62,8 +61,8 @@ const App: FC = () => {
   const colors = Colors(state.theme);
 
   // ----------ログイン状態の確認通信----------------------
-  // eslint-disable-next-line
-  const location = useLocation();
+
+  // const location = useLocation() as H.Location
 
   const { data, isLoading, isError, error } = useLoggedQuery();
 
@@ -74,18 +73,25 @@ const App: FC = () => {
     ]);
   }
 
-  // useEffect(() => {
-  //   if (data) {
-  //     dispatch({
-  //       type: 'saveUser',
-  //       setUser: data.user,
-  //       isLogin: data.loggedIn,
-  //     });
-  //   }
-  // }, [dispatch, data]);
+  useEffect(() => {
+    if (data) {
+      dispatch({
+        type: 'saveUser',
+        setUser: data.data.user,
+        isLogin: data.data.loggedIn,
+      });
+    }
+    if (!state.isLogin) {
+      history.push('/login');
+    }
+  }, [dispatch, data, history, state.isLogin]);
 
   if (!data) {
-    return <></>;
+    return <div>データがありません</div>;
+  }
+
+  if (isLoading) {
+    return <PrivateLoading />;
   }
 
   // useEffect(() => {
@@ -96,7 +102,7 @@ const App: FC = () => {
   //       dispatch({
   //         type: 'saveUser',
   //         setUser: response.data.user,
-  //         isLogin: response.data.loggedIn,
+  //         isLogin: response.state.isLogin,
   //       });
   //       if (response.status === 200) {
   //         console.log(response.data.messages);
@@ -140,30 +146,26 @@ const App: FC = () => {
           wrap="nowrap"
           overflow="scroll"
         >
-          {data.loggedIn && (
-            <Hidden mdDown implementation="js">
-              <PostBar history={history} />
-            </Hidden>
-          )}
-          {data.loggedIn && (
-            <Hidden mdUp implementation="js">
-              <Grid item height="100%" width="100%">
-                <Drawer
-                  anchor="left"
-                  variant="temporary"
-                  open={state.drawerIsOpen}
-                  onClose={() => dispatch({ type: 'closeDrawer' })}
-                  sx={{
-                    backgroundColor: colors.baseSheet,
-                  }}
-                >
-                  <ConfigBar
-                    handleDrawerClose={() => dispatch({ type: 'closeDrawer' })}
-                  />
-                </Drawer>
-              </Grid>
-            </Hidden>
-          )}
+          <Hidden mdDown implementation="js">
+            <PostBar history={history} />
+          </Hidden>
+
+          <Hidden mdUp implementation="js">
+            <Grid item height="100%" width="100%">
+              <Drawer
+                anchor="left"
+                variant="temporary"
+                open={state.drawerIsOpen}
+                onClose={() => dispatch({ type: 'closeDrawer' })}
+                sx={{
+                  backgroundColor: colors.baseSheet,
+                }}
+              >
+                <ConfigBar />
+              </Drawer>
+            </Grid>
+          </Hidden>
+
           <BaseCard>
             <PrivateAppbar>
               <Grid item>
@@ -182,8 +184,8 @@ const App: FC = () => {
                 </Link>
               </Grid>
               <Grid item>
-                {data.user && (
-                  <Link to={`/users/${data.user.id}`}>
+                {state.currentUser && (
+                  <Link to={`/users/${state.currentUser.id}`}>
                     <IconButton color="default">
                       <AccountCircleIcon />
                     </IconButton>
@@ -247,15 +249,19 @@ const App: FC = () => {
                     component={Following}
                   />
 
-                  <PrivateRoute exact path="/edit_user">
-                    <EditUser history={history} />
-                  </PrivateRoute>
-                  <PrivateRoute exact path="/">
-                    <Microposts />
-                  </PrivateRoute>
-                  <PrivateRoute exact path="/microposts/new">
-                    <PostNew history={history} />
-                  </PrivateRoute>
+                  <PrivateRoute
+                    exact
+                    path="/edit_user"
+                    render={() => <EditUser history={history} />}
+                  />
+
+                  <PrivateRoute exact path="/" component={MyFeed} />
+                  <PrivateRoute
+                    exact
+                    path="/microposts/new"
+                    render={() => <PostNew history={history} />}
+                  />
+
                   <PrivateRoute
                     exact
                     path="/stocks/:symbol"
@@ -264,7 +270,7 @@ const App: FC = () => {
                   <UnAuthRoute
                     exact
                     path="/login"
-                    render={(): ReactElement => <LoginForm />}
+                    render={(): ReactElement => <LoginForm history={history} />}
                   />
                   <UnAuthRoute
                     exact
@@ -286,12 +292,9 @@ const App: FC = () => {
               )}
             </PrivateBox>
           </BaseCard>
-          {data.loggedIn && (
+          {state.isLogin && (
             <Hidden mdDown implementation="js">
-              <ConfigBar
-                // eslint-disable-next-line
-                handleDrawerClose={() => {}}
-              />
+              <ConfigBar />
             </Hidden>
           )}
           <ReactQueryDevtools />
@@ -302,6 +305,3 @@ const App: FC = () => {
 };
 
 export default App;
-
-// tslint:disable-next-line
-/* eslint-disable */

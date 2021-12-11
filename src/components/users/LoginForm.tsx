@@ -1,14 +1,14 @@
 import { FC, useState } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
-import { loginUserType, LoginResponse } from '../Types';
+import { loginUserType, LoginResponse, HistoryPropsType } from '../Types';
 import { loginRequest } from '../api';
 import { SuccessToasts } from '../toast/PrivateToast';
 import { NormalForm, RememberCheckBox } from '../privateMUI/PrivateForms';
 import { NormalText } from '../privateMUI/PrivateTexts';
 import { SubmitButton, LinkButton } from '../privateMUI/PrivateBottuns';
-// import { useAppContext } from '../../hooks/ReduserContext';
+import { useAppContext } from '../../hooks/ReduserContext';
 
-const LoginForm: FC = () => {
+const LoginForm: FC<HistoryPropsType> = ({ history }) => {
   const [values, setvalues] = useState({
     email: '',
     password: '',
@@ -16,6 +16,8 @@ const LoginForm: FC = () => {
   });
 
   const disable = values.email.length === 0 || values.password.length === 0;
+
+  const { dispatch } = useAppContext();
 
   console.log('RememberMe', values.rememberMe);
 
@@ -31,15 +33,17 @@ const LoginForm: FC = () => {
   const mutation = useMutation(loginRequest, {
     onSuccess: (res) => {
       SuccessToasts(res.data.messages);
-      // dispatch({
-      //   type: 'saveUser',
-      //   setUser: res.data.user,
-      //   isLogin: res.data.loggedIn,
-      // });
+      dispatch({
+        type: 'saveUser',
+        setUser: res.data.user,
+        isLogin: res.data.loggedIn,
+      });
       const prevData = queryClient.getQueryData<LoginResponse>(queryKey);
       if (prevData) {
         queryClient.setQueryData<LoginResponse>(queryKey, res.data);
       }
+
+      history.push('/');
     },
   });
 
@@ -107,5 +111,3 @@ const LoginForm: FC = () => {
 };
 
 export default LoginForm;
-/* eslint-disable */
-/* eslint-disable */

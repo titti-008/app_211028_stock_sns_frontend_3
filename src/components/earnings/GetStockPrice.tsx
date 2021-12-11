@@ -4,8 +4,6 @@ import PrivateLoading from '../privateMUI/PrivateLoading';
 import { ErrorToasts } from '../toast/PrivateToast';
 import CandleChart from './CandleChart';
 
-/* eslint-disable */
-
 const GetStockPrice: FC<{ symbol: string }> = ({ symbol }) => {
   const { data, isLoading, isError, error } = useStockPriceQuery(symbol);
 
@@ -18,7 +16,8 @@ const GetStockPrice: FC<{ symbol: string }> = ({ symbol }) => {
   if (!data) {
     return <div>データがありません</div>;
   }
-  const { historical } = data;
+
+  const { historical } = data.data;
 
   if (!historical) {
     return <div>データがありません</div>;
@@ -32,7 +31,3 @@ const GetStockPrice: FC<{ symbol: string }> = ({ symbol }) => {
 };
 
 export default GetStockPrice;
-
-/* eslint-disable */
-
-/* eslint-disable */

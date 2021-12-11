@@ -1,4 +1,4 @@
-// import { RouteProps } from 'react-router-dom';
+// import { RouteComponentProps } from 'react-router-dom';
 import * as H from 'history';
 import { AxiosError } from 'axios';
 
@@ -26,10 +26,6 @@ type Follow = {
   isFollowing: boolean;
 };
 
-type FollowingStock = {
-  followingStocks: Stock[];
-};
-
 type RememberMe = {
   rememberMe: boolean;
 };
@@ -40,8 +36,7 @@ export type UserType = Id &
   CreatedAt &
   Admin &
   UserCounts &
-  Follow &
-  FollowingStock;
+  Follow;
 
 export type UsersUser = Id & Name & Admin;
 export type UsersType = UsersUser[];
@@ -146,6 +141,10 @@ export type EarningsResponse = Messages & Earnings & StockType;
 export type HistoryPropsType = {
   history: H.History;
 };
+
+// export type RouteAndIdProps ={
+
+// }
 
 export type ResetEmail = Email;
 

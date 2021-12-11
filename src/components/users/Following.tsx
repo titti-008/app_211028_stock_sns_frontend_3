@@ -5,11 +5,11 @@ import { getFollowing } from '../api';
 import { SuccessToasts, ErrorToasts } from '../toast/PrivateToast';
 import { NormalText } from '../privateMUI/PrivateTexts';
 import UsersList from './UsersList';
-/* eslint-disable */
-const Following: FC<RouteComponentProps<{ id: string }>> = (props) => {
+
+const Following: FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
   const [users, setUsers] = useState<UsersType>([] as UsersType);
 
-  const load = useCallback(() => getFollowing(props.match.params.id), [props]);
+  const load = useCallback(() => getFollowing(match.params.id), [match]);
 
   useEffect(() => {
     const AxiosGetUsers = async () => {
@@ -43,6 +43,3 @@ const Following: FC<RouteComponentProps<{ id: string }>> = (props) => {
 };
 
 export default Following;
-/* eslint-disable */
-
-/* eslint-disable */

@@ -23,12 +23,9 @@ const AllUsers: FC = () => {
   return (
     <>
       <NormalText>全ユーザー一覧</NormalText>
-      <Users users={data.users} />
+      <Users users={data.data.users} />
     </>
   );
 };
 
 export default AllUsers;
-/* eslint-disable */
-
-/* eslint-disable */

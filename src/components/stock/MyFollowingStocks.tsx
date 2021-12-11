@@ -1,19 +1,37 @@
-import { FC } from 'react';
-import { useQueryClient } from 'react-query';
-import { LoginResponse } from '../Types';
+import { FC, useEffect } from 'react';
 import { LinkButton } from '../privateMUI/PrivateBottuns';
 import { NormalText } from '../privateMUI/PrivateTexts';
-
-/* eslint-disable */
+import { useMyfollowingStocks } from '../api';
+import { ErrorToasts } from '../toast/PrivateToast';
+import PrivateLoading from '../privateMUI/PrivateLoading';
 
 const MyFollowingStocks: FC = () => {
-  const queryClient = useQueryClient();
-  const userData = queryClient.getQueryData<LoginResponse>(`loginData`);
+  const { data, isLoading, isError, error } = useMyfollowingStocks();
+
+  useEffect(() => {
+    if (data?.data?.stocks) {
+      localStorage.setItem('myStocks', JSON.stringify(data?.data?.stocks));
+    }
+  }, [data]);
+
+  if (isLoading) {
+    return <PrivateLoading />;
+  }
+
+  if (isError && error) {
+    ErrorToasts([error.message]);
+  }
+
+  if (!data?.data?.stocks) {
+    return <div>データがありません</div>;
+  }
+
+  console.log('myStock', data);
 
   return (
     <>
       <NormalText>フォローしている株式</NormalText>
-      {userData?.user?.followingStocks?.map((stock) => (
+      {data?.data?.stocks?.map((stock) => (
         <LinkButton
           linkTo={`/stocks/${stock.symbol}`}
           label={stock.symbol}
@@ -25,5 +43,3 @@ const MyFollowingStocks: FC = () => {
 };
 
 export default MyFollowingStocks;
-
-/* eslint-disable */

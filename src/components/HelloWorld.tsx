@@ -1,14 +1,17 @@
 import { FC } from 'react';
 import axios from 'axios';
 import saveAs from 'file-saver';
-import { useQueryClient } from 'react-query';
-import { LoginResponse } from './Types';
+// import { useQueryClient } from 'react-query';
+// import { LoginResponse } from './Types';
+import { useAppContext } from '../hooks/ReduserContext';
 import { SubmitButton } from './privateMUI/PrivateBottuns';
 
 const HelloWorld: FC = () => {
-  const queryClient = useQueryClient();
-  const queryKey = `loginData`;
-  const userData = queryClient.getQueryData<LoginResponse>(queryKey);
+  // const queryClient = useQueryClient();
+  // const queryKey = `loginData`;
+  // const userData = queryClient.getQueryData<LoginResponse>(queryKey);
+
+  const { state } = useAppContext();
 
   const baseUrl = process.env.REACT_APP_SERVER_URL ?? ''; // 文字列型であることを強制
 
@@ -38,7 +41,7 @@ const HelloWorld: FC = () => {
 
   return (
     <>
-      {userData?.user?.admin && (
+      {state.currentUser?.admin && (
         <SubmitButton
           onClick={exportCSV}
           label="earnings CSVダウンロード"
@@ -51,7 +54,3 @@ const HelloWorld: FC = () => {
 };
 
 export default HelloWorld;
-
-/* eslint-disable */
-
-/* eslint-disable */

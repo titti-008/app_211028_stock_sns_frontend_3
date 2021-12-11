@@ -1,40 +1,78 @@
-import { FC } from 'react';
+import { FC, useState, useEffect } from 'react';
+import { AxiosResponse } from 'axios';
 import { RouteComponentProps } from 'react-router-dom';
 import { useMutation, useQueryClient } from 'react-query';
-import { LoginResponse } from '../Types';
-// import Earnings from './Earnings';
+import { StocksResponse, Stock } from '../Types';
+import Earnings from './Earnings';
 import GetStockPrice from './GetStockPrice';
 import { NormalText } from '../privateMUI/PrivateTexts';
-import { followStock } from '../api';
+import { followStock, unfollowStock } from '../api';
 import { SubmitButton } from '../privateMUI/PrivateBottuns';
-import { useAppContext } from '../../hooks/ReduserContext';
+import { SuccessToasts } from '../toast/PrivateToast';
 
-/* eslint-disable */
+const isFollowingStock = (symbol: string) => {
+  const myStocksJSON = localStorage.getItem('myStocks');
+  const MyStocks = myStocksJSON
+    ? (JSON.parse(myStocksJSON) as Stock[])
+    : ([] as Stock[]);
+
+  const isFollowing = MyStocks?.some((stock) => stock.symbol === symbol);
+
+  return isFollowing;
+};
+
 const StockBoard: FC<RouteComponentProps<{ symbol: string }>> = ({ match }) => {
-  const { state, dispatch } = useAppContext();
-
   const queryClient = useQueryClient();
-  const queryKey = `loginData`;
-  const prevData = queryClient.getQueryData<LoginResponse>(queryKey);
 
-  const mutation = useMutation(followStock, {
+  const [isFollowingStocks, setIsFollowingStocks] = useState<boolean>(
+    isFollowingStock(match.params.symbol),
+  );
+
+  useEffect(() => {
+    setIsFollowingStocks(isFollowingStock(match.params.symbol));
+  }, [isFollowingStocks, match]);
+
+  const followMutation = useMutation('myStocks', followStock, {
     onSuccess: (res) => {
-      // dispatch({
-      //   type: 'saveUser',
-      //   setUser: res.data.user,
-      //   isLogin: true,
-      // });
+      const prevData =
+        queryClient.getQueryData<AxiosResponse<StocksResponse>>('myStocks');
       if (prevData) {
-        queryClient.setQueryData<LoginResponse>(queryKey, res.data);
+        queryClient.setQueryData<AxiosResponse<StocksResponse>>(
+          'myStocks',
+          res,
+        );
       }
+      localStorage.setItem('myStocks', JSON.stringify(res.data.stocks));
+      SuccessToasts(res.data.messages);
+      setIsFollowingStocks(
+        res.data.stocks.some((stock) => stock.symbol === match.params.symbol),
+      );
     },
   });
 
-  const isFollowingStock = prevData
-    ? !!prevData.user?.followingStocks.some(
-        (stock) => stock.symbol === match.params.symbol,
-      )
-    : false;
+  const unfollowMutation = useMutation('myStocks', unfollowStock, {
+    onMutate: () => {
+      setIsFollowingStocks(true);
+    },
+    onSuccess: (res) => {
+      const prevData =
+        queryClient.getQueryData<AxiosResponse<StocksResponse>>('myStocks');
+      if (prevData) {
+        queryClient.setQueryData<AxiosResponse<StocksResponse>>(
+          'myStocks',
+          res,
+        );
+      }
+      localStorage.setItem('myStocks', JSON.stringify(res.data.stocks));
+      SuccessToasts(res.data.messages);
+
+      setIsFollowingStocks(
+        res.data.stocks.some((stock) => stock.symbol === match.params.symbol),
+      );
+    },
+  });
+
+  console.log('mutation.data', followMutation.data);
 
   return (
     <>
@@ -42,19 +80,24 @@ const StockBoard: FC<RouteComponentProps<{ symbol: string }>> = ({ match }) => {
         <h2>{match.params.symbol}</h2>
 
         <SubmitButton
-          onClick={() =>
-            mutation.mutate({
-              symbol: match.params.symbol,
-              follow: isFollowingStock,
-            })
+          onClick={
+            !isFollowingStocks
+              ? () =>
+                  followMutation.mutate({
+                    symbol: match.params.symbol,
+                  })
+              : () =>
+                  unfollowMutation.mutate({
+                    symbol: match.params.symbol,
+                  })
           }
-          label={isFollowingStock ? 'フォロー解除' : 'フォローする'}
+          label={isFollowingStocks ? 'フォロー解除' : 'フォローする'}
           disabled={false}
-          isLoading={mutation.isLoading}
+          isLoading={followMutation.isLoading || unfollowMutation.isLoading}
         />
       </NormalText>
       <GetStockPrice symbol={match.params.symbol} />
-      {/* <Earnings symbol={match.params.symbol} /> */}
+      <Earnings symbol={match.params.symbol} />
     </>
   );
 };

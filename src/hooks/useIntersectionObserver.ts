@@ -70,7 +70,6 @@ const useInteractionObserver = ({
     if (!enabled) {
       return;
     }
-
     /* eslint-disable */
     const observer = new IntersectionObserver(
       (entries: IntersectionObserverEntry[]) =>
@@ -90,10 +89,10 @@ const useInteractionObserver = ({
 
     observer.observe(el);
 
-    return () => {
-      observer.unobserve(el);
-    };
-  }, [target.current, enabled]);
+    // return () => {
+    //   observer.unobserve(el);
+    // };
+  }, [target, enabled, onIntersect, root, rootMargin, threshold]);
 };
 
 export default useInteractionObserver;

@@ -1,23 +1,20 @@
 import { FC } from 'react';
 import SupervisorAccountIcon from '@mui/icons-material/SupervisorAccount';
-import { useQueryClient } from 'react-query';
-import { LoginResponse, UsersUser, UsersType, ErrorResponse } from '../Types';
+import { UsersUser, UsersType, ErrorResponse } from '../Types';
 import { SuccessToasts, ErrorToasts } from '../toast/PrivateToast';
 import { deleteUser } from '../api';
 
 import { SubmitButton } from '../privateMUI/PrivateBottuns';
 
 import IconText from '../privateMUI/IconText';
-// import { useAppContext } from '../../hooks/ReduserContext';
+import { useAppContext } from '../../hooks/ReduserContext';
 import PrivateLoading from '../privateMUI/PrivateLoading';
 
 type PropsType = {
   users: UsersType;
 };
 const Users: FC<PropsType> = ({ users }) => {
-  const queryClient = useQueryClient();
-  const userData = queryClient.getQueryData<LoginResponse>(`loginData`);
-  const currentUser = userData?.user ? userData.user : null;
+  const { state } = useAppContext();
 
   const handleDeleteUser = async (id: number) => {
     try {
@@ -47,9 +44,10 @@ const Users: FC<PropsType> = ({ users }) => {
             key={user.id}
             name={user.name}
             distanceToNow
+            date={false}
           >
             {user.admin && <SupervisorAccountIcon />}
-            {currentUser?.admin ? (
+            {state.currentUser?.admin ? (
               <SubmitButton
                 label="削除"
                 onClick={() => {
@@ -71,6 +69,3 @@ const Users: FC<PropsType> = ({ users }) => {
 };
 
 export default Users;
-/* eslint-disable */
-
-/* eslint-disable */

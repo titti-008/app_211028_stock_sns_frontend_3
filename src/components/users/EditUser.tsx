@@ -7,11 +7,7 @@ import { SuccessToasts, ErrorToasts } from '../toast/PrivateToast';
 import { useUserDataInput } from '../../hooks/util';
 import UserDataForm from './UserDataForm';
 
-const EditUser: React.FC<HistoryPropsType> = (_props) => {
-  /* eslint-disable */
-  const { history } = { ..._props };
-  /* eslint-disable */
-
+const EditUser: React.FC<HistoryPropsType> = ({ history }) => {
   const queryClient = useQueryClient();
   const data = queryClient.getQueryData<LoginResponse>(`loginData`);
 
@@ -73,6 +69,3 @@ const EditUser: React.FC<HistoryPropsType> = (_props) => {
 };
 
 export default EditUser;
-
-/* eslint-disable */
-/* eslint-disable */

@@ -7,9 +7,15 @@ import { SubmitButton } from '../privateMUI/PrivateBottuns';
 import { NormalText } from '../privateMUI/PrivateTexts';
 import { useUserDataInput, useCheckPassword } from '../../hooks/util';
 
-const ResetPasswordForm: React.FC<
-  RouteComponentProps<{ id: string; email: string }>
-> = ({ ...props }) => {
+type Props = {
+  id: string;
+  email: string;
+};
+/* eslint-disable */
+
+const ResetPasswordForm: React.FC<RouteComponentProps<Props>> = ({
+  ...props
+}) => {
   const initInput = {
     password: '',
     passwordConfirmation: '',
@@ -33,9 +39,7 @@ const ResetPasswordForm: React.FC<
 
       if (response.status === 200) {
         SuccessToasts(response.data.messages);
-        /* eslint-disable */
         props.history.push('/current_user');
-        /* eslint-disable */
       } else if (response.status === 202) {
         ErrorToasts(response.data.messages);
       }

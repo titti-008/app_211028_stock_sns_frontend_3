@@ -1,19 +1,17 @@
 import { FC } from 'react';
 import { Grid, IconButton } from '@mui/material';
 import DehazeIcon from '@mui/icons-material/Dehaze';
-import { useQueryClient } from 'react-query';
-import { HistoryPropsType, LoginResponse } from '../Types';
+import { HistoryPropsType } from '../Types';
 
 import { NormalText } from '../privateMUI/PrivateTexts';
 import PostNew from './PostNew';
 import IconText from '../privateMUI/IconText';
+import { useAppContext } from '../../hooks/ReduserContext';
 
 import { BaseCard, PrivateAppbar, PrivateBox } from '../privateMUI/BaseCard';
 
-/* eslint-disable */
 const PostBar: FC<HistoryPropsType> = ({ history }) => {
-  const queryClient = useQueryClient();
-  const userData = queryClient.getQueryData<LoginResponse>(`loginData`);
+  const { state } = useAppContext();
 
   return (
     <BaseCard>
@@ -30,23 +28,25 @@ const PostBar: FC<HistoryPropsType> = ({ history }) => {
 
       <PrivateBox>
         <IconText
-          linkTo={`/users/${userData?.user?.id}`}
-          key={userData?.user?.id ? userData?.user?.id : 0}
-          name={userData?.user?.name ? userData?.user?.name : ''}
+          linkTo={`/users/${
+            state.currentUser?.id ? state.currentUser?.id : ''
+          }`}
+          key={state.currentUser?.id ? state.currentUser?.id : 0}
+          name={state.currentUser?.name ? state.currentUser?.name : ''}
           date={
             new Date(
-              userData?.user?.createdAt
-                ? userData?.user?.createdAt
+              state.currentUser?.createdAt
+                ? state.currentUser?.createdAt
                 : new Date(),
             )
           }
           distanceToNow
         >
-          <NormalText>{userData?.user?.email}</NormalText>
+          <NormalText>{state.currentUser?.email}</NormalText>
           <NormalText>
-            管理者権限: {userData?.user?.admin ? 'あり' : 'なし'}
+            管理者権限: {state.currentUser?.admin ? 'あり' : 'なし'}
           </NormalText>
-          <NormalText>投稿数:{userData?.user?.countMicroposts}件</NormalText>
+          <NormalText>投稿数:{state.currentUser?.countMicroposts}件</NormalText>
         </IconText>
 
         <PostNew history={history} />
@@ -56,6 +56,3 @@ const PostBar: FC<HistoryPropsType> = ({ history }) => {
 };
 
 export default PostBar;
-
-// const props = _props;
-/* eslint-disable */
