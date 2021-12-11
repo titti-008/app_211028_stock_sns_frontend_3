@@ -77,5 +77,3 @@ export const PrivateBox: FC = ({ children }) => (
     </Grid>
   </Box>
 );
-
-/* eslint-disable */

@@ -1,19 +1,15 @@
 import React from 'react';
+import { useQueryClient } from 'react-query';
+import { LoginResponse, HistoryPropsType, ErrorResponse } from '../Types';
 import { NormalText } from '../privateMUI/PrivateTexts';
-import { HistoryPropsType, ErrorResponse } from '../Types';
 import { updateUser } from '../api';
 import { SuccessToasts, ErrorToasts } from '../toast/PrivateToast';
 import { useUserDataInput } from '../../hooks/util';
 import UserDataForm from './UserDataForm';
-import { useAppContext } from '../../hooks/ReduserContext';
 
-const EditUser: React.FC<HistoryPropsType> = (_props) => {
-  /* eslint-disable */
-  const { history } = { ..._props };
-  /* eslint-disable */
-
-  const { state, dispatch } = useAppContext();
-  const { currentUser } = state;
+const EditUser: React.FC<HistoryPropsType> = ({ history }) => {
+  const queryClient = useQueryClient();
+  const data = queryClient.getQueryData<LoginResponse>(`loginData`);
 
   const initInput = {
     name: '',
@@ -25,7 +21,7 @@ const EditUser: React.FC<HistoryPropsType> = (_props) => {
   const { values, handleChange } = useUserDataInput(initInput);
 
   const userData = {
-    id: currentUser ? currentUser.id : 0,
+    id: data?.user ? data?.user.id : 0,
     ...values,
   };
 
@@ -35,11 +31,11 @@ const EditUser: React.FC<HistoryPropsType> = (_props) => {
 
       if (response.status === 201) {
         SuccessToasts(response.data.messages);
-        dispatch({
-          type: 'saveUser',
-          setUser: response.data.user,
-          isLogin: response.data.loggedIn,
-        });
+        // dispatch({
+        //   type: 'saveUser',
+        //   setUser: response.data.user,
+        //   isLogin: response.data.loggedIn,
+        // });
         history.push('/current_user');
         console.log('編集完了', response);
       } else {
@@ -73,6 +69,3 @@ const EditUser: React.FC<HistoryPropsType> = (_props) => {
 };
 
 export default EditUser;
-
-/* eslint-disable */
-/* eslint-disable */

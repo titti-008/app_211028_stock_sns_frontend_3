@@ -1,18 +1,17 @@
 import { FC } from 'react';
 import { Grid, IconButton } from '@mui/material';
 import DehazeIcon from '@mui/icons-material/Dehaze';
-import { NormalText } from '../privateMUI/PrivateTexts';
 import { HistoryPropsType } from '../Types';
+
+import { NormalText } from '../privateMUI/PrivateTexts';
 import PostNew from './PostNew';
 import IconText from '../privateMUI/IconText';
-
-import { BaseCard, PrivateAppbar, PrivateBox } from '../privateMUI/BaseCard';
 import { useAppContext } from '../../hooks/ReduserContext';
 
-/* eslint-disable */
+import { BaseCard, PrivateAppbar, PrivateBox } from '../privateMUI/BaseCard';
+
 const PostBar: FC<HistoryPropsType> = ({ history }) => {
   const { state } = useAppContext();
-  const { currentUser } = state;
 
   return (
     <BaseCard>
@@ -29,17 +28,25 @@ const PostBar: FC<HistoryPropsType> = ({ history }) => {
 
       <PrivateBox>
         <IconText
-          linkTo={`/users/${currentUser?.id}`}
-          key={currentUser ? currentUser?.id : 0}
-          name={currentUser ? currentUser?.name : ''}
-          date={new Date(currentUser ? currentUser?.createdAt : Date.now())}
+          linkTo={`/users/${
+            state.currentUser?.id ? state.currentUser?.id : ''
+          }`}
+          key={state.currentUser?.id ? state.currentUser?.id : 0}
+          name={state.currentUser?.name ? state.currentUser?.name : ''}
+          date={
+            new Date(
+              state.currentUser?.createdAt
+                ? state.currentUser?.createdAt
+                : new Date(),
+            )
+          }
           distanceToNow
         >
-          <NormalText>{currentUser?.email}</NormalText>
+          <NormalText>{state.currentUser?.email}</NormalText>
           <NormalText>
-            管理者権限: {currentUser?.admin ? 'あり' : 'なし'}
+            管理者権限: {state.currentUser?.admin ? 'あり' : 'なし'}
           </NormalText>
-          <NormalText>投稿数:{currentUser?.countMicroposts}件</NormalText>
+          <NormalText>投稿数:{state.currentUser?.countMicroposts}件</NormalText>
         </IconText>
 
         <PostNew history={history} />
@@ -49,6 +56,3 @@ const PostBar: FC<HistoryPropsType> = ({ history }) => {
 };
 
 export default PostBar;
-
-// const props = _props;
-/* eslint-disable */

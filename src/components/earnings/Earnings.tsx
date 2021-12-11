@@ -45,5 +45,3 @@ const Earnings: FC<{ symbol: string }> = ({ symbol }) => {
 };
 
 export default Earnings;
-
-/* eslint-disable */

@@ -126,7 +126,7 @@ const PostNew: FC<HistoryPropsType> = ({ history }) => {
           onClick={() => mutation.mutate(params)}
           label="投稿する"
           disabled={isError}
-          isLoading={false}
+          isLoading={mutation.isLoading}
         />
       </Grid>
     </>
@@ -134,6 +134,3 @@ const PostNew: FC<HistoryPropsType> = ({ history }) => {
 };
 
 export default PostNew;
-
-/* eslint-disable */
-/* eslint-disable */

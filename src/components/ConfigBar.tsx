@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { FC } from 'react';
 import { Grid, IconButton } from '@mui/material';
 import { useMutation, useQueryClient } from 'react-query';
@@ -14,13 +15,9 @@ import { useAppContext } from '../hooks/ReduserContext';
 import { SuccessToasts, ErrorToasts } from './toast/PrivateToast';
 import SearchSymbol from './earnings/SearchSymbol';
 import MyFollowingStocks from './stock/MyFollowingStocks';
+import PrivateLoading from './privateMUI/PrivateLoading';
 
-type PropsType = {
-  handleDrawerClose: () => void;
-};
-
-const ConfigBar: FC<PropsType> = (_props) => {
-  const props = _props;
+const ConfigBar: FC = () => {
   const { state, dispatch } = useAppContext();
 
   // ----------ログアウトボタンの処理----------------------
@@ -47,6 +44,8 @@ const ConfigBar: FC<PropsType> = (_props) => {
     },
   });
 
+  const data = queryClient.getQueryData<LoginResponse>(queryKey);
+
   // const handleLogout = async () => {
   //   try {
   //     const response = await logoutUser();
@@ -66,11 +65,18 @@ const ConfigBar: FC<PropsType> = (_props) => {
   //   }
   // };
 
+  if (mutation.isLoading) {
+    return <PrivateLoading />;
+  }
+
   return (
     <BaseCard>
       <PrivateAppbar>
         <Grid item>
-          <IconButton color="default" onClick={props.handleDrawerClose}>
+          <IconButton
+            color="default"
+            onClick={() => dispatch({ type: 'closeDrawer' })}
+          >
             <DehazeIcon />
           </IconButton>
         </Grid>
@@ -79,13 +85,17 @@ const ConfigBar: FC<PropsType> = (_props) => {
         </Grid>
       </PrivateAppbar>
       <PrivateBox>
-        <ButtonContainer
+        <Grid item>
+          <IconButton onClick={() => mutation.mutate()}>ログアウト</IconButton>
+        </Grid>
+        {/* <ButtonContainer
           handleAction={() => mutation.mutate()}
           linkText="ログアウト"
           isLoading={mutation.isLoading}
         >
           <LogoutIcon />
-        </ButtonContainer>
+        </ButtonContainer> */}
+
         <LinkContainer linkTo="/users" linkText="ユーザー一覧">
           <GroupIcon />
         </LinkContainer>

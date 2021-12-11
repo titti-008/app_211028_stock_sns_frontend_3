@@ -6,12 +6,10 @@ import { NormalForm } from '../privateMUI/PrivateForms';
 import { NormalText } from '../privateMUI/PrivateTexts';
 import { SubmitButton, LinkButton } from '../privateMUI/PrivateBottuns';
 
-const ResetRequestForm: React.FC<HistoryPropsType> = ({ ...props }) => {
-  /* eslint-disable */
+const ResetRequestForm: React.FC<HistoryPropsType> = ({ history }) => {
   const [values, setvalues] = useState({
     email: '',
   });
-  /* eslint-disable */
 
   const handleChange =
     (key: keyof { email: string }) =>
@@ -25,7 +23,7 @@ const ResetRequestForm: React.FC<HistoryPropsType> = ({ ...props }) => {
 
       if (response.status === 200) {
         SuccessToasts(response.data.messages);
-        props.history.push('/login');
+        history.push('/login');
       } else if (response.status === 202) {
         ErrorToasts(response.data.messages);
       }
@@ -63,5 +61,3 @@ const ResetRequestForm: React.FC<HistoryPropsType> = ({ ...props }) => {
 };
 
 export default ResetRequestForm;
-/* eslint-disable */
-/* eslint-disable */

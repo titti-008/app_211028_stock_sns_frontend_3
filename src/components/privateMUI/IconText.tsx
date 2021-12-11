@@ -5,12 +5,11 @@ import { Link } from 'react-router-dom';
 
 import { formatDistanceToNow, format } from 'date-fns';
 import { NormalText } from './PrivateTexts';
-/* eslint-disable */
+
 type PropsType = {
   linkTo: string;
-  key: number;
   name: string;
-  date?: Date;
+  date: Date | false;
   distanceToNow: boolean;
 };
 
@@ -73,4 +72,3 @@ const IconText: FC<PropsType> = (_props) => {
 };
 
 export default IconText;
-/* eslint-disable */

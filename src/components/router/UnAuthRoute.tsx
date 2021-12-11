@@ -5,24 +5,29 @@ import { useAppContext } from '../../hooks/ReduserContext';
 import { ErrorToasts } from '../toast/PrivateToast';
 
 // ----------PrivateRouteコンポーネントの作成(ログイン状態によるリダイレクト)----------------------
-const UnAuthRoute: React.FC<RouteProps> = ({ ...props }) => {
-  /* eslint-disable */
-  const { path } = props;
-  /* eslint-disable */
+const UnAuthRoute: React.FC<RouteProps> = ({
+  exact,
+  path,
+  component,
+  render,
+}) => {
   const { state } = useAppContext();
-  const { isLogin } = state;
 
-  console.log(isLogin ? 'ログイン済み' : 'ログインできていない');
+  console.log(state.isLogin ? 'ログイン済み' : 'ログインできていない');
 
-  if (isLogin) {
-    ErrorToasts([`ログイン済みのユーザーは${path}へはアクセスできません`]);
+  if (state.isLogin) {
+    ErrorToasts([
+      `ログイン済みのユーザーは${
+        typeof path === 'string' ? path : ''
+      }へはアクセスできません`,
+    ]);
 
     return <Redirect to="/" />;
   }
 
-  /* eslint-disable */
-  return <Route {...props} />;
-  /* eslint-disable */
+  return (
+    <Route exact={exact} path={path} component={component} render={render} />
+  );
 };
 
 export default UnAuthRoute;

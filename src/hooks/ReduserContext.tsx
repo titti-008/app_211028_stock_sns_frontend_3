@@ -103,10 +103,27 @@ const initialState: State = {
 };
 
 // ----------React Queryの設定----------------------
-const queryClient = new QueryClient();
+// const queryClient = new QueryClient({
+//   defaultOptions: {
+//     queries: {
+//       retry: false,
+//       refetchOnWindowFocus: false,
+//       staleTime: 600000,
+//     },
+//   },
+// });
 
 export const AppProvider: FC = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        retry: false,
+        refetchOnWindowFocus: false,
+        staleTime: 600000,
+      },
+    },
+  });
 
   useEffect(() => {
     localStorage.setItem('isLogin', JSON.stringify(state.isLogin));

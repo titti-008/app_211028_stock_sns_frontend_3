@@ -15,7 +15,7 @@ import {
   EarningsResponse,
   StockPriceResponse,
   ErrorResponse,
-  // StocksResponse,
+  StocksResponse,
 } from './Types';
 
 const env = process.env.REACT_APP_SERVER_URL ?? ''; // 文字列型であることを強制
@@ -98,28 +98,43 @@ export const usePrivateQuery = <T, U>(
 /// /////////////////////////////////////////////////
 
 export const useLoggedQuery = () =>
-  usePrivateQuery<LoginResponse, ErrorResponse>(
+  usePrivateQuery<AxiosResponse<LoginResponse>, AxiosResponse<ErrorResponse>>(
     () =>
-      instance.get<LoginResponse, LoginResponse, ErrorResponse>(
+      instance.get<LoginResponse, AxiosResponse<LoginResponse>, ErrorResponse>(
         `${apiUrl}/logged_in`,
       ),
     'loginData',
   );
 
 export const useStockPriceQuery = (symbol: string) =>
-  usePrivateQuery<StockPriceResponse, ErrorResponse>(
+  usePrivateQuery<AxiosResponse<StockPriceResponse>, ErrorResponse>(
     () =>
-      axios.get<StockPriceResponse, StockPriceResponse, ErrorResponse>(
-        `${financialUrl}/historical-price-full/${symbol}?apikey=${apiKey}`,
-      ),
+      axios.get<
+        StockPriceResponse,
+        AxiosResponse<StockPriceResponse>,
+        ErrorResponse
+      >(`${financialUrl}/historical-price-full/${symbol}?apikey=${apiKey}`),
     `price-${symbol}`,
   );
 
 export const useGetUsers = () =>
-  usePrivateQuery<UsersResponse, ErrorResponse>(
+  usePrivateQuery<AxiosResponse<UsersResponse>, ErrorResponse>(
     async () =>
-      instance.get<UsersResponse, UsersResponse, ErrorResponse>(`${usersUrl}`),
+      instance.get<UsersResponse, AxiosResponse<UsersResponse>, ErrorResponse>(
+        `${usersUrl}`,
+      ),
     'allUsers',
+  );
+
+export const useMyfollowingStocks = () =>
+  usePrivateQuery<AxiosResponse<StocksResponse>, ErrorResponse>(
+    async () =>
+      instance.get<
+        StocksResponse,
+        AxiosResponse<StocksResponse>,
+        ErrorResponse
+      >(`${StockUrl}/my_following_stock`),
+    'myStocks',
   );
 
 export const deleteUser = (
@@ -174,9 +189,11 @@ export const getMyFeed = (
   type: 'myfeed' | number,
   pageParam?: number | undefined,
 ) => {
-  const res = instance.get<MicropostsResponse>(
-    `${micropostsUrl}/${type}/${pageParam ?? ''}`,
-  );
+  const res = instance.get<
+    MicropostsResponse,
+    AxiosResponse<MicropostsResponse>,
+    ErrorResponse
+  >(`${micropostsUrl}/${type}/${pageParam ?? ''}`);
 
   return res;
 };
@@ -238,30 +255,15 @@ export const getEarnings = async (symbol: string) => {
   return response.data;
 };
 
-export const followStock = ({
-  symbol,
-  follow,
-}: {
-  symbol: string;
-  follow: boolean;
-}) => {
-  if (!follow) {
-    return instance.post<LoginResponse>(`${apiUrl}/stock_relationships`, {
+export const followStock = ({ symbol }: { symbol: string }) =>
+  instance.post<StocksResponse, AxiosResponse<StocksResponse>>(
+    `${apiUrl}/stock_relationships`,
+    {
       id: symbol,
-    });
-  }
+    },
+  );
 
-  return instance.delete<LoginResponse>(
+export const unfollowStock = ({ symbol }: { symbol: string }) =>
+  instance.delete<StocksResponse, AxiosResponse<StocksResponse>, ErrorResponse>(
     `${apiUrl}/stock_relationships/${symbol}`,
   );
-};
-// export const getFollowingStocks = async () => {
-//   const response = await instance.get<StocksResponse>(
-//     `${StockUrl}/my_following_stock`,
-//   );
-
-//   return response.data;
-// };
-
-/* eslint-disable */
-/* eslint-disable */

@@ -6,10 +6,10 @@ import { SuccessToasts, ErrorToasts } from '../toast/PrivateToast';
 import { NormalText } from '../privateMUI/PrivateTexts';
 import UsersList from './UsersList';
 
-const Followers: FC<RouteComponentProps<{ id: string }>> = (props) => {
+const Followers: FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
   const [users, setUsers] = useState<UsersType>([] as UsersType);
 
-  const load = useCallback(() => getFollowers(props.match.params.id), [props]);
+  const load = useCallback(() => getFollowers(match.params.id), [match]);
 
   useEffect(() => {
     const AxiosGetUsers = async () => {
@@ -43,6 +43,3 @@ const Followers: FC<RouteComponentProps<{ id: string }>> = (props) => {
 };
 
 export default Followers;
-/* eslint-disable */
-
-/* eslint-disable */

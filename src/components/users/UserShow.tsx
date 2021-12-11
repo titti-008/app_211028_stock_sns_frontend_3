@@ -18,14 +18,14 @@ import {
   SubmitButton,
 } from '../privateMUI/PrivateBottuns';
 import { NormalText } from '../privateMUI/PrivateTexts';
-import { useAppContext } from '../../hooks/ReduserContext';
+// import { useAppContext } from '../../hooks/ReduserContext';
 import { ErrorToasts } from '../toast/PrivateToast';
 import Feed from '../microposts/Feed';
 import PrivateLoading from '../privateMUI/PrivateLoading';
+import { useAppContext } from '../../hooks/ReduserContext';
 
 const UserShow: FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
   const { state } = useAppContext();
-  const { currentUser } = state;
 
   const userId = match.params.id;
 
@@ -50,7 +50,9 @@ const UserShow: FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
 
   console.log(...messages);
 
-  const isCurrentUser = currentUser?.id === data?.user.id;
+  const isCurrentUser = state.currentUser
+    ? state.currentUser?.id === data?.user.id
+    : false;
 
   const handleFollow = async () => {
     try {
@@ -127,7 +129,3 @@ const UserShow: FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
 };
 
 export default UserShow;
-
-/* eslint-disable */
-
-/* eslint-disable */

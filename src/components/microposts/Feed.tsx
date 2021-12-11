@@ -4,13 +4,18 @@ import { Button, Grid, IconButton, CircularProgress } from '@mui/material';
 import { AxiosResponse } from 'axios';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { useInfiniteQuery, useMutation, useQueryClient } from 'react-query';
+import {
+  // LoginResponse,
+  Micropost,
+  ErrorResponse,
+  MicropostsResponse,
+} from '../Types';
+import { useAppContext } from '../../hooks/ReduserContext';
 import useInteractionObserver from '../../hooks/useIntersectionObserver';
-import { Micropost, ErrorResponse, MicropostsResponse } from '../Types';
 import { NormalText } from '../privateMUI/PrivateTexts';
 import IconText from '../privateMUI/IconText';
 import { SuccessToasts, ErrorToasts } from '../toast/PrivateToast';
 import PrivateImageList from './PrivateImageList';
-import { useAppContext } from '../../hooks/ReduserContext';
 import { deleteMicropost } from '../api';
 import PrivateLoading from '../privateMUI/PrivateLoading';
 
@@ -23,12 +28,12 @@ type PropsType<T> = {
 };
 
 const Feed: FC<PropsType<'myfeed' | number>> = ({ type, getMicropost }) => {
+  const queryClient = useQueryClient();
+  // const userData = queryClient.getQueryData<LoginResponse>(`loginData`);
+
   const { state } = useAppContext();
-  const { currentUser } = state;
 
   const queryKey = `microposts-${type}`;
-
-  const queryClient = useQueryClient();
 
   const mutation = useMutation(deleteMicropost, {
     onSuccess: (res) => {
@@ -62,6 +67,7 @@ const Feed: FC<PropsType<'myfeed' | number>> = ({ type, getMicropost }) => {
       cacheTime: 1800,
     },
   );
+  console.log('Feed', data);
 
   console.log('feed', 'hasNextPage', hasNextPage);
 
@@ -96,7 +102,7 @@ const Feed: FC<PropsType<'myfeed' | number>> = ({ type, getMicropost }) => {
               <NormalText>{micropost.content}</NormalText>
               {micropost.images && <PrivateImageList src={micropost.images} />}
 
-              {currentUser?.id === micropost.user.id && (
+              {state.currentUser?.id === micropost.user.id && (
                 <IconButton
                   onClick={() => {
                     const sure =
@@ -121,16 +127,8 @@ const Feed: FC<PropsType<'myfeed' | number>> = ({ type, getMicropost }) => {
           onClick={() => fetchNextPage()}
           disabled={!hasNextPage || isFetchingNextPage}
         >
-          {
-            /* eslint-disable */
-            isFetchingNextPage ? (
-              <CircularProgress />
-            ) : hasNextPage ? (
-              <KeyboardArrowDownIcon />
-            ) : (
-              <></>
-            )
-          }
+          {(isFetchingNextPage && <CircularProgress />) ||
+            (hasNextPage && <KeyboardArrowDownIcon />)}
         </Button>
       </Grid>
     </>
@@ -138,7 +136,3 @@ const Feed: FC<PropsType<'myfeed' | number>> = ({ type, getMicropost }) => {
 };
 
 export default Feed;
-
-/* eslint-disable */
-
-/* eslint-disable */

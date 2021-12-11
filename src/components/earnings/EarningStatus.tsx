@@ -197,7 +197,3 @@ const EarningStatus: FC<PropsType> = ({ stock, earning }) => {
 };
 
 export default EarningStatus;
-
-/* eslint-disable */
-
-/* eslint-disable */

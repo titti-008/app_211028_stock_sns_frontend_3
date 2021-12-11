@@ -15,7 +15,6 @@ type PropsType = {
 };
 const Users: FC<PropsType> = ({ users }) => {
   const { state } = useAppContext();
-  const { currentUser } = state;
 
   const handleDeleteUser = async (id: number) => {
     try {
@@ -45,9 +44,10 @@ const Users: FC<PropsType> = ({ users }) => {
             key={user.id}
             name={user.name}
             distanceToNow
+            date={false}
           >
             {user.admin && <SupervisorAccountIcon />}
-            {currentUser?.admin ? (
+            {state.currentUser?.admin ? (
               <SubmitButton
                 label="削除"
                 onClick={() => {
@@ -69,6 +69,3 @@ const Users: FC<PropsType> = ({ users }) => {
 };
 
 export default Users;
-/* eslint-disable */
-
-/* eslint-disable */
