@@ -105,7 +105,11 @@ const UserShow: FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
         </NormalText>
 
         {isCurrentUser && (
-          <LinkButton linkTo="/edit_user" label="ユーザー情報編集" />
+          <LinkButton
+            linkTo="/edit_user"
+            label="ユーザー情報編集"
+            disabled={false}
+          />
         )}
 
         {!isCurrentUser && (

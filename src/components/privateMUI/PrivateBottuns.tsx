@@ -25,9 +25,13 @@ export const SubmitButton = ({
         onClick={onClick}
         variant="outlined"
         sx={{ color: colors.text, borderColor: colors.text }}
-        disabled={disabled}
+        disabled={isLoading || disabled}
       >
-        {isLoading ? <CircularProgress /> : <NormalText>{label}</NormalText>}
+        {isLoading ? (
+          <CircularProgress sx={{ fontSize: 'small' }} />
+        ) : (
+          <NormalText>{label}</NormalText>
+        )}
       </Button>
     </Grid>
   );
@@ -36,15 +40,15 @@ export const SubmitButton = ({
 type LinkType = {
   linkTo: string;
   label: string;
+  disabled: boolean;
 };
 
-export const LinkButton: FC<LinkType> = (_props) => {
+export const LinkButton: FC<LinkType> = ({ linkTo, label, disabled }) => {
   const colors = useColors();
-  const props = _props;
 
   return (
     <Grid item>
-      <Link to={props.linkTo}>
+      <Link to={linkTo}>
         <Button
           variant="outlined"
           sx={{
@@ -52,8 +56,9 @@ export const LinkButton: FC<LinkType> = (_props) => {
             borderColor: colors.text,
             margin: '10px 0',
           }}
+          disabled={disabled}
         >
-          <NormalText>{props.label}</NormalText>
+          <NormalText>{label}</NormalText>
         </Button>
       </Link>
     </Grid>

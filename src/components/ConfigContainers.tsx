@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { Grid, IconButton, Divider } from '@mui/material';
+import { Grid, IconButton, Divider, CircularProgress } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { NormalText } from './privateMUI/PrivateTexts';
 
@@ -37,34 +37,33 @@ export const LinkContainer: FC<LinkPropsType> = (_props) => {
 type ButtonPropsType = {
   handleAction: () => void;
   linkText: string;
+  isLoading: boolean;
 };
 
-export const ButtonContainer: FC<ButtonPropsType> = (_props) => {
-  const props = _props;
-
-  return (
+export const ButtonContainer: FC<ButtonPropsType> = ({
+  handleAction,
+  linkText,
+  isLoading,
+  children,
+}) => (
+  <Grid item width="100%" sx={{ cursor: 'pointer' }} onClick={handleAction}>
     <Grid
-      item
-      width="100%"
-      sx={{ cursor: 'pointer' }}
-      onClick={props.handleAction}
+      container
+      direction="row"
+      justifyContent="start"
+      alignItems="center"
+      wrap="nowrap"
+      width="100"
     >
-      <Grid
-        container
-        direction="row"
-        justifyContent="start"
-        alignItems="center"
-        wrap="nowrap"
-        width="100"
-      >
-        <IconButton color="default">
-          <Grid item>{props.children}</Grid>
-        </IconButton>
-        <Grid item xs sx={{ width: '100%' }}>
-          <NormalText>{props.linkText}</NormalText>
+      <IconButton color="default">
+        <Grid item>
+          {isLoading ? <CircularProgress size="20px" /> : { children }}
         </Grid>
+      </IconButton>
+      <Grid item xs sx={{ width: '100%' }}>
+        <NormalText>{linkText}</NormalText>
       </Grid>
-      <Divider sx={{ width: '100%' }} />
     </Grid>
-  );
-};
+    <Divider sx={{ width: '100%' }} />
+  </Grid>
+);

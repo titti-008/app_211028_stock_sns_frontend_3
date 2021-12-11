@@ -36,11 +36,11 @@ const SearchSymbol: FC = () => {
     if (message.length > 0) {
       setTimeout(() => {
         setMessage('');
-      }, 1500);
+      }, 2000);
     }
   }, [message]);
 
-  // const isError = message.length === 0;
+  const isError = value.length === 0;
 
   return (
     <Grid item width="100%">
@@ -58,7 +58,11 @@ const SearchSymbol: FC = () => {
         error={false}
         errorText=""
       />
-      <LinkButton linkTo={`/stocks/${value}`} label="シンボル検索" />
+      <LinkButton
+        linkTo={`/stocks/${value}`}
+        label="シンボル検索"
+        disabled={isError}
+      />
       <ErrorText isError>{message}</ErrorText>
     </Grid>
   );
