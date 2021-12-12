@@ -1,13 +1,13 @@
 import { FC, useState, useEffect } from 'react';
-import { AxiosResponse } from 'axios';
 import { RouteComponentProps } from 'react-router-dom';
+import { Grid } from '@mui/material';
 import { useMutation, useQueryClient } from 'react-query';
-import { StocksResponse, Stock } from '../Types';
+import { Stock } from '../Types';
 import Earnings from './Earnings';
 import GetStockPrice from './GetStockPrice';
 import { NormalText } from '../privateMUI/PrivateTexts';
-import { followStock, unfollowStock } from '../api';
-import { SubmitButton } from '../privateMUI/PrivateBottuns';
+import { LinkButton, SubmitButton } from '../privateMUI/PrivateBottuns';
+import { followStock, unfollowStock, MyStocksPriceNow } from '../api';
 import { SuccessToasts } from '../toast/PrivateToast';
 
 const isFollowingStock = (symbol: string) => {
@@ -21,7 +21,9 @@ const isFollowingStock = (symbol: string) => {
   return isFollowing;
 };
 
-const StockBoard: FC<RouteComponentProps<{ symbol: string }>> = ({ match }) => {
+const StockBoard: FC<RouteComponentProps<{ symbol: string; day: string }>> = ({
+  match,
+}) => {
   const queryClient = useQueryClient();
 
   const [isFollowingStocks, setIsFollowingStocks] = useState<boolean>(
@@ -34,18 +36,23 @@ const StockBoard: FC<RouteComponentProps<{ symbol: string }>> = ({ match }) => {
 
   const followMutation = useMutation('myStocks', followStock, {
     onSuccess: (res) => {
-      const prevData =
-        queryClient.getQueryData<AxiosResponse<StocksResponse>>('myStocks');
+      const prevData = queryClient.getQueryData<Stock[]>('myStocks');
       if (prevData) {
-        queryClient.setQueryData<AxiosResponse<StocksResponse>>(
-          'myStocks',
-          res,
-        );
+        queryClient.setQueryData<Stock[]>('myStocks', res.data.stocks);
       }
       localStorage.setItem('myStocks', JSON.stringify(res.data.stocks));
       SuccessToasts(res.data.messages);
       setIsFollowingStocks(
         res.data.stocks.some((stock) => stock.symbol === match.params.symbol),
+      );
+
+      void queryClient.invalidateQueries('myStocks');
+      void queryClient.invalidateQueries('myStocks-price');
+
+      const myStocksPriceResponse = MyStocksPriceNow();
+      localStorage.setItem(
+        'myStocks-price',
+        JSON.stringify(myStocksPriceResponse.data),
       );
     },
   });
@@ -55,19 +62,24 @@ const StockBoard: FC<RouteComponentProps<{ symbol: string }>> = ({ match }) => {
       setIsFollowingStocks(true);
     },
     onSuccess: (res) => {
-      const prevData =
-        queryClient.getQueryData<AxiosResponse<StocksResponse>>('myStocks');
+      const prevData = queryClient.getQueryData<Stock[]>('myStocks');
       if (prevData) {
-        queryClient.setQueryData<AxiosResponse<StocksResponse>>(
-          'myStocks',
-          res,
-        );
+        queryClient.setQueryData<Stock[]>('myStocks', res.data.stocks);
       }
       localStorage.setItem('myStocks', JSON.stringify(res.data.stocks));
       SuccessToasts(res.data.messages);
 
       setIsFollowingStocks(
         res.data.stocks.some((stock) => stock.symbol === match.params.symbol),
+      );
+
+      void queryClient.invalidateQueries('myStocks');
+      void queryClient.invalidateQueries('myStocks-price');
+
+      const myStocksPriceResponse = MyStocksPriceNow();
+      localStorage.setItem(
+        'myStocks-price',
+        JSON.stringify(myStocksPriceResponse.data),
       );
     },
   });
@@ -76,8 +88,22 @@ const StockBoard: FC<RouteComponentProps<{ symbol: string }>> = ({ match }) => {
 
   return (
     <>
-      <NormalText>
-        <h2>{match.params.symbol}</h2>
+      <Grid
+        container
+        alignItems="center"
+        justifyContent="space-around"
+        direction="row"
+        width="100%"
+      >
+        <NormalText>
+          <h2>{match.params.symbol} </h2>
+        </NormalText>
+
+        <LinkButton
+          linkTo={`/stocks/${match.params.symbol}/2000`}
+          label="長期データ"
+          disabled={false}
+        />
 
         <SubmitButton
           onClick={
@@ -95,8 +121,9 @@ const StockBoard: FC<RouteComponentProps<{ symbol: string }>> = ({ match }) => {
           disabled={false}
           isLoading={followMutation.isLoading || unfollowMutation.isLoading}
         />
-      </NormalText>
-      <GetStockPrice symbol={match.params.symbol} />
+      </Grid>
+
+      <GetStockPrice symbol={match.params.symbol} day={match.params.day} />
       <Earnings symbol={match.params.symbol} />
     </>
   );

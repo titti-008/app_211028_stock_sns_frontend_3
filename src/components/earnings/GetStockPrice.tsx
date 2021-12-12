@@ -4,8 +4,11 @@ import PrivateLoading from '../privateMUI/PrivateLoading';
 import { ErrorToasts } from '../toast/PrivateToast';
 import CandleChart from './CandleChart';
 
-const GetStockPrice: FC<{ symbol: string }> = ({ symbol }) => {
-  const { data, isLoading, isError, error } = useStockPriceQuery(symbol);
+const GetStockPrice: FC<{ symbol: string; day: string }> = ({
+  symbol,
+  day,
+}) => {
+  const { data, isLoading, isError, error } = useStockPriceQuery(symbol, day);
 
   if (isLoading) {
     return <PrivateLoading />;

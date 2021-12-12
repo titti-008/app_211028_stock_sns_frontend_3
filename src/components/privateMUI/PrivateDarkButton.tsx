@@ -3,7 +3,7 @@ import { useTheme } from '@mui/material/styles';
 import { Tooltip, IconButton } from '@mui/material';
 import Brightness5Icon from '@mui/icons-material/Brightness5';
 import Brightness3Icon from '@mui/icons-material/Brightness3';
-import { useAppContext } from '../hooks/ReduserContext';
+import { useAppContext } from '../../hooks/ReduserContext';
 // type TypeProps = {
 //   darkMode: boolean;
 //   handleDarkModeOn: () => void;

@@ -2,7 +2,7 @@ import { FC, useLayoutEffect } from 'react';
 import * as am4core from '@amcharts/amcharts4/core';
 import * as am4charts from '@amcharts/amcharts4/charts';
 import am4themesMaterial from '@amcharts/amcharts4/themes/material';
-
+import signCheck from '../../utils/signCheck';
 import { Stock, EarningType } from '../Types';
 import IconText from '../privateMUI/IconText';
 import // LinkButton,
@@ -20,9 +20,6 @@ type PropsType = {
 };
 
 const EarningStatus: FC<PropsType> = ({ stock, earning }) => {
-  // const { state } = useAppContext();
-  // const { currentUser } = state;
-
   // 営業キャッシュフローマージン
   const operatingCashflowMargin =
     Math.round((earning.operatingCashFlow / earning.revenue) * 1000) / 10;
@@ -46,9 +43,6 @@ const EarningStatus: FC<PropsType> = ({ stock, earning }) => {
   // 営業キャッシュフローの伸び率
   const operatingCashflowGrowth =
     Math.round(earning.operatingCashFlowGrowth * 1000) / 10;
-
-  const signCheck = (value: number) =>
-    Math.sign(value) >= 0 ? `+${value}` : value;
 
   // 次期アナリスト予想と会社の見通し
   const nextRevenueEstimateVsGuidance =
@@ -169,13 +163,13 @@ const EarningStatus: FC<PropsType> = ({ stock, earning }) => {
             </NormalText>
             <NormalText>
               営業キャッシュフローマージン:
-              {signCheck(operatingCashflowMargin)}%
+              {signCheck(operatingCashflowMargin, 0)}%
             </NormalText>
             <NormalText>
               信頼性:
               {notWindowdressing}%
             </NormalText>
-            <NormalText>EPS Suprise:{signCheck(epsSurprise)}%</NormalText>
+            <NormalText>EPS Suprise:{signCheck(epsSurprise, 0)}%</NormalText>
           </>
         )}
         <NormalText>estimatedEPS:{earning.eps}</NormalText>
@@ -184,12 +178,12 @@ const EarningStatus: FC<PropsType> = ({ stock, earning }) => {
             <NormalText>
               営業キャッシュフローの伸び率:
               {}
-              {signCheck(operatingCashflowGrowth)}%
+              {signCheck(operatingCashflowGrowth, 0)}%
             </NormalText>
           </>
         )}
         <NormalText>
-          ガイダンスvs予想:{signCheck(nextRevenueEstimateVsGuidance)}%
+          ガイダンスvs予想:{signCheck(nextRevenueEstimateVsGuidance, 0)}%
         </NormalText>
       </IconText>
     </>

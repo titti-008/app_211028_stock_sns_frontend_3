@@ -1,7 +1,7 @@
 import { FC } from 'react';
 import { Grid, IconButton, Divider, CircularProgress } from '@mui/material';
 import { Link } from 'react-router-dom';
-import { NormalText } from './privateMUI/PrivateTexts';
+import { NormalText } from './PrivateTexts';
 
 type LinkPropsType = {
   linkTo: string;

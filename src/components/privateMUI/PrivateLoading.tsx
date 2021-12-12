@@ -1,6 +1,6 @@
 import { FC } from 'react';
 import { Grid } from '@mui/material';
-import './privateCSS.css';
+import './PrivateLoadingCSS.css';
 import { useColors } from '../../hooks/util';
 
 const PrivateLoading: FC = ({ children }) => {

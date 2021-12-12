@@ -111,7 +111,7 @@ export const AppProvider: FC = ({ children }) => {
       queries: {
         retry: false,
         // refetchOnWindowFocus: false,
-        staleTime: 600000,
+        staleTime: 5000,
       },
     },
   });

@@ -32,7 +32,7 @@ const UserShow: FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
   const { data, isLoading, isError, error } = useQuery<
     ShowUserResponse,
     AxiosError
-  >('UserShow', () => getUser(Number(userId)));
+  >(`UserShow-${match.params.id}`, () => getUser(Number(userId)));
 
   if (isLoading) {
     return <PrivateLoading />;

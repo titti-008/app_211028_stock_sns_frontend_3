@@ -4,7 +4,7 @@ import { CircularProgress } from '@mui/material';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { useMutation, useQueryClient } from 'react-query';
 import { LoginResponse, ErrorResponse } from '../Types';
-import { ButtonContainer } from '../ConfigContainers';
+import { ButtonContainer } from '../privateMUI/ConfigContainers';
 import { logoutRequest } from '../api';
 import { useAppContext } from '../../hooks/ReduserContext';
 import { SuccessToasts, ErrorToasts } from '../toast/PrivateToast';

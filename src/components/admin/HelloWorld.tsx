@@ -3,8 +3,8 @@ import axios from 'axios';
 import saveAs from 'file-saver';
 // import { useQueryClient } from 'react-query';
 // import { LoginResponse } from './Types';
-import { useAppContext } from '../hooks/ReduserContext';
-import { SubmitButton } from './privateMUI/PrivateBottuns';
+import { useAppContext } from '../../hooks/ReduserContext';
+import { SubmitButton } from '../privateMUI/PrivateBottuns';
 
 const HelloWorld: FC = () => {
   // const queryClient = useQueryClient();

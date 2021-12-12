@@ -74,6 +74,10 @@ export type Stock = Id &
     ipoYear: number;
     sector: string;
     industry: string;
+    price: number;
+    previousClose: number;
+    timestamp: Date;
+    earningsAnnouncement: string;
   };
 
 export type StockType = { stock: Stock };
@@ -118,11 +122,38 @@ export type StockPrices = {
   stockPrices: StockPrice[];
 };
 
+// quote
+
+export type QuoteType = {
+  symbol: string;
+  price: number;
+  changesPercentage: number;
+  change: number;
+  dayLow: number;
+  dayHigh: number;
+  yearHigh: number;
+  yearLow: number;
+  marketCap: number;
+  priceAvg50: number;
+  priceAvg200: number;
+  volume: number;
+  avgVolume: number;
+  exchange: string;
+  open: number;
+  previousClose: number;
+  eps: number;
+  pe: number;
+  earningsAnnouncement: Date;
+  sharesOutstanding: number;
+  timestamp: number;
+};
+
 // -------- サーバーレスポンス ----------
 type User = { user: UserType };
 type Users = { users: UsersType };
 
-type Messages = { messages: string[] };
+export type Messages = { messages: string[] };
+export type ApiErrorMessage = { 'Error Message': string };
 type LoggedIn = { loggedIn: boolean };
 type Microposts = { microposts: Micropost[] };
 
@@ -151,6 +182,10 @@ export type ResetEmail = Email;
 export type ErrorResponse = AxiosError<Messages>;
 
 export type MicropostsResponse = Messages & Microposts & Page;
+
+export type CreateMicropostResponse = Messages & {
+  micropost: Micropost;
+};
 
 export type PageType = {
   previousId: number;

@@ -12,10 +12,14 @@ import {
   ResetEmail,
   ResetPasswordData,
   MicropostsResponse,
+  // CreateMicropostResponse,
   EarningsResponse,
   StockPriceResponse,
   ErrorResponse,
   StocksResponse,
+  Stock,
+  ApiErrorMessage,
+  // QuoteType,
 } from './Types';
 
 const env = process.env.REACT_APP_SERVER_URL ?? ''; // 文字列型であることを強制
@@ -87,10 +91,7 @@ export const logoutRequest = () =>
   );
 
 /// /////////////////////////////////////////////////
-export const usePrivateQuery = <T, U>(
-  request: () => Promise<T>,
-  queryKey: string,
-) => {
+const usePrivateQuery = <T, U>(request: () => Promise<T>, queryKey: string) => {
   const { data, isLoading, isError, error } = useQuery<T, U>(queryKey, request);
 
   return { data, isLoading, isError, error };
@@ -106,16 +107,96 @@ export const useLoggedQuery = () =>
     'loginData',
   );
 
-export const useStockPriceQuery = (symbol: string) =>
+export const useStockPriceQuery = (symbol: string, day: string) =>
   usePrivateQuery<AxiosResponse<StockPriceResponse>, ErrorResponse>(
     () =>
       axios.get<
         StockPriceResponse,
         AxiosResponse<StockPriceResponse>,
         ErrorResponse
-      >(`${financialUrl}/historical-price-full/${symbol}?apikey=${apiKey}`),
+      >(
+        `${financialUrl}/historical-price-full/${symbol}?timeseries=${day}&apikey=${apiKey}`,
+      ),
     `price-${symbol}`,
   );
+
+/* eslint-disable */
+
+// export const useMyfollowingStocks = () => {
+//   const request = async () => {
+//     const response = await instance.get<
+//       StocksResponse,
+//       AxiosResponse<StocksResponse>,
+//       ErrorResponse
+//     >(`${StockUrl}/my_following_stock`);
+
+//     console.log(`${StockUrl}/my_following_stock`, request);
+
+//     return response.data.stocks;
+//   };
+
+//   const { data, isLoading, isError, error } = usePrivateQuery<
+//     Stock[],
+//     ErrorResponse
+//   >(request, 'myStocks');
+
+//   return { data, isLoading, isError, error };
+// };
+
+export const MyStocksPriceNow = () => {
+  const request = async () => {
+    const backendStockRes = await instance.get<
+      StocksResponse,
+      AxiosResponse<StocksResponse>,
+      ErrorResponse
+    >(`${StockUrl}/my_following_stock`);
+
+    const symbols = backendStockRes.data.stocks.map((stock) => stock.symbol);
+    const symbolsUrl = symbols.join();
+
+    const response = await axios.get<
+      Stock[],
+      AxiosResponse<Stock[]>,
+      ApiErrorMessage
+    >(`${financialUrl}/quote/${symbolsUrl}?apikey=${apiKey}`);
+
+    console.log(
+      `${financialUrl}/quote/${symbolsUrl}?apikey=${apiKey}`,
+      response,
+    );
+    return response.data;
+  };
+
+  const { data, isLoading, isError, error } = useQuery<
+    Stock[],
+    ApiErrorMessage
+  >(`myStocks-price`, request);
+
+  return { data, isLoading, isError, error };
+};
+
+// export const useMyfollowingStocks = () =>
+//   usePrivateQuery<AxiosResponse<StocksResponse>, ErrorResponse>(
+//     async () =>
+//       instance.get<
+//         StocksResponse,
+//         AxiosResponse<StocksResponse>,
+//         ErrorResponse
+//       >(`${StockUrl}/my_following_stock`),
+//     'myStocks',
+//   );
+
+// export const useMyStocksPriceNow = (stocks: Stock[]) =>
+//   usePrivateQuery<AxiosResponse<QuoteType[]>, ErrorResponse>(() => {
+//     const symbols = stocks.map((stock) => stock.symbol);
+//     const symbolsUrl = symbols.join();
+
+//     return axios.get<
+//       StockPriceResponse,
+//       AxiosResponse<QuoteType[]>,
+//       ErrorResponse
+//     >(`${financialUrl}/quote/${symbolsUrl}?apikey=${apiKey}`);
+//   }, `myStocks`);
 
 export const useGetUsers = () =>
   usePrivateQuery<AxiosResponse<UsersResponse>, ErrorResponse>(
@@ -124,17 +205,6 @@ export const useGetUsers = () =>
         `${usersUrl}`,
       ),
     'allUsers',
-  );
-
-export const useMyfollowingStocks = () =>
-  usePrivateQuery<AxiosResponse<StocksResponse>, ErrorResponse>(
-    async () =>
-      instance.get<
-        StocksResponse,
-        AxiosResponse<StocksResponse>,
-        ErrorResponse
-      >(`${StockUrl}/my_following_stock`),
-    'myStocks',
   );
 
 export const deleteUser = (
@@ -235,14 +305,19 @@ export const getMyFeed = (
 //   return response.data;
 // };
 
-export const createMicropost = (
-  params: FormData,
-): Promise<AxiosResponse<MessageResponse, unknown>> =>
-  instance.post<MessageResponse>(micropostsUrl, params, {
-    headers: {
-      'content-type': 'multipart/form-data',
+export const createMicropost = async (params: FormData) => {
+  const response = await instance.post<MicropostsResponse>(
+    micropostsUrl,
+    params,
+    {
+      headers: {
+        'content-type': 'multipart/form-data',
+      },
     },
-  });
+  );
+
+  return response.data;
+};
 
 export const deleteMicropost = (id: number) =>
   instance.delete<MessageResponse>(`${micropostsUrl}/${id}`);
