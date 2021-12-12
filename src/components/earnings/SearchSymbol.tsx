@@ -1,11 +1,11 @@
 import { FC, useState, useEffect } from 'react';
-import { Grid, IconButton } from '@mui/material';
+import { Grid, Divider, IconButton } from '@mui/material';
 
 import ShowChartIcon from '@mui/icons-material/ShowChart';
 import { NormalForm } from '../privateMUI/PrivateForms';
 // import { useUserDataInput } from '../../hooks/util';
 import { LinkButton } from '../privateMUI/PrivateBottuns';
-import { ErrorText, NormalText } from '../privateMUI/PrivateTexts';
+import { NormalText } from '../privateMUI/PrivateTexts';
 
 const SearchSymbol: FC = () => {
   // const initInput = {
@@ -40,7 +40,8 @@ const SearchSymbol: FC = () => {
     }
   }, [message]);
 
-  const isError = value.length === 0;
+  const isError = message.length > 0 && value.length === 0;
+  const isDisabled = value.length === 0;
 
   return (
     <Grid item width="100%">
@@ -55,15 +56,15 @@ const SearchSymbol: FC = () => {
         handleChange={handleChange}
         label="検索したいシンボルを入力してください"
         isPassword={false}
-        error={false}
-        errorText=""
+        error={isError}
+        errorText={message}
       />
       <LinkButton
         linkTo={`/stocks/${value}`}
         label="シンボル検索"
-        disabled={isError}
+        disabled={isDisabled}
       />
-      <ErrorText isError>{message}</ErrorText>
+      <Divider sx={{ width: '100%' }} />
     </Grid>
   );
 };

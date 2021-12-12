@@ -29,13 +29,12 @@ type PropsType<T> = {
 
 const Feed: FC<PropsType<'myfeed' | number>> = ({ type, getMicropost }) => {
   const queryClient = useQueryClient();
-  // const userData = queryClient.getQueryData<LoginResponse>(`loginData`);
 
   const { state } = useAppContext();
 
   const queryKey = `microposts-${type}`;
 
-  const mutation = useMutation(deleteMicropost, {
+  const mutation = useMutation(queryKey, deleteMicropost, {
     onSuccess: (res) => {
       SuccessToasts(res.data.messages);
       void queryClient.invalidateQueries(queryKey);

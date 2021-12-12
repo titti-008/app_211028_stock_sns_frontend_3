@@ -104,7 +104,7 @@ const LoginForm: FC<HistoryPropsType> = ({ history }) => {
         onClick={() => mutation.mutate({ user: values })}
         label="ログイン"
         disabled={disable}
-        isLoading={false}
+        isLoading={mutation.isLoading}
       />
       <LinkButton linkTo="/signup" label="新規登録はこちら" disabled={false} />
     </>

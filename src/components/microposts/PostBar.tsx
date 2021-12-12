@@ -14,7 +14,7 @@ const PostBar: FC<HistoryPropsType> = ({ history }) => {
   const { state } = useAppContext();
 
   return (
-    <BaseCard>
+    <BaseCard width={400}>
       <PrivateAppbar>
         <Grid item>
           <IconButton color="default">

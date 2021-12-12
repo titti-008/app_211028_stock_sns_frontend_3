@@ -337,7 +337,7 @@ const CandleChart: FC<PropsType> = ({ historical, symbol }) => {
             lineStyle: {
               opacity: 0.7,
 
-              color: colors.chart.downBorderColor,
+              color: colors.chart.upBorderColor,
             },
           },
           {

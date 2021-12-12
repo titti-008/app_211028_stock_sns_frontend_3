@@ -33,10 +33,10 @@ export const Colors = (theme: Theme): ColorsType => {
     errorText: '#E04E27',
     icon: '#99BDFF',
     chart: {
-      upColor: '#786060',
-      upBorderColor: 'red',
-      downColor: '#005C3C',
-      downBorderColor: 'lightgreen',
+      upColor: '#005C3C',
+      upBorderColor: 'lightgreen',
+      downColor: '#786060',
+      downBorderColor: 'red',
       borderColor: '#9096AB',
     },
   };
@@ -51,10 +51,10 @@ export const Colors = (theme: Theme): ColorsType => {
     colors.errorText = '#E04E27';
     colors.icon = '#85A4DE';
 
-    colors.chart.upColor = '#e3b5b5';
-    colors.chart.upBorderColor = '#8A0000';
-    colors.chart.downColor = '#00da3c';
-    colors.chart.downBorderColor = '#008F28';
+    colors.chart.upColor = '#00da3c';
+    colors.chart.upBorderColor = '#008F28';
+    colors.chart.downColor = '#e3b5b5';
+    colors.chart.downBorderColor = '#AA362A';
     colors.chart.borderColor = '#6B84B0';
   }
 

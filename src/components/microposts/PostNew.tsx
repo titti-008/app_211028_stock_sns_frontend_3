@@ -7,6 +7,7 @@ import {
   FormHelperText,
   IconButton,
 } from '@mui/material';
+// import { AxiosResponse } from 'axios';
 import { useMutation, useQueryClient } from 'react-query';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 import imageCompression from 'browser-image-compression';
@@ -15,7 +16,12 @@ import { SubmitButton } from '../privateMUI/PrivateBottuns';
 // import { HistoryPropsType, ErrorResponse } from '../Types';
 import { SuccessToasts, ErrorToasts } from '../toast/PrivateToast';
 import PrivateImageList from './PrivateImageList';
-import { HistoryPropsType } from '../Types';
+import {
+  HistoryPropsType,
+  // CreateMicropostResponse,
+  MicropostsResponse,
+  ErrorResponse,
+} from '../Types';
 
 const PostNew: FC<HistoryPropsType> = ({ history }) => {
   const [content, setContent] = useState<string>('');
@@ -79,15 +85,40 @@ const PostNew: FC<HistoryPropsType> = ({ history }) => {
 
   const queryClient = useQueryClient();
 
-  const mutation = useMutation(createMicropost, {
-    onSuccess: (res) => {
-      SuccessToasts(res.data.messages);
-      void queryClient.invalidateQueries(queryKey);
-      setContent('');
-      setImages([]);
-      history.push('/');
+  const mutation = useMutation<MicropostsResponse, ErrorResponse, FormData>(
+    queryKey,
+    createMicropost,
+    {
+      onMutate: (variables) => {
+        const prevData = queryClient.getQueryData<MicropostsResponse>(queryKey);
+
+        if (prevData) {
+          queryClient.setQueryData(queryKey, {
+            ...prevData,
+            variables,
+          });
+        }
+
+        return prevData;
+      },
+      onSuccess: (res) => {
+        /* eslint-disable */
+        SuccessToasts(res.messages);
+        void queryClient.invalidateQueries(queryKey);
+        setContent('');
+        setImages([]);
+        history.push('/');
+      },
+
+      onError: (err) => {
+        SuccessToasts(err.response?.data.messages || []);
+        void queryClient.invalidateQueries(queryKey);
+        setContent('');
+        setImages([]);
+        history.push('/');
+      },
     },
-  });
+  );
 
   return (
     <>

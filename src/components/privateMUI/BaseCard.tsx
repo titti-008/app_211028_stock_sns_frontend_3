@@ -3,7 +3,11 @@ import { Grid, Box, AppBar } from '@mui/material';
 
 import { useColors } from '../../hooks/util';
 
-export const BaseCard: FC = ({ children }) => {
+type PropsType = {
+  width: number;
+};
+
+export const BaseCard: FC<PropsType> = ({ width = 400, children }) => {
   const colors = useColors();
 
   return (
@@ -11,7 +15,7 @@ export const BaseCard: FC = ({ children }) => {
       item
       height="100%"
       width="100%"
-      minWidth={{ xs: '100%', sm: '100%', md: 400 }}
+      minWidth={{ xs: '100%', sm: '100%', md: width }}
     >
       <Box
         sx={{
