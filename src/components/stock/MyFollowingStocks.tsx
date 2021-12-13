@@ -42,7 +42,7 @@ const MyFollowingStocks: FC = () => {
       <Grid item>
         <NormalText>フォローしている株式</NormalText>
         {myStocksPriceResponse.data?.map((stock) => (
-          <StockPrice stock={stock} />
+          <StockPrice stock={stock} key={stock.id} />
         ))}
         <Divider sx={{ width: '100%' }} />
       </Grid>

@@ -264,7 +264,6 @@ const CandleChart: FC<PropsType> = ({ historical, symbol }) => {
           {
             scale: true,
             gridIndex: 1,
-            splitNumber: 2,
             axisLabel: { show: false },
             axisLine: { show: false },
             axisTick: { show: false },

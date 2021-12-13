@@ -60,7 +60,7 @@ const SearchSymbol: FC = () => {
         errorText={message}
       />
       <LinkButton
-        linkTo={`/stocks/${value}`}
+        linkTo={`/stocks/${value}/520`}
         label="シンボル検索"
         disabled={isDisabled}
       />
