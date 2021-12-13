@@ -90,10 +90,10 @@ export type EarningType = Id & {
   date: Date;
   fillingDate: Date;
   revenue: number;
-  estimatedRevenueAvg: number;
+  revenueEstimated: number;
   revenueGrowth: number;
   eps: number;
-  estimatedEpsAvg: number;
+  epsEstimated: number;
   epsgrowth: number;
   reportedCurrency: number;
   operatingCashFlow: number;

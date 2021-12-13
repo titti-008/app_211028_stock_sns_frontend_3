@@ -6,8 +6,8 @@ import { EarningsResponse } from '../Types';
 import { getEarnings } from '../api';
 import PrivateLoading from '../privateMUI/PrivateLoading';
 import { ErrorToasts } from '../toast/PrivateToast';
-import EarningStatus from './EarningStatus';
 import { NormalText } from '../privateMUI/PrivateTexts';
+import EpsCharts from './EpsCharts';
 
 const Earnings: FC<{ symbol: string }> = ({ symbol }) => {
   const { data, isLoading, isError, error } = useQuery<
@@ -36,10 +36,7 @@ const Earnings: FC<{ symbol: string }> = ({ symbol }) => {
   return (
     <>
       <NormalText>{stock.symbol}</NormalText>
-
-      {earnings.map((earning) => (
-        <EarningStatus stock={stock} earning={earning} key={earning.id} />
-      ))}
+      <EpsCharts earnings={earnings} />
     </>
   );
 };
