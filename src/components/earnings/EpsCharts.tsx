@@ -116,12 +116,12 @@ const EpsCharts: FC<PropsType> = ({ earnings }) => {
       ],
       grid: [
         {
-          left: '2%',
+          left: '6%',
           right: '3%',
           height: '35%',
         },
         {
-          left: '2%',
+          left: '6%',
           right: '3%',
           top: '48%',
           height: '35%',

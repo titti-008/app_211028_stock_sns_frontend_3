@@ -5,10 +5,10 @@ import { useMutation, useQueryClient } from 'react-query';
 import { Stock } from '../Types';
 import Earnings from './Earnings';
 import GetStockPrice from './GetStockPrice';
-import { NormalText } from '../privateMUI/PrivateTexts';
 import { LinkButton, SubmitButton } from '../privateMUI/PrivateBottuns';
 import { followStock, unfollowStock, MyStocksPriceNow } from '../api';
 import { SuccessToasts } from '../toast/PrivateToast';
+import StockPrice from '../stock/StockPrice';
 
 const isFollowingStock = (symbol: string) => {
   const myStocksJSON = localStorage.getItem('myStocks');
@@ -86,6 +86,10 @@ const StockBoard: FC<RouteComponentProps<{ symbol: string; day: string }>> = ({
 
   console.log('mutation.data', followMutation.data);
 
+  const stock = followMutation.data?.data.stocks.find(
+    (privateStock) => privateStock.symbol === match.params.symbol,
+  );
+
   return (
     <>
       <Grid
@@ -95,9 +99,7 @@ const StockBoard: FC<RouteComponentProps<{ symbol: string; day: string }>> = ({
         direction="row"
         width="100%"
       >
-        <NormalText>
-          <h2>{match.params.symbol} </h2>
-        </NormalText>
+        {stock && <StockPrice stock={stock} key={stock.id} />}
 
         <LinkButton
           linkTo={`/stocks/${match.params.symbol}/2000`}
