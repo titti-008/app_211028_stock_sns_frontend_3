@@ -11,7 +11,7 @@ import {
   FormControlLabel,
   FormHelperText,
 } from '@mui/material';
-import { useColors } from '../../hooks/util';
+import { useColors } from '../../hooks/useColors';
 
 type PropsType = {
   handleChange: (event: React.ChangeEvent<HTMLInputElement>) => void;

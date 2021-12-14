@@ -4,8 +4,8 @@ import { LoginResponse, HistoryPropsType, ErrorResponse } from '../Types';
 import { NormalText } from '../privateMUI/PrivateTexts';
 import { updateUser } from '../api';
 import { SuccessToasts, ErrorToasts } from '../toast/PrivateToast';
-import { useUserDataInput } from '../../hooks/util';
-import UserDataForm from './UserDataForm';
+import useUserDataInput from '../../hooks/useDataInput';
+import UserDataForm from '../../hooks/UserDataForm';
 
 const EditUser: React.FC<HistoryPropsType> = ({ history }) => {
   const queryClient = useQueryClient();

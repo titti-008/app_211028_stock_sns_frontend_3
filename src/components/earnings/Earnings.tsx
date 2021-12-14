@@ -6,10 +6,12 @@ import { EarningsResponse } from '../Types';
 import { getEarnings } from '../api';
 import PrivateLoading from '../privateMUI/PrivateLoading';
 import { ErrorToasts } from '../toast/PrivateToast';
-import { NormalText } from '../privateMUI/PrivateTexts';
 import EpsCharts from './EpsCharts';
 
-const Earnings: FC<{ symbol: string }> = ({ symbol }) => {
+const Earnings: FC<{ symbol: string; period: number[] }> = ({
+  symbol,
+  period,
+}) => {
   const { data, isLoading, isError, error } = useQuery<
     EarningsResponse,
     AxiosError
@@ -35,8 +37,7 @@ const Earnings: FC<{ symbol: string }> = ({ symbol }) => {
 
   return (
     <>
-      <NormalText>{stock.symbol}</NormalText>
-      <EpsCharts earnings={earnings} />
+      <EpsCharts earnings={earnings} period={period} />
     </>
   );
 };

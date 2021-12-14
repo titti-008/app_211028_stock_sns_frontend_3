@@ -19,7 +19,7 @@ import AllUsers from './components/users/AllUsers';
 import UserShow from './components/users/UserShow';
 import Followers from './components/users/Followers';
 import Following from './components/users/Following';
-import { Colors } from './hooks/util';
+import { useColors } from './hooks/useColors';
 import PrivateRoute from './components/router/PrivateRoute';
 import UnAuthRoute from './components/router/UnAuthRoute';
 import BaseGround from './components/privateMUI/BaseGround';
@@ -53,7 +53,7 @@ const App: FC = () => {
   const { state, dispatch } = useAppContext();
 
   // // ----------テーマカラーの状態管理----------------------
-  const colors = Colors(state.theme);
+  const colors = useColors();
 
   // ----------ログイン状態の確認通信----------------------
 

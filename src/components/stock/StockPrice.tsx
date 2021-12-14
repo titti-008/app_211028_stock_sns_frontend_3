@@ -5,7 +5,7 @@ import ArrowDownwardOutlinedIcon from '@mui/icons-material/ArrowDownwardOutlined
 import ArrowUpwardOutlinedIcon from '@mui/icons-material/ArrowUpwardOutlined';
 import { format } from 'date-fns';
 import { Stock } from '../Types';
-import { useColors } from '../../hooks/util';
+import { useColors } from '../../hooks/useColors';
 import signCheck from '../../utils/signCheck';
 
 const StockPrice: FC<{ stock: Stock }> = ({ stock }) => {
@@ -13,7 +13,6 @@ const StockPrice: FC<{ stock: Stock }> = ({ stock }) => {
 
   const fluctuation =
     ((stock.price - stock.previousClose) / stock.previousClose) * 100;
-  console.log('StockPrice', stock);
 
   return (
     <>
@@ -21,7 +20,7 @@ const StockPrice: FC<{ stock: Stock }> = ({ stock }) => {
         disableFocusListener
         disableTouchListener
         TransitionComponent={Fade}
-        enterDelay={1000}
+        enterDelay={500}
         // TransitionProps={{ timeout: 1000, exit: false, enter: false }}
         title={
           <Grid>
@@ -41,7 +40,7 @@ const StockPrice: FC<{ stock: Stock }> = ({ stock }) => {
           </Grid>
         }
       >
-        <Link to={`/stocks/${stock.symbol}/520`}>
+        <Link to={`/stocks/${stock.symbol}/1000`}>
           <Button
             variant="text"
             size="small"

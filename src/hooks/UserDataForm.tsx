@@ -1,12 +1,10 @@
 import React from 'react';
-import { CreateUserType } from '../Types';
-import { NormalForm } from '../privateMUI/PrivateForms';
-import { SubmitButton } from '../privateMUI/PrivateBottuns';
-import {
-  useCheckPassword,
-  useCheckName,
-  useCheckEmail,
-} from '../../hooks/util';
+import { CreateUserType } from '../components/Types';
+import { NormalForm } from '../components/privateMUI/PrivateForms';
+import { SubmitButton } from '../components/privateMUI/PrivateBottuns';
+import useCheckPassword from './useCheckPassword';
+import useCheckName from '../components/users/useCheckName';
+import useCheckEmail from './useCheckEmail';
 
 type PropsType = {
   values: CreateUserType;

@@ -1,15 +1,17 @@
 import { FC, useRef, useEffect } from 'react';
+import { addYears } from 'date-fns';
 import { useTheme } from '@mui/material';
 import * as echarts from 'echarts';
-import { useColors } from '../../hooks/util';
+import { useColors } from '../../hooks/useColors';
 import { StockPrice } from '../Types';
 
 type PropsType = {
   historical: StockPrice[];
   symbol: string;
+  period: number[];
 };
 
-const CandleChart: FC<PropsType> = ({ historical, symbol }) => {
+const CandleChart: FC<PropsType> = ({ historical, symbol, period }) => {
   const theme = useTheme();
   const colors = useColors();
 
@@ -21,12 +23,12 @@ const CandleChart: FC<PropsType> = ({ historical, symbol }) => {
 
     // データの整形
     const splitData = (jsonData: StockPrice[]) => {
-      const categoryData: string[] = [];
+      const categoryData: Date[] = [];
       const values: number[][] = [];
       const volumes: number[] = [];
 
       jsonData.forEach((stockPrice) => {
-        categoryData.unshift(String(stockPrice.date));
+        categoryData.unshift(stockPrice.date);
         values.unshift([
           stockPrice.open,
           stockPrice.close,
@@ -36,14 +38,30 @@ const CandleChart: FC<PropsType> = ({ historical, symbol }) => {
         volumes.unshift(stockPrice.volume);
       });
 
+      const span = categoryData.filter(
+        (date) =>
+          new Date(date) >= addYears(new Date(), period[0]) &&
+          new Date(date) <= addYears(new Date(), period[1]),
+      );
+
+      const start = span[0];
+      const end = span[span.length - 1];
+
       return {
         categoryData,
         values,
         volumes,
+        start,
+        end,
+        span,
       };
     };
 
     const data0 = splitData(historical);
+
+    type Param = {
+      close: number;
+    };
 
     // 移動平均線関数
     const calculateMA = (dayCount: number) => {
@@ -101,20 +119,6 @@ const CandleChart: FC<PropsType> = ({ historical, symbol }) => {
           textStyle: {
             color: colors.text,
           },
-          // position: (
-          //   pos: [number, number],
-          //   size: {
-          //     contentSize: [number, number];
-          //     viewSize: [number, number];
-          //   },
-          // ) => {
-          //   const obj: Record<string, number> = {
-          //     top: 10,
-          //   };
-          //   obj[['left', 'right'][+(pos[0] < size.viewSize[0] / 2)]] = 30;
-
-          //   return obj;
-          // },
         },
         axisPointer: {
           link: [
@@ -198,7 +202,7 @@ const CandleChart: FC<PropsType> = ({ historical, symbol }) => {
         // },
         grid: [
           {
-            left: '10%',
+            left: '6%',
             right: '3%',
             height: '50%',
           },
@@ -246,6 +250,11 @@ const CandleChart: FC<PropsType> = ({ historical, symbol }) => {
         yAxis: [
           {
             scale: true,
+            axisLabel: {
+              inside: true,
+              padding: [2, 0, 0, 0],
+              verticalAlign: 'top',
+            },
             axisLine: {
               show: true,
               lineStyle: { color: borderColor },
@@ -275,8 +284,8 @@ const CandleChart: FC<PropsType> = ({ historical, symbol }) => {
             type: 'inside',
             xAxisIndex: [0, 1],
             rangeMode: ['value', 'value'],
-            startValue: data0.categoryData.length - 99,
-            endValue: data0.categoryData.length + 1,
+            startValue: data0.start,
+            endValue: data0.end,
           },
           {
             // 横軸のズームスライダー
@@ -285,8 +294,8 @@ const CandleChart: FC<PropsType> = ({ historical, symbol }) => {
             type: 'slider',
             top: '85%',
             rangeMode: ['value', 'value'],
-            startValue: 40,
-            endValue: 80,
+            startValue: data0.start,
+            endValue: data0.end,
             textStyle: {
               color: colors.text,
             },
@@ -302,6 +311,90 @@ const CandleChart: FC<PropsType> = ({ historical, symbol }) => {
               color0: downColor,
               borderColor: upBorderColor,
               borderColor0: downBorderColor,
+              markPoint: {
+                label: {
+                  formatter(param: Param) {
+                    return param != null ? `${Math.round(param.close)}` : '';
+                  },
+                },
+                data: [
+                  // {
+                  //   name: 'Mark',
+                  //   coord: ['2013/5/31', 2300],
+                  //   value: 2300,
+                  //   itemStyle: {
+                  //     color: 'rgb(41,60,85)',
+                  //   },
+                  // },
+                  {
+                    name: 'highest value',
+                    type: 'max',
+                    valueDim: 'highest',
+                  },
+                  {
+                    name: 'lowest value',
+                    type: 'min',
+                    valueDim: 'lowest',
+                  },
+                  {
+                    name: 'average value on close',
+                    type: 'average',
+                    valueDim: 'close',
+                  },
+                ],
+                /* eslint-disable */
+                tooltip: {
+                  formatter(param: any) {
+                    return `${param.name}<br>${param.data.coord || ''}`;
+                  },
+                },
+              },
+              markLine: {
+                symbol: ['pin', 'pin'],
+                data: [
+                  [
+                    {
+                      name: 'from lowest to highest',
+                      type: 'min',
+                      valueDim: 'lowest',
+                      symbol: 'circle',
+                      symbolSize: 10,
+                      label: {
+                        show: false,
+                      },
+                      emphasis: {
+                        label: {
+                          show: false,
+                        },
+                      },
+                    },
+                    {
+                      type: 'max',
+                      valueDim: 'highest',
+                      symbol: 'circle',
+                      symbolSize: 10,
+                      label: {
+                        show: false,
+                      },
+                      emphasis: {
+                        label: {
+                          show: false,
+                        },
+                      },
+                    },
+                  ],
+                  {
+                    name: 'min line on close',
+                    type: 'min',
+                    valueDim: 'close',
+                  },
+                  {
+                    name: 'max line on close',
+                    type: 'max',
+                    valueDim: 'close',
+                  },
+                ],
+              },
             },
 
             // tooltip: {
@@ -365,7 +458,14 @@ const CandleChart: FC<PropsType> = ({ historical, symbol }) => {
     //   ],
     // });
     // return () => {};
-  }, [historical, symbol, colors, theme.palette.mode]);
+
+    console.log('data0.start', data0.start);
+    console.log('data0.end', data0.end);
+    console.log('data0.span', data0.span);
+
+    console.log('data0.categoryData[0]', new Date(data0.categoryData[0]));
+    console.log('period', new Date(period[0]));
+  }, [historical, symbol, colors, theme.palette.mode, period]);
 
   return (
     <>

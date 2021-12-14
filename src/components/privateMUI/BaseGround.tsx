@@ -1,6 +1,6 @@
 import { FC, useRef } from 'react';
 import { Grid, Box } from '@mui/material';
-import { useColors } from '../../hooks/util';
+import { useColors } from '../../hooks/useColors';
 // import { styled } from "@mui/styles";
 
 // const BaseStyled = styled()

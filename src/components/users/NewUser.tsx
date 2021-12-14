@@ -3,8 +3,8 @@ import { ErrorResponse, HistoryPropsType } from '../Types';
 import { createUser } from '../api';
 import { SuccessToasts, ErrorToasts } from '../toast/PrivateToast';
 import { LinkButton } from '../privateMUI/PrivateBottuns';
-import { useUserDataInput } from '../../hooks/util';
-import UserDataForm from './UserDataForm';
+import useUserDataInput from '../../hooks/useDataInput';
+import UserDataForm from '../../hooks/UserDataForm';
 
 const NewUsers: React.FC<HistoryPropsType> = ({ history }) => {
   const initInput = {
