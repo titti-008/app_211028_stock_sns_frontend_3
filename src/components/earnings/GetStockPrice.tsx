@@ -4,9 +4,10 @@ import PrivateLoading from '../privateMUI/PrivateLoading';
 import { ErrorToasts } from '../toast/PrivateToast';
 import CandleChart from './CandleChart';
 
-const GetStockPrice: FC<{ symbol: string; day: string }> = ({
+const GetStockPrice: FC<{ symbol: string; day: string; period: number[] }> = ({
   symbol,
   day,
+  period,
 }) => {
   const { data, isLoading, isError, error } = useStockPriceQuery(symbol, day);
 
@@ -28,7 +29,7 @@ const GetStockPrice: FC<{ symbol: string; day: string }> = ({
 
   return (
     <>
-      <CandleChart historical={historical} symbol={symbol} />
+      <CandleChart historical={historical} symbol={symbol} period={period} />
     </>
   );
 };

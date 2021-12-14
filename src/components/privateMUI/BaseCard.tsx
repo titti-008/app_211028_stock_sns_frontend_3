@@ -1,7 +1,6 @@
 import { FC } from 'react';
 import { Grid, Box, AppBar } from '@mui/material';
-
-import { useColors } from '../../hooks/util';
+import { useColors } from '../../hooks/useColors';
 
 type PropsType = {
   width: number;

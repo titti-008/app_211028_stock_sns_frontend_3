@@ -2,7 +2,7 @@ import { FC } from 'react';
 import { Grid, Button, CircularProgress } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { NormalText } from './PrivateTexts';
-import { useColors } from '../../hooks/util';
+import { useColors } from '../../hooks/useColors';
 
 type SubmitType<T> = {
   onClick: (props?: T) => void;

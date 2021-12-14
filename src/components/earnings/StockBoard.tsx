@@ -1,6 +1,6 @@
 import { FC, useState, useEffect } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
-import { Grid } from '@mui/material';
+import { Grid, Slider } from '@mui/material';
 import { useMutation, useQueryClient } from 'react-query';
 import { Stock } from '../Types';
 import Earnings from './Earnings';
@@ -8,10 +8,14 @@ import GetStockPrice from './GetStockPrice';
 import { LinkButton, SubmitButton } from '../privateMUI/PrivateBottuns';
 import { followStock, unfollowStock, MyStocksPriceNow } from '../api';
 import { SuccessToasts } from '../toast/PrivateToast';
-import StockPrice from '../stock/StockPrice';
+// import StockPrice from '../stock/StockPrice';
+
+function valuetext(value: number) {
+  return `${value}日前`;
+}
 
 const isFollowingStock = (symbol: string) => {
-  const myStocksJSON = localStorage.getItem('myStocks');
+  const myStocksJSON = localStorage.getItem('myStocks-price');
   const MyStocks = myStocksJSON
     ? (JSON.parse(myStocksJSON) as Stock[])
     : ([] as Stock[]);
@@ -34,20 +38,18 @@ const StockBoard: FC<RouteComponentProps<{ symbol: string; day: string }>> = ({
     setIsFollowingStocks(isFollowingStock(match.params.symbol));
   }, [isFollowingStocks, match]);
 
-  const followMutation = useMutation('myStocks', followStock, {
+  const followMutation = useMutation('myStocks-price', followStock, {
     onSuccess: (res) => {
-      const prevData = queryClient.getQueryData<Stock[]>('myStocks');
-      if (prevData) {
-        queryClient.setQueryData<Stock[]>('myStocks', res.data.stocks);
-      }
-      localStorage.setItem('myStocks', JSON.stringify(res.data.stocks));
+      // const prevData = queryClient.getQueryData<Stock[]>('myStocks-price');
+      // if (prevData) {
+      //   queryClient.setQueryData<Stock[]>('myStocks-price', res.data.stocks);
+      // }
+      void queryClient.invalidateQueries('myStocks-price');
+      localStorage.setItem('myStocks-price', JSON.stringify(res.data.stocks));
       SuccessToasts(res.data.messages);
       setIsFollowingStocks(
         res.data.stocks.some((stock) => stock.symbol === match.params.symbol),
       );
-
-      void queryClient.invalidateQueries('myStocks');
-      void queryClient.invalidateQueries('myStocks-price');
 
       const myStocksPriceResponse = MyStocksPriceNow();
       localStorage.setItem(
@@ -57,24 +59,23 @@ const StockBoard: FC<RouteComponentProps<{ symbol: string; day: string }>> = ({
     },
   });
 
-  const unfollowMutation = useMutation('myStocks', unfollowStock, {
+  const unfollowMutation = useMutation('myStocks-price', unfollowStock, {
     onMutate: () => {
       setIsFollowingStocks(true);
     },
     onSuccess: (res) => {
-      const prevData = queryClient.getQueryData<Stock[]>('myStocks');
-      if (prevData) {
-        queryClient.setQueryData<Stock[]>('myStocks', res.data.stocks);
-      }
-      localStorage.setItem('myStocks', JSON.stringify(res.data.stocks));
+      // const prevData = queryClient.getQueryData<Stock[]>('myStocks-price');
+      // if (prevData) {
+      //   queryClient.setQueryData<Stock[]>('myStocks-price', res.data.stocks);
+      // }
+      void queryClient.invalidateQueries('myStocks-price');
+
+      localStorage.setItem('myStocks-price', JSON.stringify(res.data.stocks));
       SuccessToasts(res.data.messages);
 
       setIsFollowingStocks(
         res.data.stocks.some((stock) => stock.symbol === match.params.symbol),
       );
-
-      void queryClient.invalidateQueries('myStocks');
-      void queryClient.invalidateQueries('myStocks-price');
 
       const myStocksPriceResponse = MyStocksPriceNow();
       localStorage.setItem(
@@ -86,9 +87,11 @@ const StockBoard: FC<RouteComponentProps<{ symbol: string; day: string }>> = ({
 
   console.log('mutation.data', followMutation.data);
 
-  const stock = followMutation.data?.data.stocks.find(
-    (privateStock) => privateStock.symbol === match.params.symbol,
-  );
+  const [value, setValue] = useState<number[]>([-1, 0]);
+
+  const handleChange = (event: Event, newValue: number | number[]) => {
+    setValue(newValue as number[]);
+  };
 
   return (
     <>
@@ -99,8 +102,17 @@ const StockBoard: FC<RouteComponentProps<{ symbol: string; day: string }>> = ({
         direction="row"
         width="100%"
       >
-        {stock && <StockPrice stock={stock} key={stock.id} />}
-
+        <Slider
+          getAriaLabel={() => '表示範囲(○○日前)'}
+          min={-10}
+          max={0}
+          step={1}
+          value={value}
+          onChange={handleChange}
+          valueLabelDisplay="auto"
+          getAriaValueText={valuetext}
+          sx={{ marginTop: '30px', width: '90%' }}
+        />
         <LinkButton
           linkTo={`/stocks/${match.params.symbol}/2000`}
           label="長期データ"
@@ -120,13 +132,17 @@ const StockBoard: FC<RouteComponentProps<{ symbol: string; day: string }>> = ({
                   })
           }
           label={isFollowingStocks ? 'フォロー解除' : 'フォローする'}
-          disabled={false}
+          disabled={followMutation.isLoading}
           isLoading={followMutation.isLoading || unfollowMutation.isLoading}
         />
       </Grid>
 
-      <GetStockPrice symbol={match.params.symbol} day={match.params.day} />
-      <Earnings symbol={match.params.symbol} />
+      <GetStockPrice
+        symbol={match.params.symbol}
+        day={match.params.day}
+        period={value}
+      />
+      <Earnings symbol={match.params.symbol} period={value} />
     </>
   );
 };

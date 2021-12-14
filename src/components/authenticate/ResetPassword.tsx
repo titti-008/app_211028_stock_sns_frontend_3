@@ -5,7 +5,8 @@ import { SuccessToasts, ErrorToasts } from '../toast/PrivateToast';
 import { NormalForm } from '../privateMUI/PrivateForms';
 import { SubmitButton } from '../privateMUI/PrivateBottuns';
 import { NormalText } from '../privateMUI/PrivateTexts';
-import { useUserDataInput, useCheckPassword } from '../../hooks/util';
+import useUserDataInput from '../../hooks/useDataInput';
+import useCheckPassword from '../../hooks/useCheckPassword';
 
 type Props = {
   id: string;

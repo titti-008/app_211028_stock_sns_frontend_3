@@ -89,18 +89,19 @@ const PostNew: FC<HistoryPropsType> = ({ history }) => {
     queryKey,
     createMicropost,
     {
-      onMutate: (variables) => {
-        const prevData = queryClient.getQueryData<MicropostsResponse>(queryKey);
+      // onMutate: (variables) => {
+      // const prevData = queryClient.getQueryData<MicropostsResponse>(queryKey);
 
-        if (prevData) {
-          queryClient.setQueryData(queryKey, {
-            ...prevData,
-            variables,
-          });
-        }
+      // if (prevData) {
+      //   queryClient.setQueryData(queryKey, {
+      //     ...prevData,
+      //     variables,
+      //   });
+      // }
+      // void queryClient.invalidateQueries(queryKey);
 
-        return prevData;
-      },
+      // return prevData;
+      // },
       onSuccess: (res) => {
         /* eslint-disable */
         SuccessToasts(res.messages);

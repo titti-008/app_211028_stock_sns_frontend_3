@@ -35,7 +35,20 @@ const Feed: FC<PropsType<'myfeed' | number>> = ({ type, getMicropost }) => {
   const queryKey = `microposts-${type}`;
 
   const mutation = useMutation(queryKey, deleteMicropost, {
-    onSuccess: (res) => {
+    onSuccess: (res, id) => {
+      const prevData = queryClient.getQueryData<MicropostsResponse>(queryKey);
+
+      if (prevData) {
+        const afterData = prevData.microposts.filter(
+          (micropost) => micropost.id !== id,
+        );
+
+        queryClient.setQueryData(queryKey, {
+          ...prevData,
+          microposts: [...afterData],
+        });
+      }
+
       SuccessToasts(res.data.messages);
       void queryClient.invalidateQueries(queryKey);
     },

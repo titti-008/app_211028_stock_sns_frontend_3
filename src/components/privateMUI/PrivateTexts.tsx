@@ -1,7 +1,7 @@
 import { FC } from 'react';
 import { Typography } from '@mui/material';
 
-import { useColors } from '../../hooks/util';
+import { useColors } from '../../hooks/useColors';
 
 export const NormalText: FC = ({ children }) => {
   const colors = useColors();
