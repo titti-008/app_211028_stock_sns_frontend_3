@@ -10,9 +10,7 @@ import { followStock, unfollowStock, MyStocksPriceNow } from '../api';
 import { SuccessToasts } from '../toast/PrivateToast';
 // import StockPrice from '../stock/StockPrice';
 
-function valuetext(value: number) {
-  return `${value}日前`;
-}
+const valuetext = (value: number) => `${value}日前`;
 
 const isFollowingStock = (symbol: string) => {
   const myStocksJSON = localStorage.getItem('myStocks-price');
@@ -84,8 +82,6 @@ const StockBoard: FC<RouteComponentProps<{ symbol: string; day: string }>> = ({
       );
     },
   });
-
-  console.log('mutation.data', followMutation.data);
 
   const [value, setValue] = useState<number[]>([-1, 0]);
 

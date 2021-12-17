@@ -35,19 +35,21 @@ const Feed: FC<PropsType<'myfeed' | number>> = ({ type, getMicropost }) => {
   const queryKey = `microposts-${type}`;
 
   const mutation = useMutation(queryKey, deleteMicropost, {
-    onSuccess: (res, id) => {
-      const prevData = queryClient.getQueryData<MicropostsResponse>(queryKey);
+    onSuccess: (res) => {
+      void queryClient.invalidateQueries(queryKey);
 
-      if (prevData) {
-        const afterData = prevData.microposts.filter(
-          (micropost) => micropost.id !== id,
-        );
+      // const prevData = queryClient.getQueryData<MicropostsResponse>(queryKey);
 
-        queryClient.setQueryData(queryKey, {
-          ...prevData,
-          microposts: [...afterData],
-        });
-      }
+      // if (prevData) {
+      //   const afterData = prevData.microposts.filter(
+      //     (micropost) => micropost.id !== id,
+      //   );
+
+      //   queryClient.setQueryData(queryKey, {
+      //     ...prevData,
+      //     microposts: [...afterData],
+      //   });
+      // }
 
       SuccessToasts(res.data.messages);
       void queryClient.invalidateQueries(queryKey);
@@ -69,26 +71,24 @@ const Feed: FC<PropsType<'myfeed' | number>> = ({ type, getMicropost }) => {
       return res.data;
     },
     {
-      getNextPageParam: (lastPage) => {
-        console.log('lastPage.nextId ', lastPage.nextId);
-
-        return lastPage.nextId ? lastPage.nextId : undefined;
-      },
+      getNextPageParam: (lastPage) =>
+        lastPage.nextId ? lastPage.nextId : undefined,
       retry: false,
       refetchOnWindowFocus: false,
-      cacheTime: 1800,
+      cacheTime: 0,
     },
   );
-  console.log('Feed', data);
 
-  console.log('feed', 'hasNextPage', hasNextPage);
+  const loadMoreButtonRef = React.useRef<HTMLButtonElement>(null!);
 
-  const loadMoreButtonRef = React.useRef<HTMLButtonElement | null>(null);
+  // useInteractionObserver({
+  //   target: loadMoreButtonRef,
+  //   onIntersect: fetchNextPage,
+  //   enabled: hasNextPage,
+  // });
 
-  useInteractionObserver({
-    target: loadMoreButtonRef,
-    onIntersect: fetchNextPage,
-    enabled: hasNextPage,
+  useInteractionObserver(loadMoreButtonRef, {
+    freezeOnceVisible: hasNextPage,
   });
 
   if (status === 'loading') {

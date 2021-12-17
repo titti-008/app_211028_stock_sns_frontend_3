@@ -5,6 +5,8 @@ import React, {
   useReducer,
   useEffect,
 } from 'react';
+import * as H from 'history';
+import { useLocation } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { ThemeProvider, Theme, createTheme } from '@mui/material/styles';
 import { CurrentUser } from '../components/Types';
@@ -104,6 +106,7 @@ const initialState: State = {
 
 export const AppProvider: FC = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
+  const location = useLocation() as H.Location;
 
   // ----------React Queryの設定----------------------
   const queryClient = new QueryClient({
@@ -124,6 +127,10 @@ export const AppProvider: FC = ({ children }) => {
       state.theme === themeDark ? 'dark' : 'light',
     );
   }, [state]);
+
+  useEffect(() => {
+    dispatch({ type: 'closeDrawer' });
+  }, [dispatch, location]);
 
   const value = { state, dispatch };
 

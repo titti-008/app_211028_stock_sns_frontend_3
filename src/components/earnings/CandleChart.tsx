@@ -95,7 +95,7 @@ const CandleChart: FC<PropsType> = ({ historical, symbol, period }) => {
         legend: {
           top: 35,
           left: 'center',
-          data: ['日足', 'MA50', 'MA200', '出来高'],
+          data: ['日足', '50日移動平均', '200日移動平均', '出来高'],
           textStyle: {
             color: colors.text,
           },
@@ -203,12 +203,12 @@ const CandleChart: FC<PropsType> = ({ historical, symbol, period }) => {
         grid: [
           {
             left: '6%',
-            right: '3%',
+            right: '4%',
             height: '50%',
           },
           {
             left: '10%',
-            right: '3%',
+            right: '4%',
             top: '63%',
             height: '20%',
           },
@@ -412,7 +412,7 @@ const CandleChart: FC<PropsType> = ({ historical, symbol, period }) => {
             // },
           },
           {
-            name: 'MA50',
+            name: '50日移動平均',
             type: 'line',
             data: calculateMA(50),
             smooth: true,
@@ -422,7 +422,7 @@ const CandleChart: FC<PropsType> = ({ historical, symbol, period }) => {
             },
           },
           {
-            name: 'MA200',
+            name: '200日移動平均',
             type: 'line',
             data: calculateMA(200),
             smooth: true,
@@ -446,25 +446,6 @@ const CandleChart: FC<PropsType> = ({ historical, symbol, period }) => {
       },
       true,
     );
-
-    // myChart.dispatchAction({
-    //   type: 'brush',
-    //   areas: [
-    //     {
-    //       brushType: 'lineX',
-    //       coordRange: ['2021-10-10', '2021-12-02'],
-    //       xAxisIndex: 0,
-    //     },
-    //   ],
-    // });
-    // return () => {};
-
-    console.log('data0.start', data0.start);
-    console.log('data0.end', data0.end);
-    console.log('data0.span', data0.span);
-
-    console.log('data0.categoryData[0]', new Date(data0.categoryData[0]));
-    console.log('period', new Date(period[0]));
   }, [historical, symbol, colors, theme.palette.mode, period]);
 
   return (
