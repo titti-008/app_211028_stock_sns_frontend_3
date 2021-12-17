@@ -98,7 +98,7 @@ const EpsCharts: FC<PropsType> = ({ earnings, period }) => {
       legend: [
         {
           top: 35,
-          right: 0,
+          right: 'center',
           data: ['予想EPS', '結果EPS', 'EPS 結果-差異'],
           textStyle: {
             color: colors.text,
@@ -106,7 +106,7 @@ const EpsCharts: FC<PropsType> = ({ earnings, period }) => {
         },
         {
           top: '48%',
-          right: 0,
+          right: 'center',
           data: ['売上高-予想', '売上高-結果', '売上高 結果-差異(%)'],
           textStyle: {
             color: colors.text,
@@ -223,12 +223,12 @@ const EpsCharts: FC<PropsType> = ({ earnings, period }) => {
       grid: [
         {
           left: '6%',
-          right: '3%',
+          right: '4%',
           height: '30%',
         },
         {
           left: '6%',
-          right: '3%',
+          right: '4%',
           top: '51%',
           height: '30%',
         },

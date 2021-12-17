@@ -10,12 +10,17 @@ import { useAppContext } from '../../hooks/ReduserContext';
 import SearchSymbol from '../earnings/SearchSymbol';
 import MyFollowingStocks from '../stock/MyFollowingStocks';
 import LogoutButton from '../authenticate/LogoutButton';
+import { MyStockPrice } from '../Types';
 
-const ConfigBar: FC = () => {
+type Props = { myStocksPriceResponse: MyStockPrice };
+
+/* eslint-disable */
+
+const ConfigBar: FC<Props> = ({ myStocksPriceResponse }) => {
   const { state, dispatch } = useAppContext();
 
   return (
-    <BaseCard width={400}>
+    <BaseCard width={300}>
       <PrivateAppbar>
         <Grid item>
           <IconButton
@@ -43,7 +48,7 @@ const ConfigBar: FC = () => {
           <AccountCircleIcon />
         </LinkContainer>
         <SearchSymbol />
-        <MyFollowingStocks />
+        <MyFollowingStocks myStocksPriceResponse={myStocksPriceResponse} />
       </PrivateBox>
     </BaseCard>
   );

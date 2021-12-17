@@ -200,3 +200,10 @@ export type StockPriceResponse = {
 };
 
 export type StocksResponse = Messages & StocksType;
+
+export type MyStockPrice = {
+  data: Stock[] | undefined;
+  isLoading: boolean;
+  isError: boolean;
+  error: ApiErrorMessage | null;
+};

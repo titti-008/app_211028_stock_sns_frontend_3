@@ -19,8 +19,6 @@ const LoginForm: FC<HistoryPropsType> = ({ history }) => {
 
   const { dispatch } = useAppContext();
 
-  console.log('RememberMe', values.rememberMe);
-
   const handleChange =
     (key: keyof loginUserType) =>
     (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -47,25 +45,6 @@ const LoginForm: FC<HistoryPropsType> = ({ history }) => {
       });
     },
   });
-
-  // const handleLoginUser = async () => {
-  //   try {
-  //     const response = await loginUser(values);
-  //     if (response.status === 200) {
-  //       dispatch({
-  //         type: 'saveUser',
-  //         setUser: response.data.user,
-  //         isLogin: response.data.loggedIn,
-  //       });
-  //       SuccessToasts(response.data.messages);
-  //     } else if (response.status === 202) {
-  //       ErrorToasts(response.data.messages);
-  //     }
-  //   } catch (err: unknown) {
-  //     console.log('ログイン失敗');
-  //     console.log(err);
-  //   }
-  // };
 
   const data = queryClient.getQueryData<LoginResponse>(queryKey);
 

@@ -7,6 +7,7 @@ import { getEarnings } from '../api';
 import PrivateLoading from '../privateMUI/PrivateLoading';
 import { ErrorToasts } from '../toast/PrivateToast';
 import EpsCharts from './EpsCharts';
+import { NormalText } from '../privateMUI/PrivateTexts';
 
 const Earnings: FC<{ symbol: string; period: number[] }> = ({
   symbol,
@@ -26,7 +27,7 @@ const Earnings: FC<{ symbol: string; period: number[] }> = ({
   }
 
   if (!data) {
-    return <div>データがありません</div>;
+    return <NormalText>データがありません</NormalText>;
   }
 
   const { stock, earnings } = data;
@@ -37,6 +38,10 @@ const Earnings: FC<{ symbol: string; period: number[] }> = ({
 
   return (
     <>
+      <NormalText>
+        <h3>name: {stock.name}</h3>
+      </NormalText>
+
       <EpsCharts earnings={earnings} period={period} />
     </>
   );

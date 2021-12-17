@@ -1,5 +1,5 @@
 import { FC, useEffect, ReactElement } from 'react';
-import { Switch, Link, useHistory, useLocation } from 'react-router-dom';
+import { Switch, Link, useHistory } from 'react-router-dom';
 import { ReactQueryDevtools } from 'react-query/devtools';
 import * as H from 'history';
 import { Drawer, Grid, IconButton, Hidden } from '@mui/material';
@@ -11,7 +11,7 @@ import SendIcon from '@mui/icons-material/Send';
 import GroupIcon from '@mui/icons-material/Group';
 import DehazeIcon from '@mui/icons-material/Dehaze';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
-import { useLoggedQuery } from './components/api';
+import { useLoggedQuery, MyStocksPriceNow } from './components/api';
 import DarkButton from './components/privateMUI/PrivateDarkButton';
 import LoginForm from './components/authenticate/LoginForm';
 import HelloWorld from './components/admin/HelloWorld';
@@ -46,7 +46,6 @@ const App: FC = () => {
   // ----------ページ遷移履歴の管理----------------------
 
   const history = useHistory() as H.History;
-  const location = useLocation() as H.Location;
 
   // ----------カレントユーザー状態管理----------------------
 
@@ -58,6 +57,10 @@ const App: FC = () => {
   // ----------ログイン状態の確認通信----------------------
 
   const { data, isLoading, isError, error } = useLoggedQuery();
+
+  // ----------ログイン状態の確認通信----------------------
+
+  const myStocksPriceResponse = MyStocksPriceNow();
 
   if (isError && error) {
     ErrorToasts([
@@ -76,10 +79,6 @@ const App: FC = () => {
     }
   }, [dispatch, data]);
 
-  useEffect(() => {
-    dispatch({ type: 'closeDrawer' });
-  }, [dispatch, location]);
-
   if (isLoading) {
     return <PrivateLoading />;
   }
@@ -91,7 +90,7 @@ const App: FC = () => {
         {state.isLogin && state.currentUser && (
           <>
             <Hidden mdDown implementation="js">
-              <PostBar history={history} />
+              {isLoading ? <PrivateLoading /> : <PostBar history={history} />}
             </Hidden>
             <Hidden mdUp implementation="js">
               <Grid item height="100%" width="100%">
@@ -104,14 +103,14 @@ const App: FC = () => {
                     backgroundColor: colors.baseSheet,
                   }}
                 >
-                  <ConfigBar />
+                  <ConfigBar myStocksPriceResponse={myStocksPriceResponse} />
                 </Drawer>
               </Grid>
             </Hidden>
           </>
         )}
 
-        <BaseCard width={400}>
+        <BaseCard width={550}>
           <PrivateAppbar>
             {state.isLogin ? (
               <>
@@ -254,7 +253,7 @@ const App: FC = () => {
 
         {state.isLogin && (
           <Hidden mdDown implementation="js">
-            <ConfigBar />
+            <ConfigBar myStocksPriceResponse={myStocksPriceResponse} />
           </Hidden>
         )}
 

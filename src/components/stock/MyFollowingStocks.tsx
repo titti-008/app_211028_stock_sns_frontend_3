@@ -1,28 +1,17 @@
-import { FC, useEffect } from 'react';
+import { FC } from 'react';
 import { Grid, Divider } from '@mui/material';
 import { NormalText } from '../privateMUI/PrivateTexts';
-import { MyStocksPriceNow } from '../api';
 // import { Stock } from '../Types';
 import { ErrorToasts } from '../toast/PrivateToast';
 import PrivateLoading from '../privateMUI/PrivateLoading';
 import StockPrice from './StockPrice';
+import { MyStockPrice } from '../Types';
 
 /* eslint-disable */
 
-const MyFollowingStocks: FC = () => {
-  const myStocksPriceResponse = MyStocksPriceNow();
+type Props = { myStocksPriceResponse: MyStockPrice };
 
-  useEffect(() => {
-    if (myStocksPriceResponse.data) {
-      localStorage.setItem(
-        'myStocks-price',
-        JSON.stringify(myStocksPriceResponse.data),
-      );
-    }
-  }, [myStocksPriceResponse.data]);
-
-  console.log('myStocksPriceResponse', myStocksPriceResponse);
-
+const MyFollowingStocks: FC<Props> = ({ myStocksPriceResponse }) => {
   if (myStocksPriceResponse.isLoading) {
     return <PrivateLoading />;
   }
@@ -41,8 +30,8 @@ const MyFollowingStocks: FC = () => {
     <>
       <Grid item>
         <NormalText>フォローしている株式</NormalText>
-        {myStocksPriceResponse.data?.map((stock) => (
-          <StockPrice stock={stock} key={stock.id} />
+        {myStocksPriceResponse.data?.map((stock, index) => (
+          <StockPrice stock={stock} key={index} />
         ))}
         <Divider sx={{ width: '100%' }} />
       </Grid>
