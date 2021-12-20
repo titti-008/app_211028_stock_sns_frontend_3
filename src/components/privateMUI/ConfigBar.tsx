@@ -30,7 +30,7 @@ const ConfigBar: FC<Props> = ({ myStocksPriceResponse }) => {
             <DehazeIcon />
           </IconButton>
         </Grid>
-        <Grid item width="300px">
+        <Grid item>
           <NormalText>設定</NormalText>
         </Grid>
       </PrivateAppbar>

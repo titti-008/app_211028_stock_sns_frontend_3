@@ -207,7 +207,7 @@ const CandleChart: FC<PropsType> = ({ historical, symbol, period }) => {
             height: '50%',
           },
           {
-            left: '10%',
+            left: '6%',
             right: '4%',
             top: '63%',
             height: '20%',
