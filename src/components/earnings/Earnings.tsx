@@ -7,6 +7,8 @@ import { getEarnings } from '../api';
 import PrivateLoading from '../privateMUI/PrivateLoading';
 import { ErrorToasts } from '../toast/PrivateToast';
 import EpsCharts from './EpsCharts';
+import GrowthCharts from './GrowthCharts';
+import CashFlowCharts from './CashFlowCharts';
 import { NormalText } from '../privateMUI/PrivateTexts';
 
 const Earnings: FC<{ symbol: string; period: number[] }> = ({
@@ -39,10 +41,12 @@ const Earnings: FC<{ symbol: string; period: number[] }> = ({
   return (
     <>
       <NormalText>
-        <h3>name: {stock.name}</h3>
+        <h2>{stock.name}</h2>
       </NormalText>
 
       <EpsCharts earnings={earnings} period={period} />
+      <GrowthCharts earnings={earnings} period={period} />
+      <CashFlowCharts earnings={earnings} period={period} />
     </>
   );
 };

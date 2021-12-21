@@ -8,7 +8,7 @@ type PropsType = {
   earnings: EarningType[];
   period: number[];
 };
-const EpsCharts: FC<PropsType> = ({ earnings, period }) => {
+const CashFlowCharts: FC<PropsType> = ({ earnings, period }) => {
   const colors = useColors();
   const divRef = useRef<HTMLDivElement>(null!);
 
@@ -17,48 +17,36 @@ const EpsCharts: FC<PropsType> = ({ earnings, period }) => {
     const splitData = (earningsProps: EarningType[]) => {
       const categoryData: Date[] = [];
 
-      const epsEstimates: Array<number | string> = [];
-      const epsReported: Array<number | string> = [];
-      const epsDifference: Array<number | string> = [];
-
-      const RevenueEstimate: Array<number | string> = [];
-      const RevenueReported: Array<number | string> = [];
-      const RevenueDifference: Array<number | string> = [];
+      const netIncome: Array<number | string> = [];
+      const operatingCashFlow: Array<number | string> = [];
+      const difference: Array<number | string> = [];
+      const cashFlowMargin: Array<number | string> = [];
 
       earningsProps.forEach((earning) => {
         categoryData.unshift(earning.endOfQuarter);
 
-        epsEstimates.unshift(
-          earning.epsEstimated
-            ? Math.round(earning.epsEstimated * 1000) / 1000
+        netIncome.unshift(
+          earning.netIncome ? Math.round(earning.netIncome / 1_000_000) : '-',
+        );
+        operatingCashFlow.unshift(
+          earning.operatingCashFlow
+            ? Math.round(earning.operatingCashFlow / 1_000_000)
             : '-',
         );
-        epsReported.unshift(
-          earning.eps ? Math.round(earning.eps * 1000) / 1000 : '-',
-        );
-        epsDifference.unshift(
-          earning.epsEstimated || earning.eps
-            ? Math.round((earning.eps - earning.epsEstimated) * 1000) / 1000
-            : 0,
-        );
 
-        RevenueEstimate.unshift(
-          earning.revenueEstimated
-            ? Math.round(earning.revenueEstimated / 1_000_000)
-            : '-',
-        );
-        RevenueReported.unshift(
-          earning.revenue ? Math.round(earning.revenue / 1_000_000) : '-',
-        );
-
-        RevenueDifference.unshift(
-          earning.revenueEstimated || earning.revenue
+        difference.unshift(
+          earning.netIncome || earning.operatingCashFlow
             ? Math.round(
-                ((earning.revenue - earning.revenueEstimated) /
-                  earning.revenueEstimated) *
-                  10_000,
-              ) / 100 // パーセンテージに変換
-            : 0,
+                (earning.operatingCashFlow - earning.netIncome) / 1_000_000,
+              )
+            : '-',
+        );
+
+        cashFlowMargin.unshift(
+          earning.revenue && earning.operatingCashFlow
+            ? Math.round((earning.operatingCashFlow / earning.revenue) * 1000) /
+                10
+            : '-',
         );
       });
 
@@ -77,13 +65,10 @@ const EpsCharts: FC<PropsType> = ({ earnings, period }) => {
         end,
         span,
 
-        epsEstimates,
-        epsReported,
-        epsDifference,
-
-        RevenueEstimate,
-        RevenueReported,
-        RevenueDifference,
+        netIncome,
+        operatingCashFlow,
+        difference,
+        cashFlowMargin,
       };
     };
 
@@ -99,15 +84,12 @@ const EpsCharts: FC<PropsType> = ({ earnings, period }) => {
         {
           top: 35,
           right: 'center',
-          data: ['予想EPS', '結果EPS', 'EPS差異'],
-          textStyle: {
-            color: colors.text,
-          },
-        },
-        {
-          top: '48%',
-          right: 'center',
-          data: ['売上高-予想', '売上高-結果', '売上高差異(%)'],
+          data: [
+            '①純利益',
+            '②営業キャッシュフロー',
+            '②-① 差異',
+            '③キャッシュフローマージン',
+          ],
           textStyle: {
             color: colors.text,
           },
@@ -115,16 +97,8 @@ const EpsCharts: FC<PropsType> = ({ earnings, period }) => {
       ],
       title: [
         {
-          text: 'EPS 予想vs結果',
+          text: '営業キャッシュフロー',
           left: 0,
-          textStyle: {
-            color: colors.text,
-          },
-        },
-        {
-          text: '売上高 予想vs結果',
-          left: 0,
-          top: '44%',
           textStyle: {
             color: colors.text,
           },
@@ -186,29 +160,11 @@ const EpsCharts: FC<PropsType> = ({ earnings, period }) => {
 
       xAxis: [
         {
-          // EPS X軸
-          type: 'category',
-          scale: true,
-          offset: 10,
-          data: data0.categoryData,
-          // axisLine: {
-          //   onZero: false,
-          //   lineStyle: { color: colors.chart.borderColor },
-          // },
-          splitLine: {
-            show: true,
-            lineStyle: { color: colors.chart.borderColor },
-          },
-
-          min: 'dataMin',
-          max: 'dataMax',
-        },
-        {
           // 売上高 X軸
           type: 'category',
           scale: true,
           data: data0.categoryData,
-          gridIndex: 1,
+          gridIndex: 0,
           axisLine: {
             onZero: false,
             lineStyle: { color: colors.chart.borderColor },
@@ -229,7 +185,7 @@ const EpsCharts: FC<PropsType> = ({ earnings, period }) => {
           data: data0.categoryData,
           scale: true,
           axisLine: { onZero: false },
-          axisTick: { show: false },
+          axisTick: { show: true },
           splitLine: { show: false },
           axisLabel: { show: false },
           min: 'dataMin',
@@ -237,7 +193,7 @@ const EpsCharts: FC<PropsType> = ({ earnings, period }) => {
         },
 
         {
-          // 売上高差異 X軸
+          // CFマージン X軸
           type: 'category',
           gridIndex: 1,
           data: data0.categoryData,
@@ -254,53 +210,26 @@ const EpsCharts: FC<PropsType> = ({ earnings, period }) => {
         {
           left: '6%',
           right: '4%',
-          height: '30%',
+          height: '40%',
         },
         {
           left: '6%',
           right: '4%',
-          top: '51%',
-          height: '30%',
+          top: '63%',
+          height: '20%',
         },
-
-        // ////
       ],
 
       yAxis: [
         {
-          // EPS Y軸
+          // netIncome & CF Y軸
           scale: true,
           axisLabel: {
             inside: true,
             padding: [2, 0, 0, 0],
             verticalAlign: 'top',
-          },
-          axisLine: {
-            show: true,
-            lineStyle: { color: colors.chart.borderColor },
-          },
-          splitLine: {
-            show: true,
-            lineStyle: { color: colors.chart.borderColor },
-          },
-          splitArea: {
-            show: true,
-            areaStyle: {
-              color: ['none', 'none'],
-            },
-          },
-        },
-        {
-          // 売上高 Y軸
-          scale: true,
-          axisLabel: {
-            inside: true,
-            padding: [2, 0, 0, 0],
             formatter: '{value} M',
-            verticalAlign: 'top',
           },
-          gridIndex: 1,
-          splitNumber: 2,
           axisLine: {
             show: true,
             lineStyle: { color: colors.chart.borderColor },
@@ -317,36 +246,48 @@ const EpsCharts: FC<PropsType> = ({ earnings, period }) => {
           },
         },
         {
-          // EPS差異 Y軸
+          // 差異 Y軸
           scale: true,
-          gridIndex: 0,
           axisLabel: {
             show: false,
-            formatter: '{value} M',
           },
           axisLine: { show: false },
           axisTick: { show: false },
           splitLine: { show: false },
         },
         {
-          // 売上高差異% Y軸
+          // CFマージン Y軸
           scale: true,
           gridIndex: 1,
+          min: -10,
+          max: 50,
           axisLabel: {
-            show: false,
+            inside: true,
+            right: 0,
+            padding: [2, 0, 0, 0],
+            verticalAlign: 'top',
             formatter: '{value} %',
           },
-          axisLine: { show: false },
-          axisTick: { show: false },
-          splitLine: { show: false },
-          min: -50,
-          max: 50,
+          axisLine: {
+            show: true,
+            lineStyle: { color: colors.text },
+          },
+          splitLine: {
+            show: false,
+            lineStyle: { color: colors.text },
+          },
+          splitArea: {
+            show: false,
+            areaStyle: {
+              color: ['none', 'none'],
+            },
+          },
         },
       ],
       dataZoom: [
         {
           type: 'inside',
-          xAxisIndex: [0, 1, 2, 3],
+          xAxisIndex: [0, 1, 2],
           rangeMode: ['value', 'value'],
           startValue: data0.start,
           endValue: data0.end,
@@ -354,7 +295,7 @@ const EpsCharts: FC<PropsType> = ({ earnings, period }) => {
         {
           // 横軸のズームスライダー
           show: true,
-          xAxisIndex: [0, 1, 2, 3],
+          xAxisIndex: [0, 1, 2],
           type: 'slider',
           top: '85%',
           rangeMode: ['value', 'value'],
@@ -367,8 +308,8 @@ const EpsCharts: FC<PropsType> = ({ earnings, period }) => {
       ],
       series: [
         {
-          name: '予想EPS',
-          data: data0.epsEstimates,
+          name: '①純利益',
+          data: data0.netIncome,
           type: 'line',
           symbol: 'triangle',
           symbolSize: 3,
@@ -385,8 +326,8 @@ const EpsCharts: FC<PropsType> = ({ earnings, period }) => {
           },
         },
         {
-          name: '結果EPS',
-          data: data0.epsReported,
+          name: '②営業キャッシュフロー',
+          data: data0.operatingCashFlow,
           type: 'line',
           symbol: 'circle',
           symbolSize: 3,
@@ -400,69 +341,38 @@ const EpsCharts: FC<PropsType> = ({ earnings, period }) => {
             borderWidth: 1,
             borderColor: colors.chart.downBorderColor,
             color: colors.chart.downColor,
+          },
+        },
+        {
+          name: '②-① 差異',
+          type: 'bar',
+          xAxisIndex: 1,
+          yAxisIndex: 1,
+          data: data0.difference,
+          itemStyle: {
+            color: colors.chart.borderColor,
+            opacity: 0.4,
           },
         },
 
         {
-          name: '売上高-予想',
-          data: data0.RevenueEstimate,
-          type: 'line',
-          xAxisIndex: 1,
-          yAxisIndex: 1,
-          symbol: 'triangle',
-          symbolSize: 3,
-          showAllSymbol: 'true',
-          lineStyle: {
-            color: colors.chart.upBorderColor,
-            width: 1,
-            type: 'dashed',
-          },
-          itemStyle: {
-            borderWidth: 1,
-            borderColor: colors.chart.upBorderColor,
-            color: colors.chart.upColor,
-          },
-        },
-        {
-          name: '売上高-結果',
-          data: data0.RevenueReported,
-          type: 'line',
-          xAxisIndex: 1,
-          yAxisIndex: 1,
+          name: '③キャッシュフローマージン',
+          data: data0.cashFlowMargin,
+          type: 'bar',
+          xAxisIndex: 2,
+          yAxisIndex: 2,
           symbol: 'circle',
           symbolSize: 3,
           showAllSymbol: 'true',
           lineStyle: {
-            color: colors.chart.downBorderColor,
+            color: colors.text,
             width: 1,
             type: 'solid',
           },
           itemStyle: {
             borderWidth: 1,
-            borderColor: colors.chart.downBorderColor,
-            color: colors.chart.downColor,
-          },
-        },
-        {
-          name: 'EPS差異',
-          type: 'bar',
-          xAxisIndex: 2,
-          yAxisIndex: 2,
-          data: data0.epsDifference,
-          itemStyle: {
+            borderColor: colors.chart.borderColor,
             color: colors.chart.borderColor,
-            opacity: 0.4,
-          },
-        },
-        {
-          name: '売上高差異(%)',
-          type: 'bar',
-          xAxisIndex: 3,
-          yAxisIndex: 3,
-          data: data0.RevenueDifference,
-          itemStyle: {
-            color: colors.chart.borderColor,
-            opacity: 0.4,
           },
         },
       ],
@@ -475,10 +385,9 @@ const EpsCharts: FC<PropsType> = ({ earnings, period }) => {
 
   return (
     <>
-      <div ref={divRef} style={{ width: '100%', height: '700px' }} />
+      <div ref={divRef} style={{ width: '100%', height: '400px' }} />
     </>
   );
 };
 
-export default EpsCharts;
-/* eslint-disable */
+export default CashFlowCharts;
