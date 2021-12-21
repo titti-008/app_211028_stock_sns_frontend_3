@@ -11,6 +11,7 @@ import SearchSymbol from '../earnings/SearchSymbol';
 import MyFollowingStocks from '../stock/MyFollowingStocks';
 import LogoutButton from '../authenticate/LogoutButton';
 import { MyStockPrice } from '../Types';
+import PrivateLoading from './PrivateLoading';
 
 type Props = { myStocksPriceResponse: MyStockPrice };
 
@@ -48,7 +49,11 @@ const ConfigBar: FC<Props> = ({ myStocksPriceResponse }) => {
           <AccountCircleIcon />
         </LinkContainer>
         <SearchSymbol />
-        <MyFollowingStocks myStocksPriceResponse={myStocksPriceResponse} />
+        {myStocksPriceResponse.isLoading ? (
+          <PrivateLoading />
+        ) : (
+          <MyFollowingStocks myStocksPriceResponse={myStocksPriceResponse} />
+        )}
       </PrivateBox>
     </BaseCard>
   );

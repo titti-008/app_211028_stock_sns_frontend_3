@@ -87,7 +87,8 @@ export type StocksType = { stocks: Stock[] };
 
 export type EarningType = Id & {
   symbol: string;
-  date: Date;
+  endOfQuarter: Date;
+  // date: Date;
   fillingDate: Date;
   revenue: number;
   revenueEstimated: number;

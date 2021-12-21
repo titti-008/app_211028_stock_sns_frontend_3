@@ -1,6 +1,6 @@
 import { FC, useState, useEffect } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
-import { Grid, Slider } from '@mui/material';
+import { Grid } from '@mui/material';
 import { useMutation, useQueryClient } from 'react-query';
 import { Stock } from '../Types';
 import Earnings from './Earnings';
@@ -8,9 +8,9 @@ import GetStockPrice from './GetStockPrice';
 import { LinkButton, SubmitButton } from '../privateMUI/PrivateBottuns';
 import { followStock, unfollowStock, MyStocksPriceNow } from '../api';
 import { SuccessToasts } from '../toast/PrivateToast';
+import { NormalText } from '../privateMUI/PrivateTexts';
+import YearSlider from '../privateMUI/YearSlider';
 // import StockPrice from '../stock/StockPrice';
-
-const valuetext = (value: number) => `${value}日前`;
 
 const isFollowingStock = (symbol: string) => {
   const myStocksJSON = localStorage.getItem('myStocks-price');
@@ -84,10 +84,7 @@ const StockBoard: FC<RouteComponentProps<{ symbol: string; day: string }>> = ({
   });
 
   const [value, setValue] = useState<number[]>([-1, 0]);
-
-  const handleChange = (event: Event, newValue: number | number[]) => {
-    setValue(newValue as number[]);
-  };
+  const maxYear = Math.round(Number(match.params.day) / 365) + 1;
 
   return (
     <>
@@ -98,19 +95,10 @@ const StockBoard: FC<RouteComponentProps<{ symbol: string; day: string }>> = ({
         direction="row"
         width="100%"
       >
-        <Slider
-          getAriaLabel={() => '表示範囲(○○日前)'}
-          min={-10}
-          max={0}
-          step={1}
-          value={value}
-          onChange={handleChange}
-          valueLabelDisplay="auto"
-          getAriaValueText={valuetext}
-          sx={{ marginTop: '30px', width: '90%' }}
-        />
+        <NormalText>表示期間の一括調整</NormalText>
+        <YearSlider value={value} setValue={setValue} maxYear={maxYear} />
         <LinkButton
-          linkTo={`/stocks/${match.params.symbol}/2000`}
+          linkTo={`/stocks/${match.params.symbol}/4000`}
           label="長期データ"
           disabled={false}
         />

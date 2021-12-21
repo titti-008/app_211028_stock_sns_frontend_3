@@ -209,8 +209,8 @@ const CandleChart: FC<PropsType> = ({ historical, symbol, period }) => {
           {
             left: '6%',
             right: '4%',
-            top: '63%',
-            height: '20%',
+            top: '69%',
+            height: '15%',
           },
         ],
         xAxis: [
