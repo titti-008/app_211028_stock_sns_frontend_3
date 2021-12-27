@@ -1,19 +1,19 @@
 import React from 'react';
-import { useQueryClient } from 'react-query';
-import { LoginResponse, HistoryPropsType, ErrorResponse } from '../Types';
+// import { useQueryClient } from 'react-query';
+import { HistoryPropsType, ErrorResponse } from '../Types';
 import { NormalText } from '../privateMUI/PrivateTexts';
 import { updateUser } from '../api';
 import { SuccessToasts, ErrorToasts } from '../toast/PrivateToast';
 import useUserDataInput from '../../hooks/useDataInput';
 import UserDataForm from '../../hooks/UserDataForm';
+import { useAppContext } from '../../hooks/ReduserContext';
 
 const EditUser: React.FC<HistoryPropsType> = ({ history }) => {
-  const queryClient = useQueryClient();
-  const data = queryClient.getQueryData<LoginResponse>(`loginData`);
+  const { state, dispatch } = useAppContext();
 
   const initInput = {
-    name: '',
-    email: '',
+    name: state.currentUser ? state.currentUser.name : '',
+    email: state.currentUser ? state.currentUser.email : '',
     password: '',
     passwordConfirmation: '',
   };
@@ -21,21 +21,22 @@ const EditUser: React.FC<HistoryPropsType> = ({ history }) => {
   const { values, handleChange } = useUserDataInput(initInput);
 
   const userData = {
-    id: data?.user ? data?.user.id : 0,
+    id: state.currentUser ? state.currentUser?.id : 0,
     ...values,
   };
 
   const submitUpdateUser = async () => {
+    console.log('edituser userData', userData);
     try {
       const response = await updateUser(userData);
 
       if (response.status === 201) {
         SuccessToasts(response.data.messages);
-        // dispatch({
-        //   type: 'saveUser',
-        //   setUser: response.data.user,
-        //   isLogin: response.data.loggedIn,
-        // });
+        dispatch({
+          type: 'saveUser',
+          setUser: response.data.user,
+          isLogin: response.data.loggedIn,
+        });
         history.push('/current_user');
         console.log('編集完了', response);
       } else {

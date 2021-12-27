@@ -10,15 +10,15 @@ import { useAppContext } from '../../hooks/ReduserContext';
 import SearchSymbol from '../earnings/SearchSymbol';
 import MyFollowingStocks from '../stock/MyFollowingStocks';
 import LogoutButton from '../authenticate/LogoutButton';
-import { MyStockPrice } from '../Types';
 import PrivateLoading from './PrivateLoading';
+import { MyStocksPriceNow } from '../api';
 
-type Props = { myStocksPriceResponse: MyStockPrice };
+// type Props = { myStocksPriceResponse: MyStockPrice };
 
-/* eslint-disable */
-
-const ConfigBar: FC<Props> = ({ myStocksPriceResponse }) => {
+const ConfigBar: FC = () => {
   const { state, dispatch } = useAppContext();
+
+  const myStocksPriceResponse = MyStocksPriceNow();
 
   return (
     <BaseCard width={300}>
@@ -60,3 +60,4 @@ const ConfigBar: FC<Props> = ({ myStocksPriceResponse }) => {
 };
 
 export default ConfigBar;
+/* eslint-disable */

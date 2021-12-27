@@ -11,7 +11,7 @@ import SendIcon from '@mui/icons-material/Send';
 import GroupIcon from '@mui/icons-material/Group';
 import DehazeIcon from '@mui/icons-material/Dehaze';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
-import { useLoggedQuery, MyStocksPriceNow } from './components/api';
+import { useLoggedQuery } from './components/api';
 import DarkButton from './components/privateMUI/PrivateDarkButton';
 import LoginForm from './components/authenticate/LoginForm';
 import HelloWorld from './components/admin/HelloWorld';
@@ -60,8 +60,6 @@ const App: FC = () => {
 
   // ----------ログイン状態の確認通信----------------------
 
-  const myStocksPriceResponse = MyStocksPriceNow();
-
   if (isError && error) {
     ErrorToasts([
       'ログイン状態の確認に失敗しました。',
@@ -103,7 +101,7 @@ const App: FC = () => {
                     backgroundColor: colors.baseSheet,
                   }}
                 >
-                  <ConfigBar myStocksPriceResponse={myStocksPriceResponse} />
+                  <ConfigBar />
                 </Drawer>
               </Grid>
             </Hidden>
@@ -253,7 +251,7 @@ const App: FC = () => {
 
         {state.isLogin && (
           <Hidden mdDown implementation="js">
-            <ConfigBar myStocksPriceResponse={myStocksPriceResponse} />
+            <ConfigBar />
           </Hidden>
         )}
 
