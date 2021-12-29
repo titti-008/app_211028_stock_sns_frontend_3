@@ -14,14 +14,15 @@ const StockPrice: FC<{ stock: Stock }> = ({ stock }) => {
   const fluctuation =
     ((stock.price - stock.previousClose) / stock.previousClose) * 100;
 
+  const isUp = Math.sign(fluctuation) >= 0;
+
   return (
     <>
       <Tooltip
         disableFocusListener
         disableTouchListener
         TransitionComponent={Fade}
-        enterDelay={500}
-        // TransitionProps={{ timeout: 1000, exit: false, enter: false }}
+        enterDelay={0}
         title={
           <Grid>
             <Typography sx={{ color: 'white' }}>社名: {stock.name}</Typography>
@@ -30,24 +31,27 @@ const StockPrice: FC<{ stock: Stock }> = ({ stock }) => {
             </Typography>
 
             <Typography sx={{ color: 'white' }}>
-              現在値: {stock.price} (
-              {format(new Date(stock.timestamp), 'hh:mm')})
+              現在値: {stock.price}
             </Typography>
             <Typography sx={{ color: 'white' }}>
               次回決算発表:{' '}
-              {format(new Date(stock.earningsAnnouncement), 'yyyy/MM/dd')}
+              {stock.earningsAnnouncement
+                ? format(new Date(stock.earningsAnnouncement), 'yyyy/MM/dd')
+                : '-'}
             </Typography>
           </Grid>
         }
       >
         <Link to={`/stocks/${stock.symbol}/1000`}>
           <Button
-            variant="text"
+            variant="outlined"
             size="small"
             sx={{
               color: colors.text,
-              borderColor: colors.text,
-              margin: '10px 0',
+              borderColor: isUp
+                ? colors.chart.upBorderColor
+                : colors.chart.downBorderColor,
+              margin: '10px 3px',
               height: '30px',
             }}
           >
@@ -55,7 +59,7 @@ const StockPrice: FC<{ stock: Stock }> = ({ stock }) => {
               {stock.symbol}
               {}{' '}
             </h3>
-            {Math.sign(fluctuation) >= 0 ? (
+            {isUp ? (
               <ArrowUpwardOutlinedIcon
                 fontSize="small"
                 style={{ color: colors.chart.upBorderColor }}
@@ -68,10 +72,9 @@ const StockPrice: FC<{ stock: Stock }> = ({ stock }) => {
             )}
             <h3
               style={{
-                color:
-                  Math.sign(fluctuation) >= 0
-                    ? colors.chart.upBorderColor
-                    : colors.chart.downBorderColor,
+                color: isUp
+                  ? colors.chart.upBorderColor
+                  : colors.chart.downBorderColor,
               }}
             >
               {signCheck(fluctuation, 2)}%

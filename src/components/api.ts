@@ -28,9 +28,6 @@ export const micropostsUrl = `${apiUrl}/microposts`;
 const relationshipsUrl = `${apiUrl}/relationships`;
 const StockUrl = `${apiUrl}/stocks`;
 
-const financialUrl = process.env.REACT_APP_FINANCIAL_URL ?? '';
-const apiKey = process.env.REACT_APP_API_KEY ?? '';
-
 export const instance = axios.create({ withCredentials: true });
 
 export const getFollowers = (
@@ -112,13 +109,12 @@ export const useStockPriceQuery = (symbol: string, day: string) =>
         StockPriceResponse,
         AxiosResponse<StockPriceResponse>,
         ErrorResponse
-      >(
-        `${financialUrl}/historical-price-full/${symbol}?timeseries=${day}&apikey=${apiKey}`,
-      ),
-    `price-${symbol}`,
+      >(`${apiUrl}/stocks/stock_historical?symbol=${symbol}&day=${day}`),
+    `price-${symbol}-${day}`,
   );
 
 export const MyStocksPriceNow = () => {
+  // バックエンドからフォローしている株式を取得→それらのシンボルをつないでURLにしてAPIで一括株価情報検索
   const request = async () => {
     const backendStockRes = await instance.get<
       StocksResponse,
@@ -126,21 +122,7 @@ export const MyStocksPriceNow = () => {
       ErrorResponse
     >(`${StockUrl}/my_following_stock`);
 
-    const symbols = backendStockRes.data.stocks.map((stock) => stock.symbol);
-    const symbolsUrl = symbols.join();
-
-    const response = await axios.get<
-      Stock[],
-      AxiosResponse<Stock[]>,
-      ApiErrorMessage
-    >(`${financialUrl}/quote/${symbolsUrl}?apikey=${apiKey}`);
-
-    console.log(
-      `${financialUrl}/quote/${symbolsUrl}?apikey=${apiKey}`,
-      response,
-    );
-
-    return response.data;
+    return backendStockRes.data.stocks;
   };
 
   const { data, isLoading, isError, error } = useQuery<

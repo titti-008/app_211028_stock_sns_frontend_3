@@ -76,9 +76,6 @@ const CashFlowCharts: FC<PropsType> = ({ earnings, period }) => {
 
     const myChart = echarts.init(divRef.current);
 
-    const testDate = data0.categoryData[7];
-    console.log('testDate', testDate);
-
     myChart.setOption({
       legend: [
         {
