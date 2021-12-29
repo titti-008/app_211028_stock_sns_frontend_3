@@ -4,12 +4,6 @@ import { Tooltip, IconButton } from '@mui/material';
 import Brightness5Icon from '@mui/icons-material/Brightness5';
 import Brightness3Icon from '@mui/icons-material/Brightness3';
 import { useAppContext } from '../../hooks/ReduserContext';
-// type TypeProps = {
-//   darkMode: boolean;
-//   handleDarkModeOn: () => void;
-
-//   handleDarkModeOff: () => void;
-// };
 
 const DarkButton: FC = () => {
   const { dispatch } = useAppContext();

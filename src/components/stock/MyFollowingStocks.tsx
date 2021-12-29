@@ -5,13 +5,12 @@ import { NormalText } from '../privateMUI/PrivateTexts';
 import { ErrorToasts } from '../toast/PrivateToast';
 import PrivateLoading from '../privateMUI/PrivateLoading';
 import StockPrice from './StockPrice';
-import { MyStockPrice } from '../Types';
+import { MyStocksPriceNow } from '../api';
 
 /* eslint-disable */
 
-type Props = { myStocksPriceResponse: MyStockPrice };
-
-const MyFollowingStocks: FC<Props> = ({ myStocksPriceResponse }) => {
+const MyFollowingStocks: FC = () => {
+  const myStocksPriceResponse = MyStocksPriceNow();
   if (myStocksPriceResponse.isLoading) {
     return <PrivateLoading />;
   }

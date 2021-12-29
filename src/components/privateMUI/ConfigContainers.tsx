@@ -1,7 +1,11 @@
 import { FC } from 'react';
 import { Grid, IconButton, Divider, CircularProgress } from '@mui/material';
+import Brightness5Icon from '@mui/icons-material/Brightness5';
+import Brightness3Icon from '@mui/icons-material/Brightness3';
+import { useTheme } from '@mui/material/styles';
 import { Link } from 'react-router-dom';
 import { NormalText } from './PrivateTexts';
+import { useAppContext } from '../../hooks/ReduserContext';
 
 type LinkPropsType = {
   linkTo: string;
@@ -67,3 +71,30 @@ export const ButtonContainer: FC<ButtonPropsType> = ({
     <Divider sx={{ width: '100%' }} />
   </Grid>
 );
+
+export const DarkButtonContainer = () => {
+  const { dispatch } = useAppContext();
+  const theme = useTheme();
+
+  return (
+    <>
+      {theme.palette.mode === 'dark' ? (
+        <ButtonContainer
+          handleAction={() => dispatch({ type: 'setLightMode' })}
+          linkText="Lightモードに切り替える"
+          isLoading={false}
+        >
+          <Brightness5Icon />
+        </ButtonContainer>
+      ) : (
+        <ButtonContainer
+          handleAction={() => dispatch({ type: 'setDarkMode' })}
+          linkText="Darkモードに切り替える"
+          isLoading={false}
+        >
+          <Brightness3Icon />
+        </ButtonContainer>
+      )}
+    </>
+  );
+};
