@@ -21,6 +21,7 @@ const StockPrice: FC<{ stock: Stock }> = ({ stock }) => {
       <Tooltip
         disableFocusListener
         disableTouchListener
+        disableInteractive
         TransitionComponent={Fade}
         enterDelay={0}
         title={
