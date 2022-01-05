@@ -1,12 +1,33 @@
-# Getting Started with Create React App
+# 米国株】決算チャート分析から始める米国株分析サイト じっちゃまチャート
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## 米国株式の決算・株価分析サイトです。
+[デプロイ版はこちら](https://www.stocksnstitti.com/)
+  ※テスト用  ID: testman@gmail.com、password: Password1
 
-## Available Scripts
+## 主な機能
+* 全米国株式(NASDAQ,NYSE)のシンボル検索機能
+  ![1_Symbol_Search](image/1_Symbol_Search.jpg)
+* 気になる株式をフォローすると、一覧でその日の株価変動が見える
+  ![2_Following_Stocks](image/2_Following_Stocks.jpg)
+* 各株式の決算データならびに株価チャートを同時系列で表示・分析できる
+  ![3_Chandle_Chart](image/3_Chandle_Chart.jpg)
+  ![4_earnings_data](image/4_earnings_data.jpg)
+* クローズドな米国株専用SNS
+  ![5_stock_SNS](image/5_stock_SNS.jpg)
+* スマートフォンでもネイティブアプリのような感覚で使用できます(レスポンシブル対応済み)
+  ![6_Responsible_window](image/6_Responsible_window.jpg)
 
-In the project directory, you can run:
 
-### `yarn start`
+## 使用している技術
+* インフラ: heroku、AWS(S3)
+* バックエンド: Ruby on Rails 6.1 (Ruby 3.0.1)
+* フロントエンド: React.js 17.0、 TypeScript 4.4.4
+* http通信ライブラリー: [axios](https://www.npmjs.com/package/axios)
+* UIライブラリー: [Material UI](https://mui.com/)
+* 株式情報API: [Financial Modeling Prep API](https://site.financialmodelingprep.com/developer/docs)
+
+
+### ローカルサーバー起動: `yarn start`
 
 Runs the app in the development mode.\
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
@@ -14,33 +35,3 @@ Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 The page will reload if you make edits.\
 You will also see any lint errors in the console.
 
-### `yarn test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `yarn build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `yarn eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
