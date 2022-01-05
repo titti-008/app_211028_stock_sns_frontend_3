@@ -1,37 +1,49 @@
-# 米国株】決算チャート分析から始める米国株分析サイト じっちゃまチャート
+# 【米国株】決算チャート分析から始める米国株分析サイト
 
-## 米国株式の決算・株価分析サイトです。
+## どんなサイト? → 個人投資家向け米国株式の決算・株価分析サイトです。
+
+  ![0_Screen_image](image/0_Screen_image.jpg)
+
 [デプロイ版はこちら](https://www.stocksnstitti.com/)
   ※テスト用  ID: testman@gmail.com、password: Password1
 
-## 主な機能
-* 全米国株式(NASDAQ,NYSE)のシンボル検索機能
-  ![1_Symbol_Search](image/1_Symbol_Search.jpg)
-* 気になる株式をフォローすると、一覧でその日の株価変動が見える
-  ![2_Following_Stocks](image/2_Following_Stocks.jpg)
-* 各株式の決算データならびに株価チャートを同時系列で表示・分析できる
-  ![3_Chandle_Chart](image/3_Chandle_Chart.jpg)
-  ![4_earnings_data](image/4_earnings_data.jpg)
-* クローズドな米国株専用SNS
-  ![5_stock_SNS](image/5_stock_SNS.jpg)
-* スマートフォンでもネイティブアプリのような感覚で使用できます(レスポンシブル対応済み)
-  ![6_Responsible_window](image/6_Responsible_window.jpg)
 
-
-## 使用している技術
+## 使用している技術スタック
 * インフラ: heroku、AWS(S3)
 * バックエンド: Ruby on Rails 6.1 (Ruby 3.0.1)
+  [バックエンドのレポジトリはこちら](https://github.com/titti-008/app_211028_stock_sns_backend)
 * フロントエンド: React.js 17.0、 TypeScript 4.4.4
 * http通信ライブラリー: [axios](https://www.npmjs.com/package/axios)
 * UIライブラリー: [Material UI](https://mui.com/)
 * 株式情報API: [Financial Modeling Prep API](https://site.financialmodelingprep.com/developer/docs)
 
 
-### ローカルサーバー起動: `yarn start`
+
+## 主な機能
+### * 全米国株式(NASDAQ,NYSE)のシンボル検索機能
+  ![1_Symbol_Search](image/1_Symbol_Search.jpg)
+
+
+### * 気になる株式をフォローすると、一覧でその日の株価変動が見える
+  ![2_Following_Stocks](image/2_Following_Stocks.jpg)
+
+
+### * 各株式の決算データならびに株価チャートを同時系列で表示・分析できる
+  ![3_Chandle_Chart](image/3_Chandle_Chart.jpg)
+  ![4_earnings_data](image/4_earnings_data.jpg)
+
+
+### * クローズドな米国株専用SNS
+  ![5_stock_SNS](image/5_stock_SNS.jpg)
+
+
+### * スマートフォンでもネイティブアプリのような感覚で使用できます(レスポンシブル対応済み)
+  ![6_Responsible_window](image/6_Responsible_window.jpg)
+
+
+### ローカルサーバー起動方法: `yarn start`
 
 Runs the app in the development mode.\
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
 
