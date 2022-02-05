@@ -15,6 +15,7 @@
 * フロントエンド: React.js 17.0、 TypeScript 4.4.4
 * http通信ライブラリー: [axios](https://www.npmjs.com/package/axios)
 * UIライブラリー: [Material UI](https://mui.com/)
+* ESLintならびにprettierを使用
 * 株式情報API: [Financial Modeling Prep API](https://site.financialmodelingprep.com/developer/docs)
 
 
