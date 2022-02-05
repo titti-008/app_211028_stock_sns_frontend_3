@@ -13,62 +13,64 @@ type PropsType = {
   distanceToNow: boolean;
 };
 
-const IconText: FC<PropsType> = (_props) => {
-  const props = _props;
-
-  return (
-    <Grid item sx={{ width: '100%' }}>
-      <Grid
-        container
-        direction="row"
-        justifyContent="flex-start"
-        alignItems="flex-start"
-        wrap="nowrap"
-      >
-        <Grid item p={1}>
-          <Link to={props.linkTo}>
-            <Avatar>
-              <PersonIcon fontSize="large" />
-            </Avatar>
-          </Link>
+const IconText: FC<PropsType> = ({
+  linkTo,
+  name,
+  date,
+  distanceToNow,
+  children,
+}) => (
+  <Grid item sx={{ width: '100%' }}>
+    <Grid
+      container
+      direction="row"
+      justifyContent="flex-start"
+      alignItems="flex-start"
+      wrap="nowrap"
+    >
+      <Grid item p={1}>
+        <Link to={linkTo}>
+          <Avatar>
+            <PersonIcon fontSize="large" />
+          </Avatar>
+        </Link>
+      </Grid>
+      <Grid item xs sx={{ width: '50%' }}>
+        <Grid
+          container
+          direction="row"
+          justifyContent="space-between"
+          alignItems="flex-start"
+          wrap="nowrap"
+        >
+          <Grid item>
+            <Link to={linkTo}>
+              <NormalText>{name}</NormalText>
+            </Link>
+          </Grid>
+          <Grid item>
+            {date && distanceToNow && (
+              <NormalText>{formatDistanceToNow(date)}</NormalText>
+            )}
+            {date && !distanceToNow && (
+              <NormalText>{format(date, 'yyyy/MM/dd')}</NormalText>
+            )}
+          </Grid>
         </Grid>
-        <Grid item xs sx={{ width: '50%' }}>
-          <Grid
-            container
-            direction="row"
-            justifyContent="space-between"
-            alignItems="flex-start"
-            wrap="nowrap"
-          >
-            <Grid item>
-              <Link to={props.linkTo}>
-                <NormalText>{props.name}</NormalText>
-              </Link>
-            </Grid>
-            <Grid item>
-              {props.date && props.distanceToNow && (
-                <NormalText>{formatDistanceToNow(props.date)}</NormalText>
-              )}
-              {props.date && !props.distanceToNow && (
-                <NormalText>{format(props.date, 'yyyy/MM/dd')}</NormalText>
-              )}
-            </Grid>
-          </Grid>
 
-          <Grid
-            container
-            direction="column"
-            justifyContent="flex-start"
-            alignItems="flex-start"
-            wrap="nowrap"
-          >
-            <Grid item>{props.children}</Grid>
-          </Grid>
+        <Grid
+          container
+          direction="column"
+          justifyContent="flex-start"
+          alignItems="flex-start"
+          wrap="nowrap"
+        >
+          <Grid item>{children}</Grid>
         </Grid>
       </Grid>
-      <Divider />
     </Grid>
-  );
-};
+    <Divider />
+  </Grid>
+);
 
 export default IconText;

@@ -41,9 +41,34 @@ import {
 import { useAppContext } from './hooks/ReduserContext';
 import StockBoard from './components/earnings/StockBoard';
 import PrivateLoading from './components/privateMUI/PrivateLoading';
+import {
+  shortestWordLength,
+  deleteConsecutiveChar,
+  findUniqueNumber,
+  takeSpiralPath,
+} from './hooks/codingTest';
 
 const App: FC = () => {
   // ----------ページ遷移履歴の管理----------------------
+
+  const arr = [
+    [0, 1, 2, 3, 4],
+    [10, 11, 12, 13, 14],
+    [20, 21, 22, 23, 24],
+    [30, 31, 32, 33, 34],
+    [40, 41, 42, 43, 44],
+  ];
+
+  console.log('4回答', takeSpiralPath(arr));
+
+  const word1 = 'red blue yellow green a';
+  console.log('問①', shortestWordLength(word1));
+
+  const q2 = 'bbitaaa';
+  console.log('問2', deleteConsecutiveChar(q2));
+
+  const q3 = [3, 3, 3, 3, 3, 1];
+  console.log('問3', findUniqueNumber(q3));
 
   const history = useHistory() as H.History;
 
