@@ -13,7 +13,6 @@
 * バックエンド: Ruby on Rails 6.1 (Ruby 3.0.1)
   [※バックエンドのレポジトリはこちら](https://github.com/titti-008/app_211028_stock_sns_backend)
 * フロントエンド: React.js 17.0、 TypeScript 4.4.4
-* ESLintならびにprettierを使用
 * http通信ライブラリー: [axios](https://www.npmjs.com/package/axios)
 * UIライブラリー: [Material UI](https://mui.com/)
 * 株式情報API: [Financial Modeling Prep API](https://site.financialmodelingprep.com/developer/docs)
